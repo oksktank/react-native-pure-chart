@@ -6,7 +6,14 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 class SimpleChart extends React.Component {
   constructor (props) {
     super(props)
-    this.state = { loading: false, sortedData: [], selectedIndex: null, nowHeight: 200, nowWidth: 200, scrollPosition: 0 }
+    this.state = {
+      loading: false,
+      sortedData: [],
+      selectedIndex: null,
+      nowHeight: 200,
+      nowWidth: 200,
+      scrollPosition: 0
+    }
     this.drawCoordinates = this.drawCoordinates.bind(this)
     this.drawSelected = this.drawSelected.bind(this)
     this.handlePress = this.handlePress.bind(this)
@@ -131,7 +138,10 @@ class SimpleChart extends React.Component {
 
     selectedIndex = tempIndex
 
-    this.setState({msg: `x coord = ${x}, ${y}, index: ${selectedIndex}, tempIndex: ${tempIndex}, minDistance: ${min}`, selectedIndex: selectedIndex})
+    this.setState({
+      msg: `x coord = ${x}, ${y}, index: ${selectedIndex}, tempIndex: ${tempIndex}, minDistance: ${min}`,
+      selectedIndex: selectedIndex
+    })
   }
 
   drawSelected (index) {
@@ -145,7 +155,10 @@ class SimpleChart extends React.Component {
   }
 
   handleLayout (evt) {
-    this.setState({nowHeight: evt.nativeEvent.layout.height, nowWidth: evt.nativeEvent.layout.width})
+    this.setState({
+      nowHeight: evt.nativeEvent.layout.height,
+      nowWidth: evt.nativeEvent.layout.width
+    })
   }
 
   handleScroll (evt) {
@@ -172,8 +185,10 @@ class SimpleChart extends React.Component {
       </View>
     )
   }
-    }
+}
 
-SimpleChart.defaultProps = { data: [] }
+SimpleChart.defaultProps = {
+  data: []
+}
 
 export default SimpleChart
