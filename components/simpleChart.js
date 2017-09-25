@@ -111,13 +111,8 @@ class SimpleChart extends React.Component {
   }
 
   handlePress (evt) {
-<<<<<<< HEAD
-    var x = Math.round(this.state.scrollPosition + evt.nativeEvent.locationX - this.state.nowX) - 30
-    var y = Math.round(this.state.nowHeight - (evt.nativeEvent.locationY - this.state.nowY)) + 20
-=======
-    var x = Math.round(this.state.scrollPosition + evt.nativeEvent.pageX) - 60
-    var y = Math.round(this.state.nowHeight - evt.nativeEvent.pageY) + 20
->>>>>>> develop
+    var x = Math.round(this.state.scrollPosition + evt.nativeEvent.pageX - this.state.nowX) - 40
+    var y = Math.round(this.state.nowHeight - (evt.nativeEvent.pageY - this.state.nowY)) + 20
     var selectedIndex = null
     var min = 100000
     var tempIndex = 0
@@ -150,7 +145,7 @@ class SimpleChart extends React.Component {
     selectedIndex = tempIndex
 
     this.setState({
-      msg: `x coord = ${x}, ${y}, index: ${selectedIndex}, tempIndex: ${tempIndex}, minDistance: ${min}`,
+      msg: `x coord = ${x}, ${y}, index: ${selectedIndex}, tempIndex: ${tempIndex}, minDistance: ${min}, ${this.state.nowX}, ${this.state.nowY}`,
       selectedIndex: selectedIndex
     })
   }
@@ -203,19 +198,12 @@ class SimpleChart extends React.Component {
 
   render () {
     return (
-      <View ref='chartView'
-        onLayout={this.handleLayout}
-        style={this.state.loading ? { backgroundColor: '#FFFFFF50' } : { backgroundColor: '#FFFFFF99' }}>
-
+      <View>
         <ScrollView horizontal onScroll={this.handleScroll}>
           <TouchableWithoutFeedback onPressIn={(evt) => this.handlePress(evt)} >
             <View style={{ paddingBottom: 20, paddingLeft: 20, paddingRight: 20 }}>
-<<<<<<< HEAD
-              <View ref='chartView' style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0}}>
-=======
-              <View style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0, paddingRight: 30}}>
+              <View ref='chartView' onLayout={this.handleLayout} style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0, paddingRight: 30}}>
                 {this.drawYAxis()}
->>>>>>> develop
                 {this.drawCoordinates(this.state.sortedData)}
                 {this.drawSelected(this.state.selectedIndex)}
               </View>
