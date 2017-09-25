@@ -13,7 +13,7 @@ export default class App extends React.Component {
 
   generateData () {
     var data = []
-    for (var i = 0; i < 30; i++) {
+    for (var i = 0; i < 1000; i++) {
       data.push([i * 10, Math.round(Math.random() * 100)])
     }
 

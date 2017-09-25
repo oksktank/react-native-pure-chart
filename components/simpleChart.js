@@ -12,7 +12,9 @@ class SimpleChart extends React.Component {
       selectedIndex: null,
       nowHeight: 200,
       nowWidth: 200,
-      scrollPosition: 0
+      scrollPosition: 0,
+      nowX: 0,
+      nowY: 0
     }
     this.drawCoordinates = this.drawCoordinates.bind(this)
     this.drawSelected = this.drawSelected.bind(this)
@@ -105,8 +107,8 @@ class SimpleChart extends React.Component {
   }
 
   handlePress (evt) {
-    var x = Math.round(this.state.scrollPosition + evt.nativeEvent.pageX) - 30
-    var y = Math.round(this.state.nowHeight - evt.nativeEvent.pageY) + 20
+    var x = Math.round(this.state.scrollPosition + evt.nativeEvent.locationX - this.state.nowX) - 30
+    var y = Math.round(this.state.nowHeight - (evt.nativeEvent.locationY - this.state.nowY)) + 20
     var selectedIndex = null
     var min = 100000
     var tempIndex = 0
@@ -158,6 +160,10 @@ class SimpleChart extends React.Component {
     this.setState({
       nowHeight: evt.nativeEvent.layout.height,
       nowWidth: evt.nativeEvent.layout.width
+    }, () => {
+      this.refs.chartView.measure((ox, oy, width, height, px, py) => {
+        this.setState({nowX: px, nowY: py})
+      })
     })
   }
 
@@ -174,7 +180,7 @@ class SimpleChart extends React.Component {
         <ScrollView horizontal onScroll={this.handleScroll}>
           <TouchableWithoutFeedback onPress={(evt) => this.handlePress(evt)} >
             <View style={{ paddingBottom: 20, paddingLeft: 20, paddingRight: 20 }}>
-              <View style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0}}>
+              <View ref='chartView' style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0}}>
                 {this.drawCoordinates(this.state.sortedData)}
                 {this.drawSelected(this.state.selectedIndex)}
               </View>
