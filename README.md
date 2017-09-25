@@ -1,1 +1,1 @@
-# react-native-pure-chart
+# react-native-pure-chart reade me file
