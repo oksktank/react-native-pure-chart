@@ -71,11 +71,15 @@ class SimpleChart extends React.Component {
     )
   }
 
-  drawPoint (key, point) {
+  drawPoint (index, point) {
+    var key = 'point' + index
     var size = 8
-
+    var color = '#20B2AA'
+    if (this.state.selectedIndex === index) {
+      color = 'red'
+    }
     return (
-      <View key={key} style={{ width: size, height: size, borderRadius: 10, left: point[0] - size / 2, bottom: point[1] - size / 2 + 20, position: 'absolute', borderColor: '#20B2AA', backgroundColor: '#20B2AA', borderWidth: 1 }} />
+      <View key={key} style={{ width: size, height: size, borderRadius: 10, left: point[0] - size / 2 + 30, bottom: point[1] - size / 2 + 20, position: 'absolute', borderColor: color, backgroundColor: color, borderWidth: 1 }} />
     )
   }
 
@@ -90,12 +94,12 @@ class SimpleChart extends React.Component {
     }
 
     if (data.length > 1) {
-      result.push(this.drawPoint('point' + 0, data[0]))
+      result.push(this.drawPoint(0, data[0]))
     }
 
     for (i = 0; i < data.length - 1; i++) {
       if (data[i][0] <= this.state.nowWidth + this.state.scrollPosition + space && data[i][0] >= this.state.scrollPosition - space) {
-        result.push(this.drawPoint('point' + (i + 1), data[i + 1]))
+        result.push(this.drawPoint((i + 1), data[i + 1]))
       }
     }
 
@@ -107,8 +111,13 @@ class SimpleChart extends React.Component {
   }
 
   handlePress (evt) {
+<<<<<<< HEAD
     var x = Math.round(this.state.scrollPosition + evt.nativeEvent.locationX - this.state.nowX) - 30
     var y = Math.round(this.state.nowHeight - (evt.nativeEvent.locationY - this.state.nowY)) + 20
+=======
+    var x = Math.round(this.state.scrollPosition + evt.nativeEvent.pageX) - 60
+    var y = Math.round(this.state.nowHeight - evt.nativeEvent.pageY) + 20
+>>>>>>> develop
     var selectedIndex = null
     var min = 100000
     var tempIndex = 0
@@ -147,12 +156,33 @@ class SimpleChart extends React.Component {
   }
 
   drawSelected (index) {
-    if (!this.state.selectedIndex) {
+    if (typeof (this.state.selectedIndex) === 'number' && this.state.selectedIndex >= 0) {
+      return <View style={{ position: 'absolute', width: 1, height: '100%', left: this.state.sortedData[index][0] + 29.5, backgroundColor: 'red' }} />
+    } else {
       return null
     }
+  }
 
+  drawYAxis () {
     return (
-      <View style={{ position: 'absolute', width: 1, height: '100%', left: this.state.sortedData[index][0], backgroundColor: 'red' }} />
+      <View style={{
+        borderLeftWidth: 1,
+        borderColor: '#000000',
+        width: 1,
+        height: '100%',
+        marginRight: 30
+
+      }} />
+    )
+  }
+
+  drawXAxis () {
+    return (
+      <View style={{
+        width: '100%',
+        borderTopWidth: 1,
+        borderTopColor: '#000000'
+      }} />
     )
   }
 
@@ -178,12 +208,18 @@ class SimpleChart extends React.Component {
         style={this.state.loading ? { backgroundColor: '#FFFFFF50' } : { backgroundColor: '#FFFFFF99' }}>
 
         <ScrollView horizontal onScroll={this.handleScroll}>
-          <TouchableWithoutFeedback onPress={(evt) => this.handlePress(evt)} >
+          <TouchableWithoutFeedback onPressIn={(evt) => this.handlePress(evt)} >
             <View style={{ paddingBottom: 20, paddingLeft: 20, paddingRight: 20 }}>
+<<<<<<< HEAD
               <View ref='chartView' style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0}}>
+=======
+              <View style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0, paddingRight: 30}}>
+                {this.drawYAxis()}
+>>>>>>> develop
                 {this.drawCoordinates(this.state.sortedData)}
                 {this.drawSelected(this.state.selectedIndex)}
               </View>
+              {this.drawXAxis()}
             </View>
           </TouchableWithoutFeedback>
         </ScrollView >
