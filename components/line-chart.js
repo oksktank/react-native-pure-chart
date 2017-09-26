@@ -6,21 +6,25 @@ UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationE
 class SimpleChart extends React.Component {
   constructor (props) {
     super(props)
+    var newState = this.initData(this.props.data)
     this.state = {
       loading: false,
-      sortedData: [],
+      sortedData: newState.sortedData,
       selectedIndex: null,
       nowHeight: 200,
       nowWidth: 200,
       scrollPosition: 0,
       nowX: 0,
-      nowY: 0
+      nowY: 0,
+      max: newState.max
     }
+
     this.drawCoordinates = this.drawCoordinates.bind(this)
     this.drawSelected = this.drawSelected.bind(this)
     this.handlePress = this.handlePress.bind(this)
     this.handleLayout = this.handleLayout.bind(this)
     this.handleScroll = this.handleScroll.bind(this)
+    this.initData = this.initData.bind(this)
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -33,11 +37,31 @@ class SimpleChart extends React.Component {
     }
   }
 
+  initData (dataProp) {
+    if (dataProp.length === 0) {
+      return {
+        sortedData: [],
+        max: 0
+      }
+    }
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
+    var data = []
+    var length = dataProp.length
+    var max = Math.max.apply(null, dataProp)
+    for (var i = 0; i < length; i++) {
+      data.push([i * 10, dataProp[i] / max * 100])
+    }
+    var sortedData = data.sort((a, b) => { return a[0] - b[0] })
+
+    return {
+      sortedData: sortedData,
+      max: max
+    }
+  }
+
   componentWillReceiveProps (nextProps) {
     if (nextProps.data !== this.props.data) {
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
-      var sortedData = nextProps.data.sort((a, b) => { return a[0] - b[0] })
-      this.setState({loading: true, sortedData: sortedData})
+      this.setState(this.initData(nextProps.data))
     }
   }
 
@@ -79,7 +103,7 @@ class SimpleChart extends React.Component {
       color = 'red'
     }
     return (
-      <View key={key} style={{ width: size, height: size, borderRadius: 10, left: point[0] - size / 2 + 30, bottom: point[1] - size / 2 + 20, position: 'absolute', borderColor: color, backgroundColor: color, borderWidth: 1 }} />
+      <View key={key} style={{ width: size, height: size, borderRadius: 10, left: point[0] - size / 2 + 10, bottom: point[1] - size / 2 + 20, position: 'absolute', borderColor: color, backgroundColor: color, borderWidth: 1 }} />
     )
   }
 
@@ -111,7 +135,7 @@ class SimpleChart extends React.Component {
   }
 
   handlePress (evt) {
-    var x = Math.round(this.state.scrollPosition + evt.nativeEvent.pageX - this.state.nowX) - 40
+    var x = Math.round(this.state.scrollPosition + evt.nativeEvent.pageX - this.state.nowX) - 20
     var y = Math.round(this.state.nowHeight - (evt.nativeEvent.pageY - this.state.nowY)) + 20
     var selectedIndex = null
     var min = 100000
@@ -152,7 +176,7 @@ class SimpleChart extends React.Component {
 
   drawSelected (index) {
     if (typeof (this.state.selectedIndex) === 'number' && this.state.selectedIndex >= 0) {
-      return <View style={{ position: 'absolute', width: 1, height: '100%', left: this.state.sortedData[index][0] + 29.5, backgroundColor: 'red' }} />
+      return <View style={{ position: 'absolute', width: 1, height: '100%', left: this.state.sortedData[index][0] + 9.5, backgroundColor: 'red' }} />
     } else {
       return null
     }
@@ -161,13 +185,14 @@ class SimpleChart extends React.Component {
   drawYAxis () {
     return (
       <View style={{
-        borderLeftWidth: 1,
-        borderColor: '#000000',
+        borderRightWidth: 1,
+        borderColor: '#e0e0e0',
         width: 1,
         height: '100%',
-        marginRight: 30
+        marginRight: 10
 
       }} />
+
     )
   }
 
@@ -176,7 +201,7 @@ class SimpleChart extends React.Component {
       <View style={{
         width: '100%',
         borderTopWidth: 1,
-        borderTopColor: '#000000'
+        borderTopColor: '#e0e0e0'
       }} />
     )
   }
@@ -196,23 +221,38 @@ class SimpleChart extends React.Component {
     this.setState({scrollPosition: evt.nativeEvent.contentOffset.x})
   }
 
+  numberWithCommas (x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  }
+
   render () {
     return (
-      <View>
-        <ScrollView horizontal onScroll={this.handleScroll}>
-          <TouchableWithoutFeedback onPressIn={(evt) => this.handlePress(evt)} >
-            <View style={{ paddingBottom: 20, paddingLeft: 20, paddingRight: 20 }}>
-              <View ref='chartView' onLayout={this.handleLayout} style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0, paddingRight: 30}}>
-                {this.drawYAxis()}
-                {this.drawCoordinates(this.state.sortedData)}
-                {this.drawSelected(this.state.selectedIndex)}
+      this.state.sortedData.length > 0 ? (
+        <View style={{flexDirection: 'row'}}>
+          <View style={{
+            paddingRight: 5
+          }}>
+            <Text style={{fontSize: 11}}>{this.numberWithCommas(this.state.max)}</Text>
+          </View>
+
+          <ScrollView horizontal onScroll={this.handleScroll}>
+            <TouchableWithoutFeedback onPressIn={(evt) => this.handlePress(evt)} >
+              <View style={{ paddingBottom: 20, paddingLeft: 0, paddingRight: 20 }}>
+                <View>
+                  <View ref='chartView' onLayout={this.handleLayout} style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0, paddingRight: 30}}>
+                    {this.drawYAxis()}
+                    {this.drawCoordinates(this.state.sortedData)}
+                    {this.drawSelected(this.state.selectedIndex)}
+                  </View>
+                  {this.drawXAxis()}
+                </View>
               </View>
-              {this.drawXAxis()}
-            </View>
-          </TouchableWithoutFeedback>
-        </ScrollView >
-        <Text>{this.state.msg}</Text>
-      </View>
+
+            </TouchableWithoutFeedback>
+          </ScrollView >
+        </View>
+      ) : null
+
     )
   }
 }
