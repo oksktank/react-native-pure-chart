@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
 import PureChart from './pure-chart'
-
 export default class App extends React.Component {
   constructor (props) {
     super(props)
@@ -27,7 +26,7 @@ export default class App extends React.Component {
           <Button title='test' onPress={this.generateData}>
             <Text>start</Text>
           </Button>
-          <PureChart type={'line'} data={this.state.data} />
+          <PureChart type={'bar'} data={this.state.data} />
         </View>
       </View>
     )
