@@ -1,16 +1,10 @@
 import React, { Component, PropTypes } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 
 export default class ColumnChartItem extends Component {
-  constructor (props) {
-    super(props)
-  }
-
   render () {
     return (
-      <View style={[styles.bar, {height: this.props.value}]}>
-        {/*<Text style={{fontSize: 10}}>{this.props.value}</Text>*/}
-      </View>
+      <View style={[styles.bar, {height: this.props.value}]} />
     )
   }
 }

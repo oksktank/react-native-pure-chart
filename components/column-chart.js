@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { View, StyleSheet } from 'react-native'
-import ColumnChartItem from './columnChartItem'
+import ColumnChartItem from './column-chart-item'
 
 export default class ColumnChart extends Component {
   constructor (props) {
