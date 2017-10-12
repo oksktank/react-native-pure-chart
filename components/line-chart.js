@@ -1,9 +1,7 @@
 import React from 'react'
 import { View, ScrollView, LayoutAnimation, TouchableWithoutFeedback, Text, UIManager } from 'react-native'
 
-UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true)
-
-class SimpleChart extends React.Component {
+class LineChart extends React.Component {
   constructor (props) {
     super(props)
     var newState = this.initData(this.props.data)
@@ -257,8 +255,8 @@ class SimpleChart extends React.Component {
   }
 }
 
-SimpleChart.defaultProps = {
+LineChart.defaultProps = {
   data: []
 }
 
-export default SimpleChart
+export default LineChart
