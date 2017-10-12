@@ -8,7 +8,7 @@
     "react-test-renderer": "16.0.0-alpha.12",
     "expo": "^20.0.0"
   },
-  "main": "./index.js",
+  "main": "./pure-chart/index.js",
   "scripts": {
     "start": "react-native-scripts start",
     "eject": "react-native-scripts eject",

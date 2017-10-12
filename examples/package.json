@@ -1,6 +1,6 @@
 {
-  "name": "react-native-pure-chart",
-  "version": "0.0.4",
+  "name": "react-native-pure-chart-example",
+  "version": "0.0.1",
   "description": "",
   "devDependencies": {
     "jest-expo": "~20.0.0",
@@ -22,22 +22,7 @@
     "prop-types": "^15.6.0",
     "react": "16.0.0-alpha.12",
     "react-native": "^0.47.0",
-    "expo": "^20.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/oksktank/react-native-pure-chart.git"
-  },
-  "keywords": [
-    "react-native",
-    "react",
-    "chart",
-    "pure"
-  ],
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/oksktank/react-native-pure-chart/issues"
-  },
-  "homepage": "https://github.com/oksktank/react-native-pure-chart#readme"
+    "expo": "^20.0.0",
+    "react-native-pure-chart": "^0.0.3"
+  }
 }
