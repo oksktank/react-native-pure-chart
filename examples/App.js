@@ -13,7 +13,7 @@ export default class App extends React.Component {
 
   generateData () {
     var data = []
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < Math.round(Math.random() * 10) + 2; i++) {
       data.push(Math.round(Math.random() * 10000))
     }
 
@@ -27,7 +27,7 @@ export default class App extends React.Component {
           <Button title='test' onPress={this.generateData}>
             <Text>start</Text>
           </Button>
-          <PureChart type={'bar'} data={this.state.data} />
+
         </View>
       </View>
     )

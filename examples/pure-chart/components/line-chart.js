@@ -42,7 +42,7 @@ class LineChart extends React.Component {
         max: 0
       }
     }
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
+    
     var data = []
     var length = dataProp.length
     var max = Math.max.apply(null, dataProp)
@@ -52,7 +52,14 @@ class LineChart extends React.Component {
     var sortedData = data.sort((a, b) => { return a[0] - b[0] })
 
     return {
+      loading: false,
       sortedData: sortedData,
+      selectedIndex: null,
+      nowHeight: 200,
+      nowWidth: 200,
+      scrollPosition: 0,
+      nowX: 0,
+      nowY: 0,
       max: max
     }
   }
