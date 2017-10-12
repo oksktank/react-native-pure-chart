@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
-import PureChart from './pure-chart'
+import PureChart from 'react-native-pure-chart'
 
 export default class App extends React.Component {
   constructor (props) {
@@ -13,7 +13,7 @@ export default class App extends React.Component {
 
   generateData () {
     var data = []
-    for (var i = 0; i < 50; i++) {
+    for (var i = 0; i < 10; i++) {
       data.push(Math.round(Math.random() * 10000))
     }
 
@@ -27,7 +27,6 @@ export default class App extends React.Component {
           <Button title='test' onPress={this.generateData}>
             <Text>start</Text>
           </Button>
-          <PureChart type={'line'} data={this.state.data} />
         </View>
       </View>
     )
