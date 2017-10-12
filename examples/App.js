@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
-import PureChart from 'react-native-pure-chart'
+import PureChart from './pure-chart'
 
 export default class App extends React.Component {
   constructor (props) {
