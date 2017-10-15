@@ -108,7 +108,10 @@ class LineChart extends React.Component {
     var length
     var temp
     var postfix = ''
-    if (x >= 1000 && x < 1000000) {
+    if (x > -1 && x < 1000) {
+      x = Math.round(x * 10)
+      temp = 1
+    } else if (x >= 1000 && x < 1000000) {
       postfix = 'K'
       x = Math.round(x / 100)
       temp = 100
@@ -282,7 +285,7 @@ class LineChart extends React.Component {
     }
     var lastData = data[data.length - 1].slice(0)
     var lastCoordinate = data[data.length - 1].slice(0)
-    lastCoordinate[0] = lastCoordinate[0] + this.props.gap / 2
+    lastCoordinate[0] = lastCoordinate[0] + this.props.gap
     result.push(this.drawCooridinate((i + 1), lastData, lastCoordinate, '#FFFFFF', true, true))
 
     if (data.length > 1) {
