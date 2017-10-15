@@ -1,6 +1,6 @@
 {
   "name": "react-native-pure-chart",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
   "devDependencies": {
     "jest-expo": "~20.0.0",
@@ -8,7 +8,7 @@
     "react-test-renderer": "16.0.0-alpha.12",
     "expo": "^20.0.0"
   },
-  "main": "./example/pure-chart/index.js",
+  "main": "./examples/pure-chart/index.js",
   "scripts": {
     "start": "react-native-scripts start",
     "eject": "react-native-scripts eject",
