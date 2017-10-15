@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {View} from 'react-native'
 import LineChart from './components/line-chart'
-
+import ColumnChart from './components/column-chart'
 export default class PureChart extends React.Component {
   constructor (props) {
     super(props)
@@ -12,7 +12,7 @@ export default class PureChart extends React.Component {
     if (this.props.type === 'line') {
       return <LineChart data={this.props.data} />
     } else if (this.props.type === 'bar') {
-      return null
+      return <ColumnChart data={this.props.data} />
     } else if (this.props.type === 'pie') {
       return null
     }
