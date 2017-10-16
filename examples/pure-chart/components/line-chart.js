@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, TouchableWithoutFeedback, Text, Animated, Easing } from 'react-native'
+import { View, TouchableWithoutFeedback, Text, Animated, Easing, ScrollView } from 'react-native'
 import _ from 'lodash'
 // UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true)
 
@@ -233,8 +233,8 @@ class LineChart extends React.Component {
 
         <TouchableWithoutFeedback onPress={() => {
           console.log('index', index)
-
           this.setState({
+
             selectedIndex: lastCoordinate ? index - 1 : index
           })
         }}>
@@ -242,6 +242,7 @@ class LineChart extends React.Component {
             position: 'absolute',
             height: '100%',
             width: dx,
+            backgroundColor: '#AA000050',
             marginLeft: -1 * dx / 2
           }} />
         </TouchableWithoutFeedback>
@@ -492,16 +493,14 @@ class LineChart extends React.Component {
 
           </View>
 
-          <ScrollView horizontal>
-
-            <View style={{ paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}>
-              <View>
-
+          <View style={{ paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}>
+            <View>
+              <ScrollView horizontal>
                 <View ref='chartView' style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0, paddingRight: 0}}>
 
                   {this.drawYAxis()}
                   {this.drawGuideLine(this.state.guideArray)}
-                  <Animated.View style={{ transform: [{scaleY: fadeAnim}], flexDirection: 'row', alignItems: 'flex-end', height: '100%'}} >
+                  <Animated.View style={{ transform: [{scaleY: fadeAnim}], flexDirection: 'row', alignItems: 'flex-end', height: '100%' }} >
                     {this.drawCoordinates(this.state.sortedData)}
                   </Animated.View>
                   {this.drawSelected(this.state.selectedIndex)}
@@ -509,12 +508,13 @@ class LineChart extends React.Component {
                 </View>
 
                 {this.drawXAxis()}
-              </View>
-
-              {this.drawLabels()}
+              </ScrollView>
             </View>
 
-          </ScrollView >
+            {this.drawLabels()}
+
+          </View>
+
         </View>
       ) : null
 
