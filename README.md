@@ -7,7 +7,7 @@ description
 
 
 ## [Demo]
-//TODO
+![alt text](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/sample.gif)
 
 ## Installation
 
