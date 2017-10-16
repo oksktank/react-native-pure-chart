@@ -16,7 +16,7 @@ export default class ColumnChartItem extends Component {
   render () {
     return (
       <TouchableWithoutFeedback onPressIn={this.handlePressIn}>
-        <View ref='chartView' style={[styles.bar, {height: this.props.value}]}>
+        <View ref='chartView' style={[styles.bar2, {width: this.props.defaultWidth, height: this.props.value, backgroundColor: this.props.primaryColor}]}>
           <Text style={{fontSize: 5}}>{'[' + Math.round(this.props.value) + ']'}</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -28,13 +28,19 @@ const styles = StyleSheet.create({
   bar: {
     flex: 1,
     backgroundColor: 'red'
+  },
+  bar2: {
+    justifyContent: 'flex-end',
+    marginRight: 20
   }
 })
 
 ColumnChartItem.propTypes = {
   value: PropTypes.number,
   onClick: PropTypes.func,
-  onLayout: PropTypes.func
+  onLayout: PropTypes.func,
+  defaultWidth: PropTypes.number,
+  primaryColor: PropTypes.string
 }
 ColumnChartItem.defaultProps = {
   value: 0
