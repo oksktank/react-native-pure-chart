@@ -1,12 +1,11 @@
 import React from 'react'
 import { View, TouchableWithoutFeedback, Text, Animated, Easing, ScrollView } from 'react-native'
-import _ from 'lodash'
-// UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true)
+import {initData, drawYAxis, drawGuideText, drawGuideLine, numberWithCommas} from '../common'
 
 class LineChart extends React.Component {
   constructor (props) {
     super(props)
-    var newState = this.initData(this.props.data)
+    var newState = initData(this.props.data, this.props.height, this.props.gap)
     this.state = {
       loading: false,
       sortedData: newState.sortedData,
@@ -25,11 +24,7 @@ class LineChart extends React.Component {
     this.drawCooridinate = this.drawCooridinate.bind(this)
     this.drawSelected = this.drawSelected.bind(this)
 
-    this.initData = this.initData.bind(this)
-    this.drawGuideLine = this.drawGuideLine.bind(this)
-    this.drawGuideText = this.drawGuideText.bind(this)
     this.drawLabels = this.drawLabels.bind(this)
-    this.refineData = this.refineData.bind(this)
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -46,119 +41,11 @@ class LineChart extends React.Component {
     Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
   }
 
-  refineData (dataProp, max) {
-    var data = []
-    var length = dataProp.length
-    var simpleTypeCount = 0
-    var objectTypeCount = 0
-
-    for (var i = 0; i < length; i++) {
-      var maxClone = max
-
-      if (maxClone === 0) {
-        maxClone = 1
-      }
-
-      if (typeof dataProp[i] === 'number') {
-        simpleTypeCount++
-        data.push([i * this.props.gap, dataProp[i] / maxClone * this.props.height, dataProp[i]])
-      } else if (typeof dataProp[i] === 'object') {
-        if (typeof dataProp[i].y === 'number' && dataProp[i].x) {
-          objectTypeCount++
-          data.push([i * this.props.gap, dataProp[i].y / maxClone * this.props.height, dataProp[i].y, dataProp[i].x])
-        }
-      }
-    }
-
-    // validate
-    var isValidate = false
-    if (simpleTypeCount === length || objectTypeCount === length) {
-      isValidate = true
-    }
-    console.log('validate', isValidate, data, max)
-    if (isValidate) {
-      return data.sort((a, b) => { return a[0] - b[0] })
-    } else {
-      return []
-    }
-  }
-
-  initData (dataProp) {
-    if (dataProp.length === 0) {
-      return {
-        sortedData: [],
-        max: 0,
-        guideArray: []
-      }
-    }
-    var values = []
-    dataProp.map((value) => {
-      if (typeof value === 'number') {
-        values.push(value)
-      } else if (typeof value === 'object' && typeof value.y === 'number') {
-        values.push(value.y)
-      }
-    })
-    var max = Math.max.apply(null, values)
-    console.log('values', values)
-    var sortedData = this.refineData(dataProp, max)
-
-    var x = parseInt(max)
-    var arr = []
-    var length
-    var temp
-    var postfix = ''
-    if (x > -1 && x < 1000) {
-      x = Math.round(x * 10)
-      temp = 1
-    } else if (x >= 1000 && x < 1000000) {
-      postfix = 'K'
-      x = Math.round(x / 100)
-      temp = 100
-    } else if (x >= 1000000 && x < 1000000000) {
-      postfix = 'M'
-      x = Math.round(x / 100000)
-      temp = 100000
-    } else {
-      postfix = 'B'
-      x = Math.round(x / 100000000)
-      temp = 100000000
-    }
-    length = x.toString().length
-
-    x = _.round(x, -1 * length + 1) / 10
-    var first = parseInt(x.toString()[0])
-
-    if (first > -1 && first < 3) { // 1,2
-      x = 2.5 * x / first
-    } else if (first > 2 && first < 6) { // 4,5
-      x = 5 * x / first
-    } else {
-      x = 10 * x / first
-    }
-    for (var i = 1; i < 6; i++) {
-      var v = x / 5 * i
-      arr.push([v + postfix, v * temp * 10 / max * this.props.height])
-    }
-    return {
-      sortedData: sortedData,
-      max: max,
-      fadeAnim: new Animated.Value(0),
-      selectedIndex: null,
-      nowHeight: 200,
-      nowWidth: 200,
-      scrollPosition: 0,
-      nowX: 0,
-      nowY: 0,
-      guideArray: arr
-    }
-  }
-
   componentWillReceiveProps (nextProps) {
     if (nextProps.data !== this.props.data) {
-      // LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
-
-      this.setState(this.initData(nextProps.data), () => {
+      this.setState(Object.assign({
+        fadeAnim: new Animated.Value(0)
+      }, initData(nextProps.data, this.props.height, this.props.gap)), () => {
         Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
       })
     }
@@ -242,7 +129,6 @@ class LineChart extends React.Component {
             position: 'absolute',
             height: '100%',
             width: dx,
-            backgroundColor: '#AA000050',
             marginLeft: -1 * dx / 2
           }} />
         </TouchableWithoutFeedback>
@@ -352,7 +238,7 @@ class LineChart extends React.Component {
             {this.state.sortedData[index][3] ? (
               <Text style={{fontWeight: 'bold'}}>{this.state.sortedData[index][3]}</Text>
             ) : null}
-            <Text>{this.numberWithCommas(this.state.sortedData[index][2], false)}</Text>
+            <Text>{numberWithCommas(this.state.sortedData[index][2], false)}</Text>
           </View>
 
         </View>
@@ -362,72 +248,6 @@ class LineChart extends React.Component {
     }
   }
 
-  drawYAxis () {
-    return (
-      <View style={{
-        borderRightWidth: 1,
-        borderColor: '#e0e0e0',
-        width: 1,
-        height: '100%',
-        marginRight: 0
-
-      }} />
-
-    )
-  }
-  drawGuideText (arr) {
-    var height = this.props.height + 20
-    return (
-      <View style={{
-        width: 30,
-        height: height,
-        justifyContent: 'flex-end',
-        alignItems: 'flex-end'
-      }}>
-
-        {arr.map((v, i) => {
-          if (v[1] > height) return null
-          return (
-            <View
-              key={'guide' + i}
-              style={{
-                bottom: v[1] - 5,
-                position: 'absolute'
-              }}>
-              <Text style={{fontSize: 11}}>{v[0]}</Text>
-            </View>
-          )
-        })}
-
-      </View>
-    )
-  }
-  drawGuideLine (arr) {
-    return (
-      <View style={{
-        width: '100%',
-        height: '100%',
-
-        position: 'absolute'
-      }}>
-
-        {arr.map((v, i) => {
-          return (
-            <View
-              key={'guide' + i}
-              style={{
-                width: '100%',
-                borderTopWidth: 1,
-                borderTopColor: '#e0e0e0',
-                bottom: v[1],
-                position: 'absolute'
-              }} />
-          )
-        })}
-
-      </View>
-    )
-  }
   drawXAxis () {
     return (
       <View style={{
@@ -463,24 +283,6 @@ class LineChart extends React.Component {
     )
   }
 
-  numberWithCommas (x, summary = true) {
-    var postfix = ''
-    if (summary) {
-      if (x >= 1000 && x < 1000000) {
-        postfix = 'K'
-        x = Math.round(x / 100) / 10
-      } else if (x >= 1000000 && x < 1000000000) {
-        postfix = 'M'
-        x = Math.round(x / 100000) / 10
-      } else if (x >= 1000000000 && x < 1000000000000) {
-        postfix = 'B'
-        x = Math.round(x / 100000000) / 10
-      }
-    }
-
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + postfix
-  }
-
   render () {
     let {fadeAnim} = this.state
     return (
@@ -489,7 +291,7 @@ class LineChart extends React.Component {
           <View style={{
             paddingRight: 5
           }}>
-            {this.drawGuideText(this.state.guideArray)}
+            {drawGuideText(this.state.guideArray, this.props.height + 20)}
 
           </View>
 
@@ -498,8 +300,8 @@ class LineChart extends React.Component {
               <ScrollView horizontal>
                 <View ref='chartView' style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0, paddingRight: 0}}>
 
-                  {this.drawYAxis()}
-                  {this.drawGuideLine(this.state.guideArray)}
+                  {drawYAxis()}
+                  {drawGuideLine(this.state.guideArray)}
                   <Animated.View style={{ transform: [{scaleY: fadeAnim}], flexDirection: 'row', alignItems: 'flex-end', height: '100%' }} >
                     {this.drawCoordinates(this.state.sortedData)}
                   </Animated.View>
