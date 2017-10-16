@@ -193,3 +193,38 @@ export const numberWithCommas = (x, summary = true) => {
 
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + postfix
 }
+
+export const drawXAxis = () => {
+  return (
+    <View style={{
+      width: '100%',
+      borderTopWidth: 1,
+      borderTopColor: '#e0e0e0'
+    }} />
+  )
+}
+export const drawLabels = (sortedData, gap) => {
+  return (
+    <View style={{
+      width: '100%',
+      paddingVertical: 10,
+      height: 10
+    }}>
+      {sortedData.map((data, i) => {
+        if (data[3] && i % 2 === 1) {
+          return (
+            <View key={'label' + i} style={{
+              position: 'absolute',
+              left: data[0] - gap / 2,
+              width: gap
+            }}>
+              <Text style={{fontSize: 9}}>{data[3]}</Text>
+            </View>
+          )
+        } else {
+          return null
+        }
+      })}
+    </View>
+  )
+}
