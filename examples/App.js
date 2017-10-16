@@ -24,7 +24,6 @@ export default class App extends React.Component {
       <View style={styles.container}>
         <View style={{padding: 50}}>
           <PureChart type={'line'} data={this.state.data} />
-          <PureChart type={'bar'} data={this.state.data} />
           <Button title='test' onPress={this.generateData}>
             <Text>start</Text>
           </Button>
