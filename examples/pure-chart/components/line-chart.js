@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, TouchableWithoutFeedback, Text, Animated, Easing, ScrollView } from 'react-native'
-import {initData, drawYAxis, drawGuideText, drawGuideLine, numberWithCommas} from '../common'
+import {initData, drawYAxis, drawGuideText, drawGuideLine, numberWithCommas, drawXAxis, drawLabels} from '../common'
 
 class LineChart extends React.Component {
   constructor (props) {
@@ -23,8 +23,6 @@ class LineChart extends React.Component {
     this.drawCoordinates = this.drawCoordinates.bind(this)
     this.drawCooridinate = this.drawCooridinate.bind(this)
     this.drawSelected = this.drawSelected.bind(this)
-
-    this.drawLabels = this.drawLabels.bind(this)
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -119,10 +117,13 @@ class LineChart extends React.Component {
         ) : null}
 
         <TouchableWithoutFeedback onPress={() => {
-          console.log('index', index)
+          var selectedIndex = lastCoordinate ? index - 1 : index
           this.setState({
-
-            selectedIndex: lastCoordinate ? index - 1 : index
+            selectedIndex: selectedIndex
+          }, () => {
+            if (typeof this.props.onPointClick === 'function') {
+              this.props.onPointClick()
+            }
           })
         }}>
           <View style={{
@@ -142,7 +143,7 @@ class LineChart extends React.Component {
     var size = 8
     var color = this.props.primaryColor
     if (this.state.selectedIndex === index) {
-      color = 'red'
+      color = this.props.selectedColor
     }
 
     return (
@@ -216,7 +217,7 @@ class LineChart extends React.Component {
             position: 'absolute',
             width: 1,
             height: '100%',
-            backgroundColor: 'red' }} />
+            backgroundColor: this.props.selectedColor }} />
           <View style={Object.assign({
             backgroundColor: '#FFFFFF',
             borderRadius: 5,
@@ -248,41 +249,6 @@ class LineChart extends React.Component {
     }
   }
 
-  drawXAxis () {
-    return (
-      <View style={{
-        width: '100%',
-        borderTopWidth: 1,
-        borderTopColor: '#e0e0e0'
-      }} />
-    )
-  }
-  drawLabels () {
-    return (
-      <View style={{
-        width: '100%',
-        paddingVertical: 10,
-        height: 10
-      }}>
-        {this.state.sortedData.map((data, i) => {
-          if (data[3] && i % 2 === 1) {
-            return (
-              <View key={'label' + i} style={{
-                position: 'absolute',
-                left: data[0] - this.props.gap / 2,
-                width: this.props.gap
-              }}>
-                <Text style={{fontSize: 9}}>{data[3]}</Text>
-              </View>
-            )
-          } else {
-            return null
-          }
-        })}
-      </View>
-    )
-  }
-
   render () {
     let {fadeAnim} = this.state
     return (
@@ -296,8 +262,9 @@ class LineChart extends React.Component {
           </View>
 
           <View style={{ paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}>
-            <View>
-              <ScrollView horizontal>
+            <ScrollView horizontal>
+              <View>
+
                 <View ref='chartView' style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0, paddingRight: 0}}>
 
                   {drawYAxis()}
@@ -309,12 +276,11 @@ class LineChart extends React.Component {
 
                 </View>
 
-                {this.drawXAxis()}
-              </ScrollView>
-            </View>
+                {drawXAxis()}
+                {drawLabels(this.state.sortedData, this.props.gap)}
+              </View>
 
-            {this.drawLabels()}
-
+            </ScrollView>
           </View>
 
         </View>
@@ -327,8 +293,12 @@ class LineChart extends React.Component {
 LineChart.defaultProps = {
   data: [],
   primaryColor: '#297AB1',
+  selectedColor: '#FF0000',
   height: 100,
-  gap: 50
+  gap: 50,
+  onPointClick: (point) => {
+
+  }
 }
 
 export default LineChart
