@@ -1,11 +1,6 @@
-# [React Native Pure Chart](https://github.com/oksktank/react-native-pure-chart)
+# React Native Pure Chart
 
-
-
-description
-
-
-
+Pure chart not using svg or ART but only use `react-native` components.<br/>(You don't have to import anything else like `react-native link` or add `ART` to your project)
 ## [Demo]
 ![alt text](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/sample.gif)
 
