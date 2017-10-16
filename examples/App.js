@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
 import PureChart from './pure-chart'
-
+import moment from 'moment'
 export default class App extends React.Component {
   constructor (props) {
     super(props)
@@ -13,8 +13,15 @@ export default class App extends React.Component {
 
   generateData () {
     var data = []
-    for (var i = 0; i < Math.round(Math.random() * 10) + 2; i++) {
-      data.push(Math.round(Math.random() * 10000))
+    var startDate = moment()
+    for (var i = 0; i < Math.round(Math.random() * 10) + 9; i++) {
+      startDate.add(1, 'days')
+      data.push(
+        {
+          x: startDate.format('YYYY-MM-DD'),
+          y: Math.round(Math.random() * 100000)
+        }
+      )
     }
 
     this.setState({data: data})
@@ -22,10 +29,10 @@ export default class App extends React.Component {
   render () {
     return (
       <View style={styles.container}>
-        <View style={{padding: 50}}>
+        <View style={{padding: 20}}>
           <PureChart type={'line'} data={this.state.data} />
-          <Button title='test' onPress={this.generateData}>
-            <Text>start</Text>
+          <Button title='Generate chart data' onPress={this.generateData}>
+            <Text>Generate chart data</Text>
           </Button>
 
         </View>
