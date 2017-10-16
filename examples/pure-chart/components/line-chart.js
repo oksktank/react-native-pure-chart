@@ -296,8 +296,9 @@ class LineChart extends React.Component {
           </View>
 
           <View style={{ paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}>
-            <View>
-              <ScrollView horizontal>
+            <ScrollView horizontal>
+              <View>
+
                 <View ref='chartView' style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0, paddingRight: 0}}>
 
                   {drawYAxis()}
@@ -310,11 +311,11 @@ class LineChart extends React.Component {
                 </View>
 
                 {this.drawXAxis()}
-              </ScrollView>
-            </View>
+                {this.drawLabels()}
+              </View>
 
-            {this.drawLabels()}
-
+              
+            </ScrollView>
           </View>
 
         </View>
