@@ -1,6 +1,6 @@
 {
   "name": "react-native-pure-chart",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "description": "",
   "devDependencies": {
     "jest-expo": "~20.0.0",
@@ -8,7 +8,7 @@
     "react-test-renderer": "16.0.0-alpha.12",
     "expo": "^20.0.0"
   },
-  "main": "./example/pure-chart/index.js",
+  "main": "./examples/pure-chart/index.js",
   "scripts": {
     "start": "react-native-scripts start",
     "eject": "react-native-scripts eject",
@@ -20,6 +20,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
     "react": "16.0.0-alpha.12",
     "react-native": "^0.47.0"
