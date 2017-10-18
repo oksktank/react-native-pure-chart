@@ -1,33 +1,33 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet, Animated, ScrollView, Easing } from 'react-native'
+import { View, StyleSheet, Animated, ScrollView, Easing, Text } from 'react-native'
 import ColumnChartItem from './column-chart-item'
-import {initData, drawYAxis, drawGuideText, drawGuideLine, numberWithCommas} from '../common'
+import {initData, drawYAxis, drawGuideText, drawGuideLine, numberWithCommas, drawXAxis, drawLabels} from '../common'
 
 export default class ColumnChart extends Component {
   constructor (props) {
     super(props)
-    let newState = initData(this.props.data, this.props.height, this.props.gap)
+    let defaultGap = this.props.defaultColumnWidth + this.props.defaultColumnMargin
+    let newState = initData(this.props.data, this.props.height, defaultGap)
     this.state = {
       sortedData: newState.sortedData,
       max: newState.max,
-      msg: 'Initialize.',
-      selectedX: 0,
-      selectedY: 0,
+      selectedIndex: null,
       columnWidth: 0,
       fadeAnim: new Animated.Value(0),
-      guideArray: newState.guideArray
+      guideArray: newState.guideArray,
+      gap: defaultGap
     }
     this.renderColumns = this.renderColumns.bind(this)
     this.handleClick = this.handleClick.bind(this)
-    this.handleLayout = this.handleLayout.bind(this)
+    this.drawTooltip = this.drawTooltip.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
         fadeAnim: new Animated.Value(0)
-      }, initData(nextProps.data, this.props.height, this.props.gap)), () => {
+      }, initData(nextProps.data, this.props.height, this.state.gap)), () => {
         Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
       })
     }
@@ -41,55 +41,59 @@ export default class ColumnChart extends Component {
     return this.state.sortedData.map((value, i) => {
       return (
         <ColumnChartItem key={i} value={value[1]}
-          defaultWidth={this.props.gap} primaryColor={this.props.primaryColor}
-          onClick={(evt, width) => this.handleClick(evt, i, value, width)}
-          onLayout={(evt) => this.handleLayout(evt)} />
+          defaultWidth={this.props.defaultColumnWidth}
+          defaultMargin={this.props.defaultColumnMargin}
+          primaryColor={this.props.primaryColor}
+          onClick={(evt) => this.handleClick(evt, i)} />
       )
     })
   }
-  handleLayout (event) {
+
+  handleClick (event, index) {
     this.setState({
-      columnWidth: event.nativeEvent.layout.width
+      selectedIndex: index
     })
   }
-
-  handleClick (event, index, value, width) {
-    this.setState({
-      msg:
-          `${index} : ${Math.round(value[1])}/${Math.round(value[2])}`,
-          /* `
-           locX: ${event.nativeEvent.locationX}, locY: ${event.nativeEvent.locationY},
-           pageX: ${event.nativeEvent.pageX}, pageY: ${event.nativeEvent.pageY},
-           width: ${width}
-          `, */
-      selectedX: (width * index) + (width + 5),
-      selectedY: event.nativeEvent.locationY + (this.props.height - value[1])
-    })
+  drawTooltip (index) {
+    if (typeof (this.state.selectedIndex) === 'number' && this.state.selectedIndex >= 0) {
+      if (!this.state.sortedData[index]) {
+        return null
+      }
+      // var bottom = this.state.sortedData[index][1]
+      var left = this.state.sortedData[index][0]// this.state.sortedData[index][0] - width / 2 + 1
+      return (
+        <View style={[styles.tooltip, {position: 'absolute', left: left, height: this.state.sortedData[index][3] ? 60 : 30}]}>
+          {this.state.sortedData[index][3] ? (<Text style={{fontWeight: 'bold'}}>{this.state.sortedData[index][3]}</Text>) : null}
+          <Text>{numberWithCommas(this.state.sortedData[index][2], false)}</Text>
+        </View>
+      )
+    } else {
+      return null
+    }
   }
 
   render () {
     let {fadeAnim} = this.state
     return (
-      <View style={{flexDirection: 'row', borderWidth: 1, borderColor: 'blue'}}>
-        <View style={{
-          paddingRight: 5
-        }}>
-          {drawGuideText(this.state.guideArray, this.props.height)}
+      <View style={{flexDirection: 'row'}}>
+        <View style={{paddingRight: 5}}>
+          {drawGuideText(this.state.guideArray, this.props.height + 20)}
         </View>
-        <View style={{ paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}>
-          <View>
-            <ScrollView horizontal>
-              <View ref='chartView' style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0, paddingRight: 0}}>
-
+        <View style={styles.mainContainer}>
+          <ScrollView horizontal>
+            <View>
+              <View ref='chartView' style={styles.chartContainer}>
                 {drawYAxis()}
                 {drawGuideLine(this.state.guideArray)}
-                <Animated.View style={{ transform: [{scaleY: fadeAnim}], flexDirection: 'row', alignItems: 'flex-end', height: '100%' }}>
+                <Animated.View style={[styles.chartView, {transform: [{scaleY: fadeAnim}]}]}>
                   {this.renderColumns()}
                 </Animated.View>
               </View>
-            </ScrollView>
-          </View>
-
+              {this.drawTooltip(this.state.selectedIndex)}
+              {drawXAxis()}
+              {drawLabels(this.state.sortedData, this.state.gap)}
+            </View>
+          </ScrollView>
         </View>
       </View>
     )
@@ -97,19 +101,30 @@ export default class ColumnChart extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    width: '100%',
-    borderWidth: 1,
-    borderColor: 'green'
+  mainContainer: {
+    paddingBottom: 0,
+    paddingLeft: 0,
+    paddingRight: 0
   },
-  container2: {
+  chartContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
+    margin: 0,
+    paddingRight: 0
+  },
+  chartView: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    height: '100%'
+  },
+  tooltip: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    borderColor: '#AAAAAA',
     borderWidth: 1,
-    borderColor: 'green'
+    padding: 3,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 })
 
@@ -119,6 +134,7 @@ ColumnChart.propTypes = {
 ColumnChart.defaultProps = {
   data: [],
   height: 100,
-  gap: 25,
+  defaultColumnWidth: 30,
+  defaultColumnMargin: 20,
   primaryColor: '#297AB1'
 }

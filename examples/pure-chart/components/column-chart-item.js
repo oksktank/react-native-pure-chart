@@ -2,21 +2,14 @@ import React, { Component, PropTypes } from 'react'
 import { View, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native'
 
 export default class ColumnChartItem extends Component {
-  constructor (props) {
-    super(props)
-    this.handlePressIn = this.handlePressIn.bind(this)
-  }
-
-  handlePressIn (evt) {
-    this.refs.chartView.measure((ox, oy, width, height, px, py) => {
-      this.props.onClick(evt, width)
-    })
-  }
-
   render () {
     return (
-      <TouchableWithoutFeedback onPressIn={this.handlePressIn}>
-        <View ref='chartView' style={[styles.bar2, {width: this.props.defaultWidth, height: this.props.value, backgroundColor: this.props.primaryColor}]}>
+      <TouchableWithoutFeedback onPressIn={(evt) => this.props.onClick(evt)}>
+        <View ref='chartView' style={[styles.bar, {
+          width: this.props.defaultWidth,
+          height: this.props.value,
+          backgroundColor: this.props.primaryColor,
+          marginRight: this.props.defaultMargin}]}>
           <Text style={{fontSize: 5}}>{'[' + Math.round(this.props.value) + ']'}</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -26,20 +19,15 @@ export default class ColumnChartItem extends Component {
 
 const styles = StyleSheet.create({
   bar: {
-    flex: 1,
-    backgroundColor: 'red'
-  },
-  bar2: {
-    justifyContent: 'flex-end',
-    marginRight: 20
+    justifyContent: 'flex-end'
   }
 })
 
 ColumnChartItem.propTypes = {
   value: PropTypes.number,
   onClick: PropTypes.func,
-  onLayout: PropTypes.func,
   defaultWidth: PropTypes.number,
+  defaultMargin: PropTypes.number,
   primaryColor: PropTypes.string
 }
 ColumnChartItem.defaultProps = {
