@@ -13,7 +13,6 @@ export default class ColumnChart extends Component {
       sortedData: newState.sortedData,
       max: newState.max,
       selectedIndex: null,
-      columnWidth: 0,
       fadeAnim: new Animated.Value(0),
       guideArray: newState.guideArray,
       gap: defaultGap
@@ -59,8 +58,7 @@ export default class ColumnChart extends Component {
       if (!this.state.sortedData[index]) {
         return null
       }
-      // var bottom = this.state.sortedData[index][1]
-      var left = this.state.sortedData[index][0]// this.state.sortedData[index][0] - width / 2 + 1
+      let left = this.state.sortedData[index][0]
       return (
         <View style={[styles.tooltip, {position: 'absolute', left: left, height: this.state.sortedData[index][3] ? 60 : 30}]}>
           {this.state.sortedData[index][3] ? (<Text style={{fontWeight: 'bold'}}>{this.state.sortedData[index][3]}</Text>) : null}

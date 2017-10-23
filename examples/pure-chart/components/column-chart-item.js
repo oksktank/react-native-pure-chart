@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { View, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native'
+import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 
 export default class ColumnChartItem extends Component {
   render () {
@@ -9,9 +9,7 @@ export default class ColumnChartItem extends Component {
           width: this.props.defaultWidth,
           height: this.props.value,
           backgroundColor: this.props.primaryColor,
-          marginRight: this.props.defaultMargin}]}>
-          <Text style={{fontSize: 5}}>{'[' + Math.round(this.props.value) + ']'}</Text>
-        </View>
+          marginRight: this.props.defaultMargin}]} />
       </TouchableWithoutFeedback>
     )
   }

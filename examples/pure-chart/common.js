@@ -133,7 +133,7 @@ export const drawGuideText = (arr, height) => {
     }}>
 
       {arr.map((v, i) => {
-        if (v[1] > height ) return null
+        if (v[1] > height) return null
         return (
           <View
             key={'guide' + i}
