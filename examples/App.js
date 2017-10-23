@@ -14,12 +14,12 @@ export default class App extends React.Component {
   generateData () {
     var data = []
     var startDate = moment()
-    for (var i = 0; i < Math.round(Math.random() * 10) + 9; i++) {
+    for (var i = 0; i < Math.round(Math.random() * 10) + 30; i++) {
       startDate.add(1, 'days')
       data.push(
         {
           x: startDate.format('YYYY-MM-DD'),
-          y: Math.round(Math.random() * 100000)
+          y: Math.round(Math.random() * 1000)
         }
       )
     }
@@ -31,6 +31,7 @@ export default class App extends React.Component {
       <View style={styles.container}>
         <View style={{padding: 20}}>
           <PureChart type={'line'} data={this.state.data} />
+          <PureChart type={'bar'} data={this.state.data} />
           <Button title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>
           </Button>
