@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { View, StyleSheet, Animated, ScrollView, Easing, Text } from 'react-native'
 import ColumnChartItem from './column-chart-item'
-import {initData, drawYAxis, drawGuideText, drawGuideLine, numberWithCommas, drawXAxis, drawLabels} from '../common'
+import {initData, drawYAxis, drawYAxisLabels, drawGuideLine, numberWithCommas, drawXAxis, drawXAxisLabels} from '../common'
 
 export default class ColumnChart extends Component {
   constructor (props) {
@@ -42,7 +42,7 @@ export default class ColumnChart extends Component {
         <ColumnChartItem key={i} value={value[1]}
           defaultWidth={this.props.defaultColumnWidth}
           defaultMargin={this.props.defaultColumnMargin}
-          primaryColor={this.props.primaryColor}
+          primaryColor={this.state.selectedIndex === i ? 'red' : this.props.primaryColor}
           onClick={(evt) => this.handleClick(evt, i)} />
       )
     })
@@ -58,11 +58,33 @@ export default class ColumnChart extends Component {
       if (!this.state.sortedData[index]) {
         return null
       }
-      let left = this.state.sortedData[index][0]
+      let width = 200
+
+      let left = this.state.sortedData[index][0] + this.props.defaultColumnWidth / 2 - width / 2
+
+      let marginLeft = 0
+      if (index === 0) {
+        left = this.state.sortedData[index + 1][0] + this.props.defaultColumnWidth / 2 - width / 2
+      } else if (index === this.state.sortedData.length - 1) {
+        left = this.state.sortedData[index - 1][0] + this.props.defaultColumnWidth / 2 - width / 2
+      }
       return (
-        <View style={[styles.tooltip, {position: 'absolute', left: left, height: this.state.sortedData[index][3] ? 60 : 30}]}>
-          {this.state.sortedData[index][3] ? (<Text style={{fontWeight: 'bold'}}>{this.state.sortedData[index][3]}</Text>) : null}
-          <Text>{numberWithCommas(this.state.sortedData[index][2], false)}</Text>
+        <View style={{
+          position: 'absolute',
+          height: '100%',
+          width: width,
+          left: left,
+          alignItems: 'center',
+          marginLeft: marginLeft,
+          justifyContent: 'center'
+        }}>
+          <View style={[
+            styles.tooltip,
+              {position: 'absolute', height: this.state.sortedData[index][3] ? 60 : 30}
+          ]}>
+            {this.state.sortedData[index][3] ? (<Text style={{fontWeight: 'bold'}}>{this.state.sortedData[index][3]}</Text>) : null}
+            <Text>{numberWithCommas(this.state.sortedData[index][2], false)}</Text>
+          </View>
         </View>
       )
     } else {
@@ -72,10 +94,13 @@ export default class ColumnChart extends Component {
 
   render () {
     let {fadeAnim} = this.state
+
+    if (this.state.sortedData && this.state.sortedData.length === 0) return null
+
     return (
       <View style={{flexDirection: 'row'}}>
         <View style={{paddingRight: 5}}>
-          {drawGuideText(this.state.guideArray, this.props.height + 20)}
+          {drawYAxisLabels(this.state.guideArray, this.props.height + 20)}
         </View>
         <View style={styles.mainContainer}>
           <ScrollView horizontal>
@@ -89,7 +114,11 @@ export default class ColumnChart extends Component {
               </View>
               {this.drawTooltip(this.state.selectedIndex)}
               {drawXAxis()}
-              {drawLabels(this.state.sortedData, this.state.gap)}
+              <View style={{
+                marginLeft: this.props.defaultColumnWidth / 2
+              }}>
+                {drawXAxisLabels(this.state.sortedData, this.state.gap)}
+              </View>
             </View>
           </ScrollView>
         </View>
@@ -102,7 +131,8 @@ const styles = StyleSheet.create({
   mainContainer: {
     paddingBottom: 0,
     paddingLeft: 0,
-    paddingRight: 0
+    paddingRight: 0,
+    height: '100%'
   },
   chartContainer: {
     flexDirection: 'row',
@@ -113,7 +143,8 @@ const styles = StyleSheet.create({
   chartView: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    height: '100%'
+    height: '100%',
+    paddingTop: 20
   },
   tooltip: {
     backgroundColor: '#FFFFFF',
@@ -122,7 +153,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 3,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    opacity: 0.8
   }
 })
 

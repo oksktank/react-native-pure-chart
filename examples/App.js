@@ -18,7 +18,7 @@ export default class App extends React.Component {
       startDate.add(1, 'days')
       data.push(
         {
-          x: startDate.format('YYYY-MM-DD'),
+          x: startDate.format('YYYY-MM'),
           y: Math.round(Math.random() * 1000)
         }
       )
