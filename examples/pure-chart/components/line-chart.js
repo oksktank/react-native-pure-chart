@@ -1,11 +1,11 @@
 import React from 'react'
 import { View, TouchableWithoutFeedback, Text, Animated, Easing, ScrollView } from 'react-native'
-import {initData, drawYAxis, drawGuideText, drawGuideLine, numberWithCommas, drawXAxis, drawLabels} from '../common'
+import {initData, drawYAxis, drawGuideLine, drawYAxisLabels, numberWithCommas, drawXAxis, drawXAxisLabels} from '../common'
 
 class LineChart extends React.Component {
   constructor (props) {
     super(props)
-    var newState = initData(this.props.data, this.props.height, this.props.gap)
+    let newState = initData(this.props.data, this.props.height, this.props.gap)
     this.state = {
       loading: false,
       sortedData: newState.sortedData,
@@ -50,21 +50,21 @@ class LineChart extends React.Component {
   }
 
   getTransform (rad, width) {
-    var x = (0 - width / 2) * Math.cos(rad) - (0 - width / 2) * Math.sin(rad)
-    var y = (0 - width / 2) * Math.sin(rad) + (0 - width / 2) * Math.cos(rad)
+    let x = (0 - width / 2) * Math.cos(rad) - (0 - width / 2) * Math.sin(rad)
+    let y = (0 - width / 2) * Math.sin(rad) + (0 - width / 2) * Math.cos(rad)
 
     return [ {translateX: (-1 * x) - width / 2}, {translateY: (-1 * y) + width / 2}, { rotate: rad + 'rad' } ]
   }
 
   drawCooridinate (index, start, end, backgroundColor = '#FFFFFF00', isBlank = false, lastCoordinate = false) {
-    var key = 'line' + index
-    var dx = end[0] - start[0]
-    var dy = end[1] - start[1]
-    var size = Math.sqrt(dx * dx + dy * dy)
-    var angleRad = -1 * Math.atan2(dy, dx)
-    var height
-    var top
-    var topMargin = 20
+    let key = 'line' + index
+    let dx = end[0] - start[0]
+    let dy = end[1] - start[1]
+    let size = Math.sqrt(dx * dx + dy * dy)
+    let angleRad = -1 * Math.atan2(dy, dx)
+    let height
+    let top
+    let topMargin = 20
 
     if (start[1] > end[1]) {
       height = start[1]
@@ -117,7 +117,7 @@ class LineChart extends React.Component {
         ) : null}
 
         <TouchableWithoutFeedback onPress={() => {
-          var selectedIndex = lastCoordinate ? index - 1 : index
+          let selectedIndex = lastCoordinate ? index - 1 : index
           this.setState({
             selectedIndex: selectedIndex
           }, () => {
@@ -139,9 +139,9 @@ class LineChart extends React.Component {
   }
 
   drawPoint (index, point) {
-    var key = 'point' + index
-    var size = 8
-    var color = this.props.primaryColor
+    let key = 'point' + index
+    let size = 8
+    let color = this.props.primaryColor
     if (this.state.selectedIndex === index) {
       color = this.props.selectedColor
     }
@@ -166,21 +166,22 @@ class LineChart extends React.Component {
   }
 
   drawCoordinates (data) {
-    var result = []
+    let result = []
 
-    for (var i = 0; i < data.length - 1; i++) {
+    let dataLength = data.length
+    for (let i = 0; i < dataLength - 1; i++) {
       result.push(this.drawCooridinate(i, data[i], data[i + 1]))
     }
-    var lastData = data[data.length - 1].slice(0)
-    var lastCoordinate = data[data.length - 1].slice(0)
+    let lastData = data[dataLength - 1].slice(0)
+    let lastCoordinate = data[dataLength - 1].slice(0)
     lastCoordinate[0] = lastCoordinate[0] + this.props.gap
-    result.push(this.drawCooridinate((i + 1), lastData, lastCoordinate, '#FFFFFF', true, true))
+    result.push(this.drawCooridinate((dataLength), lastData, lastCoordinate, '#FFFFFF', true, true))
 
-    if (data.length > 1) {
+    if (dataLength > 1) {
       result.push(this.drawPoint(0, data[0]))
     }
 
-    for (i = 0; i < data.length - 1; i++) {
+    for (let i = 0; i < dataLength - 1; i++) {
       result.push(this.drawPoint((i + 1), data[i + 1]))
     }
 
@@ -196,10 +197,10 @@ class LineChart extends React.Component {
       if (!this.state.sortedData[index]) {
         return null
       }
-      var reverse = true
-      var bottom = this.state.sortedData[index][1]
-      var width = 200
-      var left = this.state.sortedData[index][0] - width / 2 + 1
+      let reverse = true
+      let bottom = this.state.sortedData[index][1]
+      let width = 200
+      let left = this.state.sortedData[index][0] - width / 2 + 1
       if (bottom > this.props.height * 2 / 3) {
         reverse = false
       }
@@ -257,7 +258,7 @@ class LineChart extends React.Component {
           <View style={{
             paddingRight: 5
           }}>
-            {drawGuideText(this.state.guideArray, this.props.height + 20)}
+            {drawYAxisLabels(this.state.guideArray, this.props.height + 20)}
 
           </View>
 
@@ -277,7 +278,7 @@ class LineChart extends React.Component {
                 </View>
 
                 {drawXAxis()}
-                {drawLabels(this.state.sortedData, this.props.gap)}
+                {drawXAxisLabels(this.state.sortedData, this.props.gap)}
               </View>
 
             </ScrollView>

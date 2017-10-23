@@ -1,24 +1,32 @@
 import React, { Component, PropTypes } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 
 export default class ColumnChartItem extends Component {
   render () {
     return (
-      <View style={[styles.bar, {height: this.props.value}]} />
+      <TouchableWithoutFeedback onPressIn={(evt) => this.props.onClick(evt)}>
+        <View ref='chartView' style={[styles.bar, {
+          width: this.props.defaultWidth,
+          height: this.props.value,
+          backgroundColor: this.props.primaryColor,
+          marginRight: this.props.defaultMargin}]} />
+      </TouchableWithoutFeedback>
     )
   }
 }
 
 const styles = StyleSheet.create({
   bar: {
-    flex: 1,
-    backgroundColor: 'red',
-    width: 15
+    justifyContent: 'flex-end'
   }
 })
 
 ColumnChartItem.propTypes = {
-  value: PropTypes.number
+  value: PropTypes.number,
+  onClick: PropTypes.func,
+  defaultWidth: PropTypes.number,
+  defaultMargin: PropTypes.number,
+  primaryColor: PropTypes.string
 }
 ColumnChartItem.defaultProps = {
   value: 0
