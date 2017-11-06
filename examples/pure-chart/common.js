@@ -2,62 +2,68 @@ import _ from 'lodash'
 import React from 'react'
 import {View, Text} from 'react-native'
 
-export const refineData = (dataProp, max, height, gap) => {
-  let data = []
-  let length = dataProp.length
-  let simpleTypeCount = 0
-  let objectTypeCount = 0
+const SINGLE_SERIES_WITH_NUMBERS = 0
+const SINGLE_SERIES_WITH_OBJECTS = 1
+const MULTI_SERIES = 2
 
-  for (let i = 0; i < length; i++) {
-    let maxClone = max
-
-    if (maxClone === 0) {
-      maxClone = 1
-    }
-    let dataObject = {}
-    if (typeof dataProp[i] === 'number') {
-      simpleTypeCount++
-      dataObject.ratioY = dataProp[i] / maxClone * height
-      dataObject.y = dataProp[i]
-      dataObject = {
-        gap: i * gap,
-        ratioY: dataProp[i] / maxClone * height,
-        y: dataProp[i]
-      }
-    } else if (typeof dataProp[i] === 'object') {
-      if (typeof dataProp[i].y === 'number' && dataProp[i].x) {
-        objectTypeCount++
-        dataObject = {
-          gap: i * gap,
-          ratioY: dataProp[i].y / maxClone * height,
-          x: dataProp[i].x,
-          y: dataProp[i].y
-        }
+function flattenData (data) {
+  let numberCount = 0
+  let objectWithYCount = 0
+  let multiSeriesCount = 0
+  let length = data.length
+  data.map((obj) => {
+    if (typeof obj === 'number') {
+      numberCount++
+    } else if (typeof obj === 'object') {
+      if (typeof obj.y === 'number') {
+        objectWithYCount++
+      } else if (Array.isArray(obj.data)) {
+        multiSeriesCount++
       }
     }
-    data.push(dataObject)
-  }
+  })
 
-  // validation
-  let isValidate = false
-  if (simpleTypeCount === length || objectTypeCount === length) {
-    isValidate = true
-  }
-
-  if (isValidate) {
-    return data.sort((a, b) => {
-      return a['gap'] - b['gap']
-      // return a[0] - b[0]
-    })
+  if (numberCount === length || objectWithYCount === length) {
+    return [{
+      seriesName: '',
+      data: data
+    }]
+  } else if (multiSeriesCount === length) {
+    return data
   } else {
-    return []
+    return [{
+      seriesName: '',
+      data: []
+    }]
   }
 }
 
-export const initData = (dataProp, height, gap) => {
+function getMaxValue (data) {
   let values = []
-  let sortedData, guideArray, max
-  if (dataProp.length === 0) {
+  data.map((value) => {
+    if (typeof value === 'number') {
+      values.push(value)
+    } else if (typeof value === 'object') {
+      if (typeof value.y === 'number') {
+        values.push(value.y)
+      } else if (Array.isArray(value.data)) {
+        value.data.map((v) => {
+          if (typeof value === 'number') {
+            values.push(v)
+          } else if (typeof value === 'object' && typeof value.y === 'number') {
+            values.push(value.y)
+          }
+        })
+      }
+    }
+  })
+  if (values.length === 0) return 0
+  return Math.max.apply(null, values)
+}
+
+export const initData = (dataProp, height, gap) => {
+  let guideArray, max, sortedData
+  if (!dataProp || !Array.isArray(dataProp) || dataProp.length === 0) {
     return {
       sortedData: [],
       max: 0,
@@ -65,17 +71,13 @@ export const initData = (dataProp, height, gap) => {
     }
   }
 
-  dataProp.map((value) => {
-    if (typeof value === 'number') {
-      values.push(value)
-    } else if (typeof value === 'object' && typeof value.y === 'number') {
-      values.push(value.y)
-    }
-  })
-  max = Math.max.apply(null, values)
-  sortedData = refineData(dataProp, max, height, gap)
+  max = getMaxValue(dataProp)
   guideArray = getGuideArray(max, height)
 
+  dataProp = flattenData(dataProp)
+
+  sortedData = refineData(dataProp, max, height, gap)
+  console.log('refineData2', dataProp, sortedData)
   return {
     sortedData: sortedData,
     max: max,
@@ -87,6 +89,70 @@ export const initData = (dataProp, height, gap) => {
     nowY: 0,
     guideArray: guideArray
   }
+}
+
+export const refineData = (flattenData, max, height, gap) => {
+  let result = []
+
+  flattenData.map((series) => {
+    let dataProp = series.data
+    let object = {
+      seriesName: series.seriesName
+    }
+    let data = []
+    let length = dataProp.length
+    let simpleTypeCount = 0
+    let objectTypeCount = 0
+
+    for (let i = 0; i < length; i++) {
+      let maxClone = max
+
+      if (maxClone === 0) {
+        maxClone = 1
+      }
+      let dataObject = {}
+      if (typeof dataProp[i] === 'number') {
+        simpleTypeCount++
+        dataObject.ratioY = dataProp[i] / maxClone * height
+        dataObject.y = dataProp[i]
+        dataObject = {
+          gap: i * gap,
+          ratioY: dataProp[i] / maxClone * height,
+          y: dataProp[i]
+        }
+      } else if (typeof dataProp[i] === 'object') {
+        if (typeof dataProp[i].y === 'number' && dataProp[i].x) {
+          objectTypeCount++
+          dataObject = {
+            gap: i * gap,
+            ratioY: dataProp[i].y / maxClone * height,
+            x: dataProp[i].x,
+            y: dataProp[i].y
+          }
+        }
+      }
+      data.push(dataObject)
+    }
+
+    // validation
+    let isValidate = false
+    if (simpleTypeCount === length || objectTypeCount === length) {
+      isValidate = true
+    }
+
+    if (isValidate) {
+      object.data = data.sort((a, b) => {
+        return a['gap'] - b['gap']
+        // return a[0] - b[0]
+      })
+    } else {
+      object.data = []
+    }
+
+    result.push(object)
+  })
+
+  return result
 }
 
 export const getGuideArray = (max, height) => {
