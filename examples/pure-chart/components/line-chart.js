@@ -231,6 +231,7 @@ class LineChart extends React.Component {
     return (
       this.state.sortedData.length > 0 ? (
         <View style={styles.wrapper}>
+
           <View style={styles.yAxisLabelsWrapper}>
             {drawYAxisLabels(this.state.guideArray, this.props.height + 20)}
 
