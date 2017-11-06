@@ -14,16 +14,28 @@ export const refineData = (dataProp, max, height, gap) => {
     if (maxClone === 0) {
       maxClone = 1
     }
-
+    let dataObject = {}
     if (typeof dataProp[i] === 'number') {
       simpleTypeCount++
-      data.push([i * gap, dataProp[i] / maxClone * height, dataProp[i]])
+      dataObject.ratioY = dataProp[i] / maxClone * height
+      dataObject.y = dataProp[i]
+      dataObject = {
+        gap: i * gap,
+        ratioY: dataProp[i] / maxClone * height,
+        y: dataProp[i]
+      }
     } else if (typeof dataProp[i] === 'object') {
       if (typeof dataProp[i].y === 'number' && dataProp[i].x) {
         objectTypeCount++
-        data.push([i * gap, dataProp[i].y / maxClone * height, dataProp[i].y, dataProp[i].x])
+        dataObject = {
+          gap: i * gap,
+          ratioY: dataProp[i].y / maxClone * height,
+          x: dataProp[i].x,
+          y: dataProp[i].y
+        }
       }
     }
+    data.push(dataObject)
   }
 
   // validation
@@ -33,7 +45,10 @@ export const refineData = (dataProp, max, height, gap) => {
   }
 
   if (isValidate) {
-    return data.sort((a, b) => { return a[0] - b[0] })
+    return data.sort((a, b) => {
+      return a['gap'] - b['gap']
+      // return a[0] - b[0]
+    })
   } else {
     return []
   }
@@ -131,7 +146,6 @@ export const drawYAxis = () => {
 }
 
 export const drawYAxisLabels = (arr, height) => {
-  console.log('v1', arr)
   return (
     <View style={{
       width: 33,
@@ -219,15 +233,22 @@ export const drawXAxisLabels = (sortedData, gap) => {
       height: 10
     }}>
       {sortedData.map((data, i) => {
-        if (data[3] && i % 2 === 1) {
+        // if (data[3] && i % 2 === 1) {
+        if (data['x'] && i % 2 === 1) {
           return (
             <View key={'label' + i} style={{
               position: 'absolute',
-              left: data[0] - gap / 2,
+              // left: data[0] - gap / 2,
+              left: data['gap'] - gap / 2,
               width: gap,
               alignItems: 'center'
             }}>
-              <Text style={{fontSize: 9}}>{data[3]}</Text>
+              <Text style={{fontSize: 9}}>
+                {
+                  // data[3]
+                  data['x']
+                }
+              </Text>
             </View>
           )
         } else {

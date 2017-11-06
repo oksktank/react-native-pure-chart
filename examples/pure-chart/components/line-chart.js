@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableWithoutFeedback, Text, Animated, Easing, ScrollView } from 'react-native'
+import { View, TouchableWithoutFeedback, Text, Animated, Easing, ScrollView, StyleSheet } from 'react-native'
 import {initData, drawYAxis, drawGuideLine, drawYAxisLabels, numberWithCommas, drawXAxis, drawXAxisLabels} from '../common'
 
 class LineChart extends React.Component {
@@ -58,19 +58,19 @@ class LineChart extends React.Component {
 
   drawCooridinate (index, start, end, backgroundColor = '#FFFFFF00', isBlank = false, lastCoordinate = false) {
     let key = 'line' + index
-    let dx = end[0] - start[0]
-    let dy = end[1] - start[1]
+    let dx = end.gap - start.gap
+    let dy = end.ratioY - start.ratioY
     let size = Math.sqrt(dx * dx + dy * dy)
     let angleRad = -1 * Math.atan2(dy, dx)
     let height
     let top
     let topMargin = 20
 
-    if (start[1] > end[1]) {
-      height = start[1]
+    if (start.ratioY > end.ratioY) {
+      height = start.ratioY
       top = -1 * size
     } else {
-      height = end[1]
+      height = end.ratioY
       top = -1 * (size - Math.abs(dy))
     }
 
@@ -80,40 +80,29 @@ class LineChart extends React.Component {
         justifyContent: 'flex-end'
       }}>
 
-        <View style={{
+        <View style={StyleSheet.flatten([{
           width: dx,
           height: height,
-          marginTop: topMargin,
-          overflow: 'hidden',
-          justifyContent: 'flex-start',
-          alignContent: 'flex-start'
-        }}>
-          <View style={{
+          marginTop: topMargin
+        }, styles.coordinateWrapper])}>
+          <View style={StyleSheet.flatten([{
             top: top,
             width: size,
             height: size,
             borderColor: isBlank ? backgroundColor : this.props.primaryColor,
             borderTopWidth: 1,
-            transform: this.getTransform(angleRad, size),
-
-            overflow: 'hidden',
-            justifyContent: 'flex-start'}} />
-          <View style={{
-            position: 'absolute',
+            transform: this.getTransform(angleRad, size)
+          }, styles.lineBox])} />
+          <View style={StyleSheet.flatten([styles.absolute, {
             height: height - Math.abs(dy) - 2,
-            width: '100%',
             backgroundColor: lastCoordinate ? '#FFFFFF00' : backgroundColor,
             marginTop: Math.abs(dy) + 2
-          }} />
+          }])} />
         </View>
         {!lastCoordinate ? (
-          <View style={{
-            position: 'absolute',
-            height: '100%',
-            width: dx,
-            borderRightColor: '#e0e0e050',
-            borderRightWidth: 1
-          }} />
+          <View style={StyleSheet.flatten([styles.guideLine, {
+            width: dx
+          }])} />
         ) : null}
 
         <TouchableWithoutFeedback onPress={() => {
@@ -126,12 +115,10 @@ class LineChart extends React.Component {
             }
           })
         }}>
-          <View style={{
-            position: 'absolute',
-            height: '100%',
+          <View style={StyleSheet.flatten([styles.absolute, {
             width: dx,
             marginLeft: -1 * dx / 2
-          }} />
+          }])} />
         </TouchableWithoutFeedback>
 
       </View>
@@ -150,17 +137,17 @@ class LineChart extends React.Component {
       <TouchableWithoutFeedback key={key} onPress={() => {
         this.setState({selectedIndex: index})
       }}>
-        <View style={{
+        <View style={StyleSheet.flatten([styles.pointWrapper, {
           width: size,
           height: size,
-          borderRadius: 10,
-          left: point[0] - size / 2,
-          bottom: point[1] - size / 2,
-          position: 'absolute',
+
+          left: point.gap - size / 2,
+          bottom: point.ratioY - size / 2,
+
           borderColor: color,
-          backgroundColor: color,
-          borderWidth: 1
-        }} />
+          backgroundColor: color
+
+        }])} />
       </TouchableWithoutFeedback>
     )
   }
@@ -172,9 +159,10 @@ class LineChart extends React.Component {
     for (let i = 0; i < dataLength - 1; i++) {
       result.push(this.drawCooridinate(i, data[i], data[i + 1]))
     }
-    let lastData = data[dataLength - 1].slice(0)
-    let lastCoordinate = data[dataLength - 1].slice(0)
-    lastCoordinate[0] = lastCoordinate[0] + this.props.gap
+
+    let lastData = Object.assign({}, data[dataLength - 1])
+    let lastCoordinate = Object.assign({}, data[dataLength - 1])
+    lastCoordinate.gap = lastCoordinate.gap + this.props.gap
     result.push(this.drawCooridinate((dataLength), lastData, lastCoordinate, '#FFFFFF', true, true))
 
     if (dataLength > 1) {
@@ -198,49 +186,37 @@ class LineChart extends React.Component {
         return null
       }
       let reverse = true
-      let bottom = this.state.sortedData[index][1]
+      let bottom = this.state.sortedData[index].ratioY
       let width = 200
-      let left = this.state.sortedData[index][0] - width / 2 + 1
+      let left = this.state.sortedData[index].gap - width / 2 + 1
       if (bottom > this.props.height * 2 / 3) {
         reverse = false
       }
 
       return (
-        <View style={{
-          position: 'absolute',
-          height: '100%',
+        <View style={StyleSheet.flatten([styles.selectedWrapper, {
           width: width,
           left: left,
-          alignItems: 'center',
           justifyContent: reverse ? 'flex-start' : 'flex-end'
-        }}>
-          <View style={{
-            position: 'absolute',
-            width: 1,
-            height: '100%',
-            backgroundColor: this.props.selectedColor }} />
-          <View style={Object.assign({
-            backgroundColor: '#FFFFFF',
-            borderRadius: 5,
-            borderColor: '#AAAAAA',
-            borderWidth: 1,
-            height: this.state.sortedData[index][3] ? 60 : 30,
-            padding: 3,
-            alignItems: 'center',
-            justifyContent: 'center'
+        }])}>
+          <View style={StyleSheet.flatten([styles.selectedLine, {
+            backgroundColor: this.props.selectedColor
+          }])} />
+          <View style={StyleSheet.flatten([styles.selectedBox, {
+            height: this.state.sortedData[index].x ? 60 : 30
           }, reverse ? {
-            marginTop: this.state.sortedData[index][3] ? this.props.height - bottom - 45 : this.props.height - bottom - 15
+            marginTop: this.state.sortedData[index].x ? this.props.height - bottom - 45 : this.props.height - bottom - 15
           } : {
-            marginBottom: this.state.sortedData[index][3] ? bottom - 65 : bottom - 35
+            marginBottom: this.state.sortedData[index].x ? bottom - 65 : bottom - 35
           }, index === 0 ? {
             marginLeft: width / 2 - 10
           } : index === this.state.sortedData.length - 1 ? {
             marginRight: width / 2 - 20
-          } : {})}>
-            {this.state.sortedData[index][3] ? (
-              <Text style={{fontWeight: 'bold'}}>{this.state.sortedData[index][3]}</Text>
+          } : {}])}>
+            {this.state.sortedData[index].x ? (
+              <Text style={styles.bold}>{this.state.sortedData[index].x}</Text>
             ) : null}
-            <Text>{numberWithCommas(this.state.sortedData[index][2], false)}</Text>
+            <Text>{numberWithCommas(this.state.sortedData[index].y, false)}</Text>
           </View>
 
         </View>
@@ -254,23 +230,26 @@ class LineChart extends React.Component {
     let {fadeAnim} = this.state
     return (
       this.state.sortedData.length > 0 ? (
-        <View style={{flexDirection: 'row'}}>
-          <View style={{
-            paddingRight: 5
-          }}>
+        <View style={styles.wrapper}>
+          <View style={styles.yAxisLabelsWrapper}>
             {drawYAxisLabels(this.state.guideArray, this.props.height + 20)}
 
           </View>
 
-          <View style={{ paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}>
+          <View>
             <ScrollView horizontal>
               <View>
 
-                <View ref='chartView' style={{flexDirection: 'row', alignItems: 'flex-end', margin: 0, paddingRight: 0}}>
+                <View ref='chartView' style={styles.chartViewWrapper}>
 
                   {drawYAxis()}
                   {drawGuideLine(this.state.guideArray)}
-                  <Animated.View style={{ transform: [{scaleY: fadeAnim}], flexDirection: 'row', alignItems: 'flex-end', height: '100%' }} >
+                  <Animated.View style={{
+                    transform: [{scaleY: fadeAnim}],
+                    flexDirection: 'row',
+                    alignItems: 'flex-end',
+                    height: '100%'
+                  }} >
                     {this.drawCoordinates(this.state.sortedData)}
                   </Animated.View>
                   {this.drawSelected(this.state.selectedIndex)}
@@ -301,5 +280,64 @@ LineChart.defaultProps = {
 
   }
 }
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flexDirection: 'row'
+  },
+  yAxisLabelsWrapper: {
+    paddingRight: 5
+  },
+  chartViewWrapper: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    margin: 0,
+    paddingRight: 0
+  },
+  coordinateWrapper: {
+    overflow: 'hidden',
+    justifyContent: 'flex-start',
+    alignContent: 'flex-start'
+  },
+  lineBox: {
+    overflow: 'hidden',
+    justifyContent: 'flex-start'
+  },
+  guideLine: {
+    position: 'absolute',
+    height: '100%',
+    borderRightColor: '#e0e0e050',
+    borderRightWidth: 1
+  },
+  absolute: {
+    position: 'absolute',
+    width: '100%'
+  },
+  pointWrapper: {
+    position: 'absolute',
+    borderRadius: 10,
+    borderWidth: 1
+  },
+  selectedWrapper: {
+    position: 'absolute',
+    height: '100%',
+    alignItems: 'center'
+  },
+  selectedLine: {
+    position: 'absolute',
+    width: 1,
+    height: '100%'
+  },
+  selectedBox: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    borderColor: '#AAAAAA',
+    borderWidth: 1,
+    padding: 3,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  bold: {fontWeight: 'bold'}
+})
 
 export default LineChart
