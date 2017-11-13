@@ -40,6 +40,7 @@ function flattenData (data) {
 
 function getMaxValue (data) {
   let values = []
+  
   data.map((value) => {
     if (typeof value === 'number') {
       values.push(value)
@@ -48,16 +49,20 @@ function getMaxValue (data) {
         values.push(value.y)
       } else if (Array.isArray(value.data)) {
         value.data.map((v) => {
-          if (typeof value === 'number') {
+          if (typeof v === 'number') {
             values.push(v)
-          } else if (typeof value === 'object' && typeof value.y === 'number') {
-            values.push(value.y)
+          } else if (typeof v === 'object' && typeof v.y === 'number') {
+            values.push(v.y)
           }
         })
       }
     }
   })
+
+  console.log("MAXVALUES", data,values)
+
   if (values.length === 0) return 0
+  
   return Math.max.apply(null, values)
 }
 
@@ -103,7 +108,7 @@ export const refineData = (flattenData, max, height, gap) => {
     let length = dataProp.length
     let simpleTypeCount = 0
     let objectTypeCount = 0
-
+    console.log("REFINE", max, height)
     for (let i = 0; i < length; i++) {
       let maxClone = max
 
@@ -111,6 +116,7 @@ export const refineData = (flattenData, max, height, gap) => {
         maxClone = 1
       }
       let dataObject = {}
+
       if (typeof dataProp[i] === 'number') {
         simpleTypeCount++
         dataObject.ratioY = dataProp[i] / maxClone * height

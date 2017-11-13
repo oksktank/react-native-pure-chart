@@ -231,7 +231,6 @@ class LineChart extends React.Component {
     return (
       this.state.sortedData.length > 0 ? (
         <View style={styles.wrapper}>
-
           <View style={styles.yAxisLabelsWrapper}>
             {drawYAxisLabels(this.state.guideArray, this.props.height + 20)}
 
@@ -251,14 +250,14 @@ class LineChart extends React.Component {
                     alignItems: 'flex-end',
                     height: '100%'
                   }} >
-                    {this.drawCoordinates(this.state.sortedData)}
+                    {this.drawCoordinates(this.state.sortedData[0].data)}
                   </Animated.View>
                   {this.drawSelected(this.state.selectedIndex)}
 
                 </View>
 
                 {drawXAxis()}
-                {drawXAxisLabels(this.state.sortedData, this.props.gap)}
+                {drawXAxisLabels(this.state.sortedData[0].data, this.props.gap)}
               </View>
 
             </ScrollView>
