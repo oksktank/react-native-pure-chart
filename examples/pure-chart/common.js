@@ -40,7 +40,7 @@ function flattenData (data) {
 
 function getMaxValue (data) {
   let values = []
-  
+
   data.map((value) => {
     if (typeof value === 'number') {
       values.push(value)
@@ -59,10 +59,10 @@ function getMaxValue (data) {
     }
   })
 
-  console.log("MAXVALUES", data,values)
+  console.log('MAXVALUES', data, values)
 
   if (values.length === 0) return 0
-  
+
   return Math.max.apply(null, values)
 }
 
@@ -102,13 +102,14 @@ export const refineData = (flattenData, max, height, gap) => {
   flattenData.map((series) => {
     let dataProp = series.data
     let object = {
-      seriesName: series.seriesName
+      seriesName: series.seriesName,
+      seriesColor: series.color
     }
     let data = []
     let length = dataProp.length
     let simpleTypeCount = 0
     let objectTypeCount = 0
-    console.log("REFINE", max, height)
+
     for (let i = 0; i < length; i++) {
       let maxClone = max
 

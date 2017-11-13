@@ -21,7 +21,7 @@ class LineChart extends React.Component {
     }
 
     this.drawCoordinates = this.drawCoordinates.bind(this)
-    this.drawCooridinate = this.drawCooridinate.bind(this)
+    this.drawCoordinate = this.drawCoordinate.bind(this)
     this.drawSelected = this.drawSelected.bind(this)
   }
 
@@ -56,7 +56,7 @@ class LineChart extends React.Component {
     return [ {translateX: (-1 * x) - width / 2}, {translateY: (-1 * y) + width / 2}, { rotate: rad + 'rad' } ]
   }
 
-  drawCooridinate (index, start, end, backgroundColor = '#FFFFFF00', isBlank = false, lastCoordinate = false) {
+  drawCoordinate (index, start, end, backgroundColor, lineStyle, isBlank, lastCoordinate, seriesIndex) {
     let key = 'line' + index
     let dx = end.gap - start.gap
     let dy = end.ratioY - start.ratioY
@@ -92,14 +92,14 @@ class LineChart extends React.Component {
             borderColor: isBlank ? backgroundColor : this.props.primaryColor,
             borderTopWidth: 1,
             transform: this.getTransform(angleRad, size)
-          }, styles.lineBox])} />
+          }, styles.lineBox, lineStyle])} />
           <View style={StyleSheet.flatten([styles.absolute, {
             height: height - Math.abs(dy) - 2,
             backgroundColor: lastCoordinate ? '#FFFFFF00' : backgroundColor,
             marginTop: Math.abs(dy) + 2
           }])} />
         </View>
-        {!lastCoordinate ? (
+        {!lastCoordinate && seriesIndex === 0 ? (
           <View style={StyleSheet.flatten([styles.guideLine, {
             width: dx
           }])} />
@@ -115,20 +115,22 @@ class LineChart extends React.Component {
             }
           })
         }}>
-          <View style={StyleSheet.flatten([styles.absolute, {
+          <View style={{
             width: dx,
+            height: '100%',
+            position: 'absolute',
             marginLeft: -1 * dx / 2
-          }])} />
+          }} />
         </TouchableWithoutFeedback>
 
       </View>
     )
   }
 
-  drawPoint (index, point) {
+  drawPoint (index, point, seriesColor) {
     let key = 'point' + index
     let size = 8
-    let color = this.props.primaryColor
+    let color = !seriesColor ? this.props.primaryColor : seriesColor
     if (this.state.selectedIndex === index) {
       color = this.props.selectedColor
     }
@@ -152,25 +154,27 @@ class LineChart extends React.Component {
     )
   }
 
-  drawCoordinates (data) {
+  drawCoordinates (data, seriesColor, seriesIndex) {
     let result = []
-
+    let lineStyle = {
+      borderColor: !seriesColor ? this.props.primaryColor : seriesColor
+    }
     let dataLength = data.length
     for (let i = 0; i < dataLength - 1; i++) {
-      result.push(this.drawCooridinate(i, data[i], data[i + 1]))
+      result.push(this.drawCoordinate(i, data[i], data[i + 1], '#FFFFFF00', lineStyle, false, false, seriesIndex))
     }
 
     let lastData = Object.assign({}, data[dataLength - 1])
     let lastCoordinate = Object.assign({}, data[dataLength - 1])
     lastCoordinate.gap = lastCoordinate.gap + this.props.gap
-    result.push(this.drawCooridinate((dataLength), lastData, lastCoordinate, '#FFFFFF', true, true))
+    result.push(this.drawCoordinate((dataLength), lastData, lastCoordinate, '#FFFFFF', {}, true, true, seriesIndex))
 
     if (dataLength > 1) {
-      result.push(this.drawPoint(0, data[0]))
+      result.push(this.drawPoint(0, data[0], seriesColor))
     }
 
     for (let i = 0; i < dataLength - 1; i++) {
-      result.push(this.drawPoint((i + 1), data[i + 1]))
+      result.push(this.drawPoint((i + 1), data[i + 1], seriesColor))
     }
 
     return result
@@ -181,14 +185,17 @@ class LineChart extends React.Component {
   }
 
   drawSelected (index) {
+    if (this.state.sortedData.length === 0) return null
+    let data = this.state.sortedData[0].data
+    let dataObject = data[index]
     if (typeof (this.state.selectedIndex) === 'number' && this.state.selectedIndex >= 0) {
-      if (!this.state.sortedData[index]) {
+      if (!dataObject) {
         return null
       }
       let reverse = true
-      let bottom = this.state.sortedData[index].ratioY
+      let bottom = dataObject.ratioY
       let width = 200
-      let left = this.state.sortedData[index].gap - width / 2 + 1
+      let left = dataObject.gap - width / 2 + 1
       if (bottom > this.props.height * 2 / 3) {
         reverse = false
       }
@@ -202,21 +209,39 @@ class LineChart extends React.Component {
           <View style={StyleSheet.flatten([styles.selectedLine, {
             backgroundColor: this.props.selectedColor
           }])} />
+
           <View style={StyleSheet.flatten([styles.selectedBox, {
-            height: this.state.sortedData[index].x ? 60 : 30
+
           }, reverse ? {
-            marginTop: this.state.sortedData[index].x ? this.props.height - bottom - 45 : this.props.height - bottom - 15
+
           } : {
-            marginBottom: this.state.sortedData[index].x ? bottom - 65 : bottom - 35
+
           }, index === 0 ? {
             marginLeft: width / 2 - 10
-          } : index === this.state.sortedData.length - 1 ? {
+          } : index === data.length - 1 ? {
             marginRight: width / 2 - 20
           } : {}])}>
-            {this.state.sortedData[index].x ? (
-              <Text style={styles.bold}>{this.state.sortedData[index].x}</Text>
-            ) : null}
-            <Text>{numberWithCommas(this.state.sortedData[index].y, false)}</Text>
+            {this.state.sortedData.map((series) => {
+              let dataObject = series.data[this.state.selectedIndex]
+              return (
+                <View key={series.seriesName}>
+                  {dataObject.x ? (
+                    <Text style={styles.tooltipTitle}>{dataObject.x}</Text>
+                ) : null}
+                  <View style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
+                    <View style={{
+                      width: 10,
+                      height: 5,
+                      marginRight: 3,
+                      borderRadius: 2,
+                      backgroundColor: !series.seriesColor ? this.props.primaryColor : series.seriesColor
+                    }} />
+                    <Text style={styles.tooltipValue}>{numberWithCommas(dataObject.y, false)}</Text>
+                  </View>
+                </View>
+              )
+            })}
+
           </View>
 
         </View>
@@ -244,14 +269,19 @@ class LineChart extends React.Component {
 
                   {drawYAxis()}
                   {drawGuideLine(this.state.guideArray)}
-                  <Animated.View style={{
-                    transform: [{scaleY: fadeAnim}],
-                    flexDirection: 'row',
-                    alignItems: 'flex-end',
-                    height: '100%'
-                  }} >
-                    {this.drawCoordinates(this.state.sortedData[0].data)}
-                  </Animated.View>
+                  {this.state.sortedData.map((obj, index) => {
+                    return (
+                      <Animated.View key={'animated_' + index} style={{
+                        transform: [{scaleY: fadeAnim}],
+                        flexDirection: 'row',
+                        alignItems: 'flex-end',
+                        height: '100%',
+                        position: index === 0 ? 'relative' : 'absolute'
+                      }} >
+                        {this.drawCoordinates(obj.data, obj.seriesColor, index)}
+                      </Animated.View>
+                    )
+                  })}
                   {this.drawSelected(this.state.selectedIndex)}
 
                 </View>
@@ -283,7 +313,8 @@ LineChart.defaultProps = {
 
 const styles = StyleSheet.create({
   wrapper: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF'
   },
   yAxisLabelsWrapper: {
     paddingRight: 5
@@ -334,10 +365,10 @@ const styles = StyleSheet.create({
     borderColor: '#AAAAAA',
     borderWidth: 1,
     padding: 3,
-    alignItems: 'center',
     justifyContent: 'center'
   },
-  bold: {fontWeight: 'bold'}
+  tooltipTitle: {fontSize: 10},
+  tooltipValue: {fontWeight: 'bold', fontSize: 15}
 })
 
 export default LineChart
