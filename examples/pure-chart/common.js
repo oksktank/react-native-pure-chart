@@ -2,47 +2,72 @@ import _ from 'lodash'
 import React from 'react'
 import {View, Text} from 'react-native'
 
-export const refineData = (dataProp, max, height, gap) => {
-  let data = []
-  let length = dataProp.length
-  let simpleTypeCount = 0
-  let objectTypeCount = 0
+const SINGLE_SERIES_WITH_NUMBERS = 0
+const SINGLE_SERIES_WITH_OBJECTS = 1
+const MULTI_SERIES = 2
 
-  for (let i = 0; i < length; i++) {
-    let maxClone = max
-
-    if (maxClone === 0) {
-      maxClone = 1
-    }
-
-    if (typeof dataProp[i] === 'number') {
-      simpleTypeCount++
-      data.push([i * gap, dataProp[i] / maxClone * height, dataProp[i]])
-    } else if (typeof dataProp[i] === 'object') {
-      if (typeof dataProp[i].y === 'number' && dataProp[i].x) {
-        objectTypeCount++
-        data.push([i * gap, dataProp[i].y / maxClone * height, dataProp[i].y, dataProp[i].x])
+function flattenData (data) {
+  let numberCount = 0
+  let objectWithYCount = 0
+  let multiSeriesCount = 0
+  let length = data.length
+  data.map((obj) => {
+    if (typeof obj === 'number') {
+      numberCount++
+    } else if (typeof obj === 'object') {
+      if (typeof obj.y === 'number') {
+        objectWithYCount++
+      } else if (Array.isArray(obj.data)) {
+        multiSeriesCount++
       }
     }
-  }
+  })
 
-  // validation
-  let isValidate = false
-  if (simpleTypeCount === length || objectTypeCount === length) {
-    isValidate = true
-  }
-
-  if (isValidate) {
-    return data.sort((a, b) => { return a[0] - b[0] })
+  if (numberCount === length || objectWithYCount === length) {
+    return [{
+      seriesName: '',
+      data: data
+    }]
+  } else if (multiSeriesCount === length) {
+    return data
   } else {
-    return []
+    return [{
+      seriesName: '',
+      data: []
+    }]
   }
 }
 
-export const initData = (dataProp, height, gap) => {
+function getMaxValue (data) {
   let values = []
-  let sortedData, guideArray, max
-  if (dataProp.length === 0) {
+
+  data.map((value) => {
+    if (typeof value === 'number') {
+      values.push(value)
+    } else if (typeof value === 'object') {
+      if (typeof value.y === 'number') {
+        values.push(value.y)
+      } else if (Array.isArray(value.data)) {
+        value.data.map((v) => {
+          if (typeof v === 'number') {
+            values.push(v)
+          } else if (typeof v === 'object' && typeof v.y === 'number') {
+            values.push(v.y)
+          }
+        })
+      }
+    }
+  })
+
+
+  if (values.length === 0) return 0
+
+  return Math.max.apply(null, values)
+}
+
+export const initData = (dataProp, height, gap) => {
+  let guideArray, max, sortedData
+  if (!dataProp || !Array.isArray(dataProp) || dataProp.length === 0) {
     return {
       sortedData: [],
       max: 0,
@@ -50,17 +75,12 @@ export const initData = (dataProp, height, gap) => {
     }
   }
 
-  dataProp.map((value) => {
-    if (typeof value === 'number') {
-      values.push(value)
-    } else if (typeof value === 'object' && typeof value.y === 'number') {
-      values.push(value.y)
-    }
-  })
-  max = Math.max.apply(null, values)
-  sortedData = refineData(dataProp, max, height, gap)
+  max = getMaxValue(dataProp)
   guideArray = getGuideArray(max, height)
 
+  dataProp = flattenData(dataProp)
+
+  sortedData = refineData(dataProp, max, height, gap)
   return {
     sortedData: sortedData,
     max: max,
@@ -74,7 +94,74 @@ export const initData = (dataProp, height, gap) => {
   }
 }
 
+export const refineData = (flattenData, max, height, gap) => {
+  let result = []
+
+  flattenData.map((series) => {
+    let dataProp = series.data
+    let object = {
+      seriesName: series.seriesName,
+      seriesColor: series.color
+    }
+    let data = []
+    let length = dataProp.length
+    let simpleTypeCount = 0
+    let objectTypeCount = 0
+
+    for (let i = 0; i < length; i++) {
+      let maxClone = max
+
+      if (maxClone === 0) {
+        maxClone = 1
+      }
+      let dataObject = {}
+
+      if (typeof dataProp[i] === 'number') {
+        simpleTypeCount++
+        dataObject.ratioY = dataProp[i] / maxClone * height
+        dataObject.y = dataProp[i]
+        dataObject = {
+          gap: i * gap,
+          ratioY: dataProp[i] / maxClone * height,
+          y: dataProp[i]
+        }
+      } else if (typeof dataProp[i] === 'object') {
+        if (typeof dataProp[i].y === 'number' && dataProp[i].x) {
+          objectTypeCount++
+          dataObject = {
+            gap: i * gap,
+            ratioY: dataProp[i].y / maxClone * height,
+            x: dataProp[i].x,
+            y: dataProp[i].y
+          }
+        }
+      }
+      data.push(dataObject)
+    }
+
+    // validation
+    let isValidate = false
+    if (simpleTypeCount === length || objectTypeCount === length) {
+      isValidate = true
+    }
+
+    if (isValidate) {
+      object.data = data.sort((a, b) => {
+        return a['gap'] - b['gap']
+        // return a[0] - b[0]
+      })
+    } else {
+      object.data = []
+    }
+
+    result.push(object)
+  })
+
+  return result
+}
+
 export const getGuideArray = (max, height) => {
+  console.log('getGuideArray', max, height)
   let x = parseInt(max)
   let arr = []
   let length
@@ -86,15 +173,15 @@ export const getGuideArray = (max, height) => {
   } else if (x >= 1000 && x < 1000000) {
     postfix = 'K'
     x = Math.round(x / 100)
-    temp = 10
+    temp = 1000
   } else if (x >= 1000000 && x < 1000000000) {
     postfix = 'M'
     x = Math.round(x / 100000)
-    temp = 10000
+    temp = 1000000
   } else {
     postfix = 'B'
     x = Math.round(x / 100000000)
-    temp = 10000000
+    temp = 1000000000
   }
   length = x.toString().length
 
@@ -108,10 +195,13 @@ export const getGuideArray = (max, height) => {
   } else {
     x = 10 * x / first
   }
+  
   for (let i = 1; i < 6; i++) {
     let v = x / 5 * i
+    console.log(v, temp, max, height)
     arr.push([v + postfix, v * temp / max * height])
   }
+  console.log('arr', arr)
 
   return arr
 }
@@ -131,7 +221,6 @@ export const drawYAxis = () => {
 }
 
 export const drawYAxisLabels = (arr, height) => {
-  console.log('v1', arr)
   return (
     <View style={{
       width: 33,
@@ -219,15 +308,22 @@ export const drawXAxisLabels = (sortedData, gap) => {
       height: 10
     }}>
       {sortedData.map((data, i) => {
-        if (data[3] && i % 2 === 1) {
+        // if (data[3] && i % 2 === 1) {
+        if (data['x'] && i % 2 === 1) {
           return (
             <View key={'label' + i} style={{
               position: 'absolute',
-              left: data[0] - gap / 2,
+              // left: data[0] - gap / 2,
+              left: data['gap'] - gap / 2,
               width: gap,
               alignItems: 'center'
             }}>
-              <Text style={{fontSize: 9}}>{data[3]}</Text>
+              <Text style={{fontSize: 9}}>
+                {
+                  // data[3]
+                  data['x']
+                }
+              </Text>
             </View>
           )
         } else {
