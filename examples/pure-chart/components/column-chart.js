@@ -33,8 +33,8 @@ export default class ColumnChart extends Component {
   }
 
   componentDidMount () {
-    Animated.timing(this.state.fadeAnim, { 
-      toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true 
+    Animated.timing(this.state.fadeAnim, {
+      toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true
     }).start()
   }
 
@@ -42,12 +42,12 @@ export default class ColumnChart extends Component {
     let seriesArray = this.state.sortedData
     let seriesCount = seriesArray.length
     let renderColumns = []
-    if(seriesCount > 0) {
+    if (seriesCount > 0) {
       let standardSeries = seriesArray[0]
       let dataCount = standardSeries.data.length
-      for(let i = 0; i < dataCount; i++) {
+      for (let i = 0; i < dataCount; i++) {
         let values = []
-        for(let seriesIndex = 0; seriesIndex < seriesCount; seriesIndex++) {
+        for (let seriesIndex = 0; seriesIndex < seriesCount; seriesIndex++) {
           values.push(seriesArray[seriesIndex].data[i])
         }
         renderColumns.push(
@@ -76,12 +76,12 @@ export default class ColumnChart extends Component {
           primaryColor={this.state.selectedIndex === i ? 'red' : this.props.primaryColor}
           onClick={(evt) => this.handleClick(evt, i)} />
       )
-    })*/
-    //return <Text>Hello world</Text>
+    }) */
+    // return <Text>Hello world</Text>
   }
 
   handleClick (event, index) {
-    console.log("click!!")
+    console.log('click!!')
     this.setState({
       selectedIndex: index
     })
@@ -149,7 +149,7 @@ export default class ColumnChart extends Component {
   render () {
     let {fadeAnim} = this.state
     if (this.state.sortedData && this.state.sortedData.length === 0) return null
-    
+
     return (
       <View style={{flexDirection: 'row'}}>
         <View style={{paddingRight: 5}}>
@@ -167,7 +167,7 @@ export default class ColumnChart extends Component {
               <View style={{
                 marginLeft: this.props.defaultColumnWidth / 2
               }}>
-              
+
                 {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap)}
               </View>
             </View>
