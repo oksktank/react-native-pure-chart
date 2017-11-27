@@ -197,8 +197,10 @@ class LineChart extends React.Component {
       let bottom = dataObject.ratioY
 
       let left = dataObject.gap
+      let gap = 0
       if (index === data.length - 1) {
         left = data[index - 1].gap
+        gap = dataObject.gap - left
       }
       if (bottom > this.props.height * 2 / 3) {
         reverse = false
@@ -207,10 +209,11 @@ class LineChart extends React.Component {
       return (
         <View style={StyleSheet.flatten([styles.selectedWrapper, {
           left: left,
-          justifyContent: reverse ? 'flex-start' : 'flex-end'
+          justifyContent: 'center'
         }])}>
           <View style={StyleSheet.flatten([styles.selectedLine, {
-            backgroundColor: this.props.selectedColor
+            backgroundColor: this.props.selectedColor,
+            marginLeft: gap
           }])} />
 
           <View style={StyleSheet.flatten([styles.selectedBox])}>
@@ -357,8 +360,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: '#AAAAAA',
     borderWidth: 1,
+    position: 'absolute',
     padding: 3,
-    marginLeft: 10,
+    marginLeft: 5,
     justifyContent: 'center'
   },
   tooltipTitle: {fontSize: 10},
