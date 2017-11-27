@@ -104,24 +104,25 @@ class LineChart extends React.Component {
             width: dx
           }])} />
         ) : null}
-
-        <TouchableWithoutFeedback onPress={() => {
-          let selectedIndex = lastCoordinate ? index - 1 : index
-          this.setState({
-            selectedIndex: selectedIndex
-          }, () => {
-            if (typeof this.props.onPointClick === 'function') {
-              this.props.onPointClick()
-            }
-          })
-        }}>
-          <View style={{
-            width: dx,
-            height: '100%',
-            position: 'absolute',
-            marginLeft: -1 * dx / 2
-          }} />
-        </TouchableWithoutFeedback>
+        {seriesIndex === this.state.sortedData.length - 1 && (
+          <TouchableWithoutFeedback onPress={() => {
+            let selectedIndex = lastCoordinate ? index - 1 : index
+            this.setState({
+              selectedIndex: selectedIndex
+            }, () => {
+              if (typeof this.props.onPointClick === 'function') {
+                this.props.onPointClick()
+              }
+            })
+          }}>
+            <View style={{
+              width: dx,
+              height: '100%',
+              position: 'absolute',
+              marginLeft: -1 * dx / 2
+            }} />
+          </TouchableWithoutFeedback>
+        )}
 
       </View>
     )
@@ -194,15 +195,17 @@ class LineChart extends React.Component {
       }
       let reverse = true
       let bottom = dataObject.ratioY
-      let width = 200
-      let left = dataObject.gap - width / 2 + 1
+
+      let left = dataObject.gap
+      if (index === data.length - 1) {
+        left = data[index - 1].gap
+      }
       if (bottom > this.props.height * 2 / 3) {
         reverse = false
       }
 
       return (
         <View style={StyleSheet.flatten([styles.selectedWrapper, {
-          width: width,
           left: left,
           justifyContent: reverse ? 'flex-start' : 'flex-end'
         }])}>
@@ -210,17 +213,7 @@ class LineChart extends React.Component {
             backgroundColor: this.props.selectedColor
           }])} />
 
-          <View style={StyleSheet.flatten([styles.selectedBox, {
-
-          }, reverse ? {
-
-          } : {
-
-          }, index === 0 ? {
-            marginLeft: width / 2 - 10
-          } : index === data.length - 1 ? {
-            marginRight: width / 2 - 20
-          } : {}])}>
+          <View style={StyleSheet.flatten([styles.selectedBox])}>
             {this.state.sortedData.map((series) => {
               let dataObject = series.data[this.state.selectedIndex]
               return (
@@ -352,7 +345,7 @@ const styles = StyleSheet.create({
   selectedWrapper: {
     position: 'absolute',
     height: '100%',
-    alignItems: 'center'
+    alignItems: 'flex-start'
   },
   selectedLine: {
     position: 'absolute',
@@ -365,6 +358,7 @@ const styles = StyleSheet.create({
     borderColor: '#AAAAAA',
     borderWidth: 1,
     padding: 3,
+    marginLeft: 10,
     justifyContent: 'center'
   },
   tooltipTitle: {fontSize: 10},

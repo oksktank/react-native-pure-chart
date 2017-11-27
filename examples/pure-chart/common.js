@@ -59,7 +59,6 @@ function getMaxValue (data) {
     }
   })
 
-  console.log('MAXVALUES', data, values)
 
   if (values.length === 0) return 0
 
@@ -82,7 +81,6 @@ export const initData = (dataProp, height, gap) => {
   dataProp = flattenData(dataProp)
 
   sortedData = refineData(dataProp, max, height, gap)
-  console.log('refineData2', dataProp, sortedData)
   return {
     sortedData: sortedData,
     max: max,
@@ -163,6 +161,7 @@ export const refineData = (flattenData, max, height, gap) => {
 }
 
 export const getGuideArray = (max, height) => {
+  console.log('getGuideArray', max, height)
   let x = parseInt(max)
   let arr = []
   let length
@@ -174,15 +173,15 @@ export const getGuideArray = (max, height) => {
   } else if (x >= 1000 && x < 1000000) {
     postfix = 'K'
     x = Math.round(x / 100)
-    temp = 10
+    temp = 1000
   } else if (x >= 1000000 && x < 1000000000) {
     postfix = 'M'
     x = Math.round(x / 100000)
-    temp = 10000
+    temp = 1000000
   } else {
     postfix = 'B'
     x = Math.round(x / 100000000)
-    temp = 10000000
+    temp = 1000000000
   }
   length = x.toString().length
 
@@ -196,10 +195,13 @@ export const getGuideArray = (max, height) => {
   } else {
     x = 10 * x / first
   }
+  
   for (let i = 1; i < 6; i++) {
     let v = x / 5 * i
+    console.log(v, temp, max, height)
     arr.push([v + postfix, v * temp / max * height])
   }
+  console.log('arr', arr)
 
   return arr
 }
