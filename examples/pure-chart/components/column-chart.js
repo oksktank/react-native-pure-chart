@@ -46,15 +46,15 @@ export default class ColumnChart extends Component {
       let standardSeries = seriesArray[0]
       let dataCount = standardSeries.data.length
       for (let i = 0; i < dataCount; i++) {
-        let values = []
-        for (let seriesIndex = 0; seriesIndex < seriesCount; seriesIndex++) {
-          values.push(seriesArray[seriesIndex].data[i])
-        }
+        // let values = []
+        // for (let seriesIndex = 0; seriesIndex < seriesCount; seriesIndex++) {
+        //  values.push(seriesArray[seriesIndex].data[i])
+        // }
         renderColumns.push(
-          <ColumnChartItem key={i} values={values}
+          <ColumnChartItem key={i} seriesArray={this.state.sortedData}
+            dataIndex={i}
             defaultWidth={this.props.defaultColumnWidth}
             defaultMargin={this.props.defaultColumnMargin}
-            primaryColor={this.props.primaryColor}
             onClick={(evt) => this.handleClick(evt, i)} />
         )
       }
