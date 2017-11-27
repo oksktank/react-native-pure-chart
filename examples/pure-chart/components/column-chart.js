@@ -33,10 +33,38 @@ export default class ColumnChart extends Component {
   }
 
   componentDidMount () {
-    Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
+    Animated.timing(this.state.fadeAnim, { 
+      toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true 
+    }).start()
   }
 
-  renderColumns () {
+  renderColumns (fadeAnim) {
+    let seriesArray = this.state.sortedData
+    let seriesCount = seriesArray.length
+    let renderColumns = []
+    if(seriesCount > 0) {
+      let standardSeries = seriesArray[0]
+      let dataCount = standardSeries.data.length
+      for(let i = 0; i < dataCount; i++) {
+        let values = []
+        for(let seriesIndex = 0; seriesIndex < seriesCount; seriesIndex++) {
+          values.push(seriesArray[seriesIndex].data[i])
+        }
+        renderColumns.push(
+          <ColumnChartItem key={i} values={values}
+            defaultWidth={this.props.defaultColumnWidth}
+            defaultMargin={this.props.defaultColumnMargin}
+            primaryColor={this.props.primaryColor}
+            onClick={(evt) => this.handleClick(evt, i)} />
+        )
+      }
+    }
+    return (
+      <Animated.View style={[styles.chartView, {transform: [{scaleY: fadeAnim}]}]}>
+        {renderColumns}
+      </Animated.View>
+    )
+    /*
     return this.state.sortedData.map((value, i) => {
       return (
         <ColumnChartItem key={i} value={
@@ -48,10 +76,12 @@ export default class ColumnChart extends Component {
           primaryColor={this.state.selectedIndex === i ? 'red' : this.props.primaryColor}
           onClick={(evt) => this.handleClick(evt, i)} />
       )
-    })
+    })*/
+    //return <Text>Hello world</Text>
   }
 
   handleClick (event, index) {
+    console.log("click!!")
     this.setState({
       selectedIndex: index
     })
@@ -64,14 +94,14 @@ export default class ColumnChart extends Component {
       let width = 200
 
       // let left = this.state.sortedData[index][0] + this.props.defaultColumnWidth / 2 - width / 2
-      let left = this.state.sortedData[index]['gap'] + this.props.defaultColumnWidth / 2 - width / 2
+      let left = this.state.sortedData[0].data[index]['gap'] + this.props.defaultColumnWidth / 2 - width / 2
       let marginLeft = 0
       if (index === 0) {
         // left = this.state.sortedData[index + 1][0] + this.props.defaultColumnWidth / 2 - width / 2
-        left = this.state.sortedData[index + 1]['gap'] + this.props.defaultColumnWidth / 2 - width / 2
-      } else if (index === this.state.sortedData.length - 1) {
+        left = this.state.sortedData[0][index + 1]['gap'] + this.props.defaultColumnWidth / 2 - width / 2
+      } else if (index === this.state.sortedData[0].data.length - 1) {
         // left = this.state.sortedData[index - 1][0] + this.props.defaultColumnWidth / 2 - width / 2
-        left = this.state.sortedData[index - 1]['gap'] + this.props.defaultColumnWidth / 2 - width / 2
+        left = this.state.sortedData[0].data[index - 1]['gap'] + this.props.defaultColumnWidth / 2 - width / 2
       }
       return (
         <View style={{
@@ -88,24 +118,24 @@ export default class ColumnChart extends Component {
             {
               position: 'absolute',
               // height: this.state.sortedData[index][3] ? 60 : 30
-              height: this.state.sortedData[index]['x'] ? 60 : 30
+              height: this.state.sortedData[0].data[index]['x'] ? 60 : 30
             }
           ]}>
             {
               // this.state.sortedData[index][3] ?
-              this.state.sortedData[index]['x']
+              this.state.sortedData[0].data[index]['x']
                 ? (
                   <Text style={{fontWeight: 'bold'}}>
                     {
                       // this.state.sortedData[index][3]
-                      this.state.sortedData[index]['x']
+                      this.state.sortedData[0].data[index]['x']
                     }
                   </Text>
                 ) : null}
             <Text>
               {
                 // numberWithCommas(this.state.sortedData[index][2], false)
-                numberWithCommas(this.state.sortedData[index]['y'], false)
+                numberWithCommas(this.state.sortedData[0].data[index]['y'], false)
               }
             </Text>
           </View>
@@ -118,9 +148,8 @@ export default class ColumnChart extends Component {
 
   render () {
     let {fadeAnim} = this.state
-
     if (this.state.sortedData && this.state.sortedData.length === 0) return null
-
+    
     return (
       <View style={{flexDirection: 'row'}}>
         <View style={{paddingRight: 5}}>
@@ -132,16 +161,14 @@ export default class ColumnChart extends Component {
               <View ref='chartView' style={styles.chartContainer}>
                 {drawYAxis()}
                 {drawGuideLine(this.state.guideArray)}
-                <Animated.View style={[styles.chartView, {transform: [{scaleY: fadeAnim}]}]}>
-                  {this.renderColumns()}
-                </Animated.View>
+                {this.renderColumns(fadeAnim)}
               </View>
-              {this.drawTooltip(this.state.selectedIndex)}
               {drawXAxis()}
               <View style={{
                 marginLeft: this.props.defaultColumnWidth / 2
               }}>
-                {drawXAxisLabels(this.state.sortedData, this.state.gap)}
+              
+                {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap)}
               </View>
             </View>
           </ScrollView>
