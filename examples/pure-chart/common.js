@@ -40,7 +40,7 @@ function flattenData (data) {
 
 function getMaxValue (data) {
   let values = []
-  
+
   data.map((value) => {
     if (typeof value === 'number') {
       values.push(value)
@@ -59,10 +59,9 @@ function getMaxValue (data) {
     }
   })
 
-  console.log("MAXVALUES", data,values)
 
   if (values.length === 0) return 0
-  
+
   return Math.max.apply(null, values)
 }
 
@@ -82,7 +81,6 @@ export const initData = (dataProp, height, gap) => {
   dataProp = flattenData(dataProp)
 
   sortedData = refineData(dataProp, max, height, gap)
-  console.log('refineData2', dataProp, sortedData)
   return {
     sortedData: sortedData,
     max: max,
@@ -102,13 +100,14 @@ export const refineData = (flattenData, max, height, gap) => {
   flattenData.map((series) => {
     let dataProp = series.data
     let object = {
-      seriesName: series.seriesName
+      seriesName: series.seriesName,
+      seriesColor: series.color
     }
     let data = []
     let length = dataProp.length
     let simpleTypeCount = 0
     let objectTypeCount = 0
-    console.log("REFINE", max, height)
+
     for (let i = 0; i < length; i++) {
       let maxClone = max
 
@@ -162,6 +161,7 @@ export const refineData = (flattenData, max, height, gap) => {
 }
 
 export const getGuideArray = (max, height) => {
+  console.log('getGuideArray', max, height)
   let x = parseInt(max)
   let arr = []
   let length
@@ -173,15 +173,15 @@ export const getGuideArray = (max, height) => {
   } else if (x >= 1000 && x < 1000000) {
     postfix = 'K'
     x = Math.round(x / 100)
-    temp = 10
+    temp = 1000
   } else if (x >= 1000000 && x < 1000000000) {
     postfix = 'M'
     x = Math.round(x / 100000)
-    temp = 10000
+    temp = 1000000
   } else {
     postfix = 'B'
     x = Math.round(x / 100000000)
-    temp = 10000000
+    temp = 1000000000
   }
   length = x.toString().length
 
@@ -195,10 +195,13 @@ export const getGuideArray = (max, height) => {
   } else {
     x = 10 * x / first
   }
+  
   for (let i = 1; i < 6; i++) {
     let v = x / 5 * i
+    console.log(v, temp, max, height)
     arr.push([v + postfix, v * temp / max * height])
   }
+  console.log('arr', arr)
 
   return arr
 }
