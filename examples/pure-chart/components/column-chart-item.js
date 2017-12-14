@@ -6,7 +6,6 @@ export default class ColumnChartItem extends Component {
     let renders = []
     let seriesCount = this.props.seriesArray.length
     for (let seriesIndex = 0; seriesIndex < seriesCount; seriesIndex++) {
-      console.log('series : ', this.props.seriesArray[seriesIndex])
       let lastElementMarginRight = 0
       if (seriesIndex === (seriesCount - 1)) {
         lastElementMarginRight = this.props.defaultMargin
