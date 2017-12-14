@@ -51,6 +51,7 @@ export default class ColumnChart extends Component {
             dataIndex={i}
             defaultWidth={this.props.defaultColumnWidth}
             defaultMargin={this.props.defaultColumnMargin}
+            isSelected={this.state.selectedIndex === i}
             onClick={(evt) => this.handleClick(evt, i)} />
         )
       }
@@ -76,21 +77,23 @@ export default class ColumnChart extends Component {
         console.warn('standardSeries is null')
         return null
       }
-      let plusGap = 20
-      if (selectedIndex === 0) {
-        plusGap = 50
-      } else if (selectedIndex === standardSeries.data.length - 1) {
-        plusGap = -20
+
+      let seriesCount = this.state.sortedData.length
+      let plusGap = 10 * seriesCount
+      if (selectedIndex === standardSeries.data.length - 1) {
+        plusGap = -50
       }
+      // 차트 width를 마지막에 늘려야겠음.
+
       let left = standardSeries.data[selectedIndex]['gap'] + plusGap
       let tooltipRenders = []
       let tooltipHeight = 30
-      let seriesCount = this.state.sortedData.length
+      
       if (standardSeries.data[selectedIndex]['x']) {
         tooltipHeight = 40
       }
       tooltipHeight = tooltipHeight * seriesCount
-      
+
       for (let i = 0; i < this.state.sortedData.length; i++) {
         let series = this.state.sortedData[i]
         if (series.data[selectedIndex]['x']) {
@@ -166,9 +169,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'black'
+    justifyContent: 'center'
   },
   tooltip: {
     backgroundColor: '#FFFFFF',
@@ -178,8 +179,7 @@ const styles = StyleSheet.create({
     padding: 3,
     alignItems: 'center',
     justifyContent: 'center',
-    opacity: 0.8,
-    position: 'absolute'
+    opacity: 0.8
   }
 })
 
