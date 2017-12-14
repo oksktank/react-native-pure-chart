@@ -46,15 +46,12 @@ export default class ColumnChart extends Component {
       let standardSeries = seriesArray[0]
       let dataCount = standardSeries.data.length
       for (let i = 0; i < dataCount; i++) {
-        let values = []
-        for (let seriesIndex = 0; seriesIndex < seriesCount; seriesIndex++) {
-          values.push(seriesArray[seriesIndex].data[i])
-        }
         renderColumns.push(
-          <ColumnChartItem key={i} values={values}
+          <ColumnChartItem key={i} seriesArray={this.state.sortedData}
+            dataIndex={i}
             defaultWidth={this.props.defaultColumnWidth}
             defaultMargin={this.props.defaultColumnMargin}
-            primaryColor={this.props.primaryColor}
+            isSelected={this.state.selectedIndex === i}
             onClick={(evt) => this.handleClick(evt, i)} />
         )
       }
@@ -64,80 +61,50 @@ export default class ColumnChart extends Component {
         {renderColumns}
       </Animated.View>
     )
-    /*
-    return this.state.sortedData.map((value, i) => {
-      return (
-        <ColumnChartItem key={i} value={
-            value['ratioY']
-            // value[1]
-          }
-          defaultWidth={this.props.defaultColumnWidth}
-          defaultMargin={this.props.defaultColumnMargin}
-          primaryColor={this.state.selectedIndex === i ? 'red' : this.props.primaryColor}
-          onClick={(evt) => this.handleClick(evt, i)} />
-      )
-    }) */
-    // return <Text>Hello world</Text>
   }
 
   handleClick (event, index) {
-    console.log('click!!')
+    console.log('click!!', index)
     this.setState({
       selectedIndex: index
     })
   }
-  drawTooltip (index) {
-    if (typeof (this.state.selectedIndex) === 'number' && this.state.selectedIndex >= 0) {
-      if (!this.state.sortedData[index]) {
+  drawTooltip (selectedIndex) {
+    console.log('drawTooltip!!', selectedIndex)
+    if (typeof (selectedIndex) === 'number' && selectedIndex >= 0) {
+      let standardSeries = this.state.sortedData[0]
+      if (!standardSeries) {
+        console.warn('standardSeries is null')
         return null
       }
-      let width = 200
 
-      // let left = this.state.sortedData[index][0] + this.props.defaultColumnWidth / 2 - width / 2
-      let left = this.state.sortedData[0].data[index]['gap'] + this.props.defaultColumnWidth / 2 - width / 2
-      let marginLeft = 0
-      if (index === 0) {
-        // left = this.state.sortedData[index + 1][0] + this.props.defaultColumnWidth / 2 - width / 2
-        left = this.state.sortedData[0][index + 1]['gap'] + this.props.defaultColumnWidth / 2 - width / 2
-      } else if (index === this.state.sortedData[0].data.length - 1) {
-        // left = this.state.sortedData[index - 1][0] + this.props.defaultColumnWidth / 2 - width / 2
-        left = this.state.sortedData[0].data[index - 1]['gap'] + this.props.defaultColumnWidth / 2 - width / 2
+      let seriesCount = this.state.sortedData.length
+      let plusGap = 10 * seriesCount
+      if (selectedIndex === standardSeries.data.length - 1) {
+        plusGap = -50
+      }
+      // 차트 width를 마지막에 늘려야겠음.
+
+      let left = standardSeries.data[selectedIndex]['gap'] + plusGap
+      let tooltipRenders = []
+      let tooltipHeight = 30
+      
+      if (standardSeries.data[selectedIndex]['x']) {
+        tooltipHeight = 40
+      }
+      tooltipHeight = tooltipHeight * seriesCount
+
+      for (let i = 0; i < this.state.sortedData.length; i++) {
+        let series = this.state.sortedData[i]
+        if (series.data[selectedIndex]['x']) {
+          tooltipRenders.push(<Text>{series.data[selectedIndex]['x']}</Text>)
+        }
+        tooltipRenders.push(<Text>{numberWithCommas(series.data[selectedIndex]['y'], false)}</Text>)
       }
       return (
-        <View style={{
-          position: 'absolute',
-          height: '100%',
-          width: width,
-          left: left,
-          alignItems: 'center',
-          marginLeft: marginLeft,
-          justifyContent: 'center'
-        }}>
-          <View style={[
-            styles.tooltip,
-            {
-              position: 'absolute',
-              // height: this.state.sortedData[index][3] ? 60 : 30
-              height: this.state.sortedData[0].data[index]['x'] ? 60 : 30
-            }
-          ]}>
-            {
-              // this.state.sortedData[index][3] ?
-              this.state.sortedData[0].data[index]['x']
-                ? (
-                  <Text style={{fontWeight: 'bold'}}>
-                    {
-                      // this.state.sortedData[index][3]
-                      this.state.sortedData[0].data[index]['x']
-                    }
-                  </Text>
-                ) : null}
-            <Text>
-              {
-                // numberWithCommas(this.state.sortedData[index][2], false)
-                numberWithCommas(this.state.sortedData[0].data[index]['y'], false)
-              }
-            </Text>
+        <View style={[styles.tooltipWrapper, { left: left }]}>
+          <View style={[styles.tooltip, { height: tooltipHeight }]}>
+            {tooltipRenders}
           </View>
         </View>
       )
@@ -171,6 +138,7 @@ export default class ColumnChart extends Component {
                 {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap)}
               </View>
             </View>
+            {this.drawTooltip(this.state.selectedIndex)}
           </ScrollView>
         </View>
       </View>
@@ -196,6 +164,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     height: '100%',
     paddingTop: 20
+  },
+  tooltipWrapper: {
+    position: 'absolute',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   tooltip: {
     backgroundColor: '#FFFFFF',
