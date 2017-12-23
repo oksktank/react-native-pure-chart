@@ -2,3 +2,4 @@ node_modules
 .expo
 yarn.lock
 package-lock.json
+examples/package-lock.json
