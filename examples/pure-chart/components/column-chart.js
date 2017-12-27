@@ -88,7 +88,7 @@ export default class ColumnChart extends Component {
       let left = standardSeries.data[selectedIndex]['gap'] + plusGap
       let tooltipRenders = []
       let tooltipHeight = 30
-      
+
       if (standardSeries.data[selectedIndex]['x']) {
         tooltipHeight = 40
       }
@@ -131,10 +131,7 @@ export default class ColumnChart extends Component {
                 {this.renderColumns(fadeAnim)}
               </View>
               {drawXAxis()}
-              <View style={{
-                marginLeft: this.props.defaultColumnWidth / 2
-              }}>
-
+              <View style={{ marginLeft: this.props.defaultColumnWidth / 2 }}>
                 {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap)}
               </View>
             </View>
