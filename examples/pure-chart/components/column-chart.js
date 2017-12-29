@@ -64,13 +64,11 @@ export default class ColumnChart extends Component {
   }
 
   handleClick (event, index) {
-    console.log('click!!', index)
     this.setState({
       selectedIndex: index
     })
   }
   drawTooltip (selectedIndex) {
-    console.log('drawTooltip!!', selectedIndex)
     if (typeof (selectedIndex) === 'number' && selectedIndex >= 0) {
       let standardSeries = this.state.sortedData[0]
       if (!standardSeries) {
@@ -87,23 +85,21 @@ export default class ColumnChart extends Component {
 
       let left = standardSeries.data[selectedIndex]['gap'] + plusGap
       let tooltipRenders = []
-      let tooltipHeight = 30
-
-      if (standardSeries.data[selectedIndex]['x']) {
-        tooltipHeight = 40
-      }
-      tooltipHeight = tooltipHeight * seriesCount
-
       for (let i = 0; i < this.state.sortedData.length; i++) {
         let series = this.state.sortedData[i]
         if (series.data[selectedIndex]['x']) {
-          tooltipRenders.push(<Text>{series.data[selectedIndex]['x']}</Text>)
+          tooltipRenders.push(<Text key={'tooltipTitle-' + i} style={styles.tooltipTitle}>{series.data[selectedIndex]['x']}</Text>)
         }
-        tooltipRenders.push(<Text>{numberWithCommas(series.data[selectedIndex]['y'], false)}</Text>)
+        tooltipRenders.push(
+          <View key={'tooltipText-' + i} style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
+            <View style={[styles.tooltipColor, {backgroundColor: !series.seriesColor ? this.props.primaryColor : series.seriesColor}]} />
+            <Text style={styles.tooltipValue}>{numberWithCommas(series.data[selectedIndex]['y'], false)}</Text>
+          </View>
+        )
       }
       return (
         <View style={[styles.tooltipWrapper, { left: left }]}>
-          <View style={[styles.tooltip, { height: tooltipHeight }]}>
+          <View style={styles.tooltip}>
             {tooltipRenders}
           </View>
         </View>
@@ -177,6 +173,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     opacity: 0.8
+  },
+  tooltipTitle: {fontSize: 10},
+  tooltipValue: {fontWeight: 'bold', fontSize: 15},
+  tooltipColor: {
+    width: 10,
+    height: 5,
+    marginRight: 3,
+    borderRadius: 2
   }
 })
 
@@ -186,7 +190,7 @@ ColumnChart.propTypes = {
 ColumnChart.defaultProps = {
   data: [],
   height: 100,
-  defaultColumnWidth: 30,
+  defaultColumnWidth: 40,
   defaultColumnMargin: 20,
   primaryColor: '#297AB1'
 }

@@ -40,13 +40,15 @@ export default class App extends React.Component {
 
     this.setState({data: [
       {seriesName: 'test', data: data, color: '#297AB1'},
-      {seriesName: 'test2', data: data2, color: '#AA0000'},
-      {seriesName: 'test3', data: data3, color: '#00AA00'}]})
+       {seriesName: 'test2', data: data2, color: '#AA0000'},
+       {seriesName: 'test3', data: data3, color: '#00AA00'}
+    ]})
   }
   render () {
     return (
       <View style={styles.container}>
         <View style={{padding: 20}}>
+          <PureChart type={'line'} data={this.state.data} />
           <PureChart type={'bar'} data={this.state.data} />
           <Button title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>
