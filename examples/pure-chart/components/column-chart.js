@@ -52,6 +52,7 @@ export default class ColumnChart extends Component {
             defaultWidth={this.props.defaultColumnWidth}
             defaultMargin={this.props.defaultColumnMargin}
             isSelected={this.state.selectedIndex === i}
+            highlightColor={this.props.highlightColor}
             onClick={(evt) => this.handleClick(evt, i)} />
         )
       }
@@ -114,7 +115,7 @@ export default class ColumnChart extends Component {
     if (this.state.sortedData && this.state.sortedData.length === 0) return null
 
     return (
-      <View style={{flexDirection: 'row'}}>
+      <View style={styles.wrapper}>
         <View style={{paddingRight: 5}}>
           {drawYAxisLabels(this.state.guideArray, this.props.height + 20)}
         </View>
@@ -140,6 +141,10 @@ export default class ColumnChart extends Component {
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF'
+  },
   mainContainer: {
     paddingBottom: 0,
     paddingLeft: 0,
@@ -150,7 +155,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     margin: 0,
-    paddingRight: 0
+    paddingRight: 10
   },
   chartView: {
     flexDirection: 'row',
@@ -192,5 +197,6 @@ ColumnChart.defaultProps = {
   height: 100,
   defaultColumnWidth: 40,
   defaultColumnMargin: 20,
-  primaryColor: '#297AB1'
+  primaryColor: '#297AB1',
+  highlightColor: 'yellow'
 }
