@@ -16,7 +16,7 @@ export default class ColumnChartItem extends Component {
           height: this.props.seriesArray[seriesIndex].data[this.props.dataIndex]['ratioY'],
           marginRight: lastElementMarginRight,
           backgroundColor: this.props.seriesArray[seriesIndex].seriesColor,
-          borderColor: this.props.isSelected ? 'yellow' : 'black'
+          borderColor: this.props.isSelected ? this.props.highlightColor : 'black'
         }]} />
       )
     }
@@ -48,5 +48,6 @@ ColumnChartItem.propTypes = {
   onClick: PropTypes.func,
   defaultWidth: PropTypes.number,
   defaultMargin: PropTypes.number,
-  primaryColor: PropTypes.string
+  primaryColor: PropTypes.string,
+  highlightColor: PropTypes.string
 }
