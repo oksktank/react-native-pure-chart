@@ -33,22 +33,35 @@ export default class ColumnChart extends Component {
   }
 
   componentDidMount () {
-    Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
+    Animated.timing(this.state.fadeAnim, {
+      toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true
+    }).start()
   }
 
-  renderColumns () {
-    return this.state.sortedData.map((value, i) => {
-      return (
-        <ColumnChartItem key={i} value={
-            value['ratioY']
-            // value[1]
-          }
-          defaultWidth={this.props.defaultColumnWidth}
-          defaultMargin={this.props.defaultColumnMargin}
-          primaryColor={this.state.selectedIndex === i ? 'red' : this.props.primaryColor}
-          onClick={(evt) => this.handleClick(evt, i)} />
-      )
-    })
+  renderColumns (fadeAnim) {
+    let seriesArray = this.state.sortedData
+    let seriesCount = seriesArray.length
+    let renderColumns = []
+    if (seriesCount > 0) {
+      let standardSeries = seriesArray[0]
+      let dataCount = standardSeries.data.length
+      for (let i = 0; i < dataCount; i++) {
+        renderColumns.push(
+          <ColumnChartItem key={i} seriesArray={this.state.sortedData}
+            dataIndex={i}
+            defaultWidth={this.props.defaultColumnWidth}
+            defaultMargin={this.props.defaultColumnMargin}
+            isSelected={this.state.selectedIndex === i}
+            highlightColor={this.props.highlightColor}
+            onClick={(evt) => this.handleClick(evt, i)} />
+        )
+      }
+    }
+    return (
+      <Animated.View style={[styles.chartView, {transform: [{scaleY: fadeAnim}]}]}>
+        {renderColumns}
+      </Animated.View>
+    )
   }
 
   handleClick (event, index) {
@@ -56,58 +69,39 @@ export default class ColumnChart extends Component {
       selectedIndex: index
     })
   }
-  drawTooltip (index) {
-    if (typeof (this.state.selectedIndex) === 'number' && this.state.selectedIndex >= 0) {
-      if (!this.state.sortedData[index]) {
+  drawTooltip (selectedIndex) {
+    if (typeof (selectedIndex) === 'number' && selectedIndex >= 0) {
+      let standardSeries = this.state.sortedData[0]
+      if (!standardSeries) {
+        console.warn('standardSeries is null')
         return null
       }
-      let width = 200
 
-      // let left = this.state.sortedData[index][0] + this.props.defaultColumnWidth / 2 - width / 2
-      let left = this.state.sortedData[index]['gap'] + this.props.defaultColumnWidth / 2 - width / 2
-      let marginLeft = 0
-      if (index === 0) {
-        // left = this.state.sortedData[index + 1][0] + this.props.defaultColumnWidth / 2 - width / 2
-        left = this.state.sortedData[index + 1]['gap'] + this.props.defaultColumnWidth / 2 - width / 2
-      } else if (index === this.state.sortedData.length - 1) {
-        // left = this.state.sortedData[index - 1][0] + this.props.defaultColumnWidth / 2 - width / 2
-        left = this.state.sortedData[index - 1]['gap'] + this.props.defaultColumnWidth / 2 - width / 2
+      let seriesCount = this.state.sortedData.length
+      let plusGap = 10 * seriesCount
+      if (selectedIndex === standardSeries.data.length - 1) {
+        plusGap = -50
+      }
+      // 차트 width를 마지막에 늘려야겠음.
+
+      let left = standardSeries.data[selectedIndex]['gap'] + plusGap
+      let tooltipRenders = []
+      for (let i = 0; i < this.state.sortedData.length; i++) {
+        let series = this.state.sortedData[i]
+        if (series.data[selectedIndex]['x']) {
+          tooltipRenders.push(<Text key={'tooltipTitle-' + i} style={styles.tooltipTitle}>{series.data[selectedIndex]['x']}</Text>)
+        }
+        tooltipRenders.push(
+          <View key={'tooltipText-' + i} style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
+            <View style={[styles.tooltipColor, {backgroundColor: !series.seriesColor ? this.props.primaryColor : series.seriesColor}]} />
+            <Text style={styles.tooltipValue}>{numberWithCommas(series.data[selectedIndex]['y'], false)}</Text>
+          </View>
+        )
       }
       return (
-        <View style={{
-          position: 'absolute',
-          height: '100%',
-          width: width,
-          left: left,
-          alignItems: 'center',
-          marginLeft: marginLeft,
-          justifyContent: 'center'
-        }}>
-          <View style={[
-            styles.tooltip,
-            {
-              position: 'absolute',
-              // height: this.state.sortedData[index][3] ? 60 : 30
-              height: this.state.sortedData[index]['x'] ? 60 : 30
-            }
-          ]}>
-            {
-              // this.state.sortedData[index][3] ?
-              this.state.sortedData[index]['x']
-                ? (
-                  <Text style={{fontWeight: 'bold'}}>
-                    {
-                      // this.state.sortedData[index][3]
-                      this.state.sortedData[index]['x']
-                    }
-                  </Text>
-                ) : null}
-            <Text>
-              {
-                // numberWithCommas(this.state.sortedData[index][2], false)
-                numberWithCommas(this.state.sortedData[index]['y'], false)
-              }
-            </Text>
+        <View style={[styles.tooltipWrapper, { left: left }]}>
+          <View style={styles.tooltip}>
+            {tooltipRenders}
           </View>
         </View>
       )
@@ -118,11 +112,10 @@ export default class ColumnChart extends Component {
 
   render () {
     let {fadeAnim} = this.state
-
     if (this.state.sortedData && this.state.sortedData.length === 0) return null
 
     return (
-      <View style={{flexDirection: 'row'}}>
+      <View style={styles.wrapper}>
         <View style={{paddingRight: 5}}>
           {drawYAxisLabels(this.state.guideArray, this.props.height + 20)}
         </View>
@@ -132,18 +125,14 @@ export default class ColumnChart extends Component {
               <View ref='chartView' style={styles.chartContainer}>
                 {drawYAxis()}
                 {drawGuideLine(this.state.guideArray)}
-                <Animated.View style={[styles.chartView, {transform: [{scaleY: fadeAnim}]}]}>
-                  {this.renderColumns()}
-                </Animated.View>
+                {this.renderColumns(fadeAnim)}
               </View>
-              {this.drawTooltip(this.state.selectedIndex)}
               {drawXAxis()}
-              <View style={{
-                marginLeft: this.props.defaultColumnWidth / 2
-              }}>
-                {drawXAxisLabels(this.state.sortedData, this.state.gap)}
+              <View style={{ marginLeft: this.props.defaultColumnWidth / 2 }}>
+                {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap)}
               </View>
             </View>
+            {this.drawTooltip(this.state.selectedIndex)}
           </ScrollView>
         </View>
       </View>
@@ -152,6 +141,10 @@ export default class ColumnChart extends Component {
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF'
+  },
   mainContainer: {
     paddingBottom: 0,
     paddingLeft: 0,
@@ -162,13 +155,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     margin: 0,
-    paddingRight: 0
+    paddingRight: 10
   },
   chartView: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     height: '100%',
     paddingTop: 20
+  },
+  tooltipWrapper: {
+    position: 'absolute',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   tooltip: {
     backgroundColor: '#FFFFFF',
@@ -179,6 +178,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     opacity: 0.8
+  },
+  tooltipTitle: {fontSize: 10},
+  tooltipValue: {fontWeight: 'bold', fontSize: 15},
+  tooltipColor: {
+    width: 10,
+    height: 5,
+    marginRight: 3,
+    borderRadius: 2
   }
 })
 
@@ -188,7 +195,8 @@ ColumnChart.propTypes = {
 ColumnChart.defaultProps = {
   data: [],
   height: 100,
-  defaultColumnWidth: 30,
+  defaultColumnWidth: 40,
   defaultColumnMargin: 20,
-  primaryColor: '#297AB1'
+  primaryColor: '#297AB1',
+  highlightColor: 'yellow'
 }
