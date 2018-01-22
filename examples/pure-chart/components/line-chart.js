@@ -301,7 +301,7 @@ LineChart.defaultProps = {
   primaryColor: '#297AB1',
   selectedColor: '#FF0000',
   height: 100,
-  gap: 50,
+  gap: 60,
   onPointClick: (point) => {
 
   }
@@ -358,6 +358,7 @@ const styles = StyleSheet.create({
   selectedBox: {
     backgroundColor: '#FFFFFF',
     borderRadius: 5,
+    opacity: 0.8,
     borderColor: '#AAAAAA',
     borderWidth: 1,
     position: 'absolute',

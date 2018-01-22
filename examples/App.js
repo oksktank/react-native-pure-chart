@@ -38,11 +38,15 @@ export default class App extends React.Component {
       )
     }
 
-    this.setState({data: [
-      {seriesName: 'test', data: data, color: '#297AB1'},
-       {seriesName: 'test2', data: data2, color: '#AA0000'},
-       {seriesName: 'test3', data: data3, color: '#00AA00'}
-    ]})
+    // this.setState({data: [
+    //   {seriesName: 'test', data: data, color: '#ff4b00'},
+    //    {seriesName: 'test2', data: data2, color: '#0e95de'},
+    //    {seriesName: 'test3', data: data3, color: '#00c19b'}
+    // ]})
+
+    this.setState({
+      data: [{seriesName: 'test2', data: data2, color: '#0e95de'}]
+    })
   }
   render () {
     return (
@@ -62,7 +66,6 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 100,
-    backgroundColor: '#AA0000'
+    marginTop: 100
   }
 })

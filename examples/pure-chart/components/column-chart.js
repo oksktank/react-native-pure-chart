@@ -198,5 +198,5 @@ ColumnChart.defaultProps = {
   defaultColumnWidth: 40,
   defaultColumnMargin: 20,
   primaryColor: '#297AB1',
-  highlightColor: 'yellow'
+  highlightColor: '#FFFFFF'
 }
