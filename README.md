@@ -35,7 +35,7 @@ render(
 ```
 
 
-#### Single Series: Using XAxis
+#### Single Series: with labels
 
 ```js
 render(
@@ -65,7 +65,7 @@ render(
   ...
 );
 ```
-#### Multi Series: Using XAxis
+#### Multi Series: with labels
 ```js
 render(
   ...
