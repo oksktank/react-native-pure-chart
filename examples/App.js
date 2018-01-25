@@ -7,7 +7,8 @@ export default class App extends React.Component {
     super(props)
     this.generateData = this.generateData.bind(this)
     this.state = {
-      data: []
+      data: [],
+      pieData: [30, 20, 40, 50]
     }
   }
 
@@ -50,6 +51,7 @@ export default class App extends React.Component {
         <View style={{padding: 20}}>
           <PureChart type={'line'} data={this.state.data} />
           <PureChart type={'bar'} data={this.state.data} />
+          <PureChart type={'pie'} data={this.state.pieData} />
           <Button title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>
           </Button>
