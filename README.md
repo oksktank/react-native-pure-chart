@@ -3,7 +3,18 @@
 Pure react native chart library that not using svg or ART but only using `react-native` components.<br/>(You don't have to import drawing library with `react-native link` or add `ART` to your project!)
 <br/>
 ## Demo
-![alt text](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/sample.gif)
+
+- **LineChart**
+![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/line.jpeg)
+
+- **LineChart (Multi series)**
+![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/multiseries_line.jpeg)
+
+- **BarChart**
+![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/bar.jpeg)
+
+- **BarChart (Multi series)**
+![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/multiseries_bar.jpeg)
 
 ## Installation
 
