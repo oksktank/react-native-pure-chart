@@ -58,17 +58,10 @@ class PieChart extends React.Component {
     let dist = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5)
     console.log(dist)
     if (dist <= 100) {
-      let pos = 0
       let index = -1
-      if (x >= 0 && y >= 0) {
-        pos = Math.PI / 2 - Math.asin(y / dist)
-      } else if (x >= 0 && y <= 0) {
-        pos = Math.PI / 2 - Math.asin(y / dist)
-      } else if (x <= 0 && y <= 0) {
-        pos = Math.PI * 3 / 2 + Math.asin(y / dist)
-      } else {
-        pos = Math.PI * 3 / 2 + Math.asin(y / dist)
-      }
+      // 중심 기준으로 오른쪽 왼쪽
+      let pos = x > 0 ? Math.PI / 2 - Math.asin(y / dist) : Math.PI * 3 / 2 + Math.asin(y / dist)
+      // index 값 정하기 piePos piePos 값보다 pos값이 작을 경우 멈춤
       for (let i = 0; i < this.state.piePos.length; i++) {
         console.log('확인' + this.state.piePos[i])
         if (this.state.piePos[i] > pos) break
