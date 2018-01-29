@@ -1,4 +1,7 @@
 # React Native Pure Chart
+[![NPM Version](https://img.shields.io/npm/v/react-native-pure-chart.svg?style=flat)](https://www.npmjs.org/package/react-native-pure-chart)
+[![npm](https://img.shields.io/npm/dm/react-native-pure-chart.svg?style=flat)](https://www.npmjs.org/package/react-native-pure-chart)
+[![License](http://img.shields.io/npm/l/react-native-pure-chart.svg?style=flat)](https://raw.githubusercontent.com/somonus/react-native-pure-chart/master/LICENSE.md)
 
 Pure react native chart library that not using svg or ART but only using `react-native` components.<br/>(You don't have to import drawing library with `react-native link` or add `ART` to your project!)
 <br/>
