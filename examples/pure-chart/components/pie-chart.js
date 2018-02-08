@@ -42,9 +42,6 @@ class PieChart extends React.Component {
     this.setState({
       pieSize: pieSize,
       piePos: piePos
-    }, () => {
-      console.log('!!', this.state.piePos)
-      console.log('@@', this.state.pieSize)
     })
   }
   handleEvent (evt) {
@@ -52,9 +49,9 @@ class PieChart extends React.Component {
       evtX: evt.nativeEvent.pageX,
       evtY: evt.nativeEvent.pageY
     }) */
-    console.log('evt', evt.nativeEvent)
     let pageX = evt.nativeEvent.pageX
     let pageY = evt.nativeEvent.pageY
+
     this.refs.test.measure((fx, fy, width, height, px, py) => {
       this.setState({
         evtX: pageX - px,
@@ -63,12 +60,8 @@ class PieChart extends React.Component {
     })
   }
 
-  handleLayout (evt) {
-    console.log('handleLayout:', evt.nativeEvent.layout)
-  }
   drawInfo (x, y) {
     let dist = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5)
-    console.log('pieChart dist from center: ' + dist)
     // console.log('x: ' + x + '  y: ' + y)
     if (dist <= 100) {
       let index = -1
@@ -76,14 +69,12 @@ class PieChart extends React.Component {
       let pos = x > 0 ? Math.PI / 2 - Math.asin(y / dist) : Math.PI * 3 / 2 + Math.asin(y / dist)
       // index 값 정하기 piePos piePos 값보다 pos값이 작을 경우 멈춤
       for (let i = 0; i < this.state.piePos.length; i++) {
-        console.log('확인' + this.state.piePos[i])
         if (this.state.piePos[i] > pos) break
         index++
       }
       let marginLeft = x
       let marginTop = -y
 
-      console.log(pos + ' ' + index + ' ' + marginLeft + ' ' + marginTop)
 
       return (
         <View style={{
@@ -113,7 +104,6 @@ class PieChart extends React.Component {
           {
               // 사각형 그릴 공간 여기에 .parent {overflow: hidden}을 넣을 것
           }
-          {(console.log('test2'))}
           <View style={[styles.circle, {
             backgroundColor: color
           }]} />
@@ -124,7 +114,6 @@ class PieChart extends React.Component {
             height: 200,
             transform: [{ rotate: `${angle}rad` }]
           }}>
-            {(console.log('test3', angle))}
             <View style={{
               width: 100,
               height: 200,
@@ -135,21 +124,18 @@ class PieChart extends React.Component {
               height: 200,
               backgroundColor: 'white'
             }} />
-            {(console.log('test4'))}
           </View>
         </View>
       </View>
     )
   }
   drawPie (angle, color) {
-    (console.log('testStart'))
     // angle: 0 ~ 2PI
     return (
       <View>
         {angle > 1 / 2 * Math.PI ? (
           <View style={{position: 'relative'}}>
             {this.drawPie(1 / 2 * Math.PI, color)}
-            {(console.log('test'))}
             <View style={{
 
               position: 'absolute',
@@ -165,7 +151,6 @@ class PieChart extends React.Component {
             width: 200,
             height: 200
           }}>
-            {(console.log('test'))}
             <View style={{
               width: Math.sin(angle) * 100,
               position: 'relative',
@@ -189,7 +174,6 @@ class PieChart extends React.Component {
               borderLeftWidth: Math.sin(angle) * 100,
               borderLeftColor: color
             }} />
-            {(console.log('test5'))}
           </View>
           )}
       </View>
@@ -217,7 +201,7 @@ class PieChart extends React.Component {
   }
   render () {
     return (
-      <View ref='test'>
+      <View ref='test' collapsable={false}>
 
         <TouchableWithoutFeedback onPress={(evt) => this.handleEvent(evt)}>
           <View style={styles.container}>
