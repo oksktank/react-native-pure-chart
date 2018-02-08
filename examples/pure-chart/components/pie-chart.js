@@ -5,6 +5,7 @@ class PieChart extends React.Component {
     super(props)
     this.drawPie = this.drawPie.bind(this)
     this.initData = this.initData.bind(this)
+    this.handleEvent = this.handleEvent.bind(this)
     this.state = {
       // pieSize[i] : size of ith pie, piePos[i] : starting position of ith pie;
       pieSize: [],
@@ -47,16 +48,28 @@ class PieChart extends React.Component {
     })
   }
   handleEvent (evt) {
-    console.log('x: ' + evt.nativeEvent.locationX + '\ny: ' + evt.nativeEvent.locationY)
-    this.setState({
-      evtX: evt.nativeEvent.locationX,
-      evtY: evt.nativeEvent.locationY
+    /* this.setState({
+      evtX: evt.nativeEvent.pageX,
+      evtY: evt.nativeEvent.pageY
+    }) */
+    console.log('evt', evt.nativeEvent)
+    let pageX = evt.nativeEvent.pageX
+    let pageY = evt.nativeEvent.pageY
+    this.refs.test.measure((fx, fy, width, height, px, py) => {
+      this.setState({
+        evtX: pageX - px,
+        evtY: pageY - py
+      })
     })
+  }
+
+  handleLayout (evt) {
+    console.log('handleLayout:', evt.nativeEvent.layout)
   }
   drawInfo (x, y) {
     let dist = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5)
     console.log('pieChart dist from center: ' + dist)
-    console.log('x: ' + x + '  y: ' + y)
+    // console.log('x: ' + x + '  y: ' + y)
     if (dist <= 100) {
       let index = -1
       // 중심 y축 기준으로 오른쪽 왼쪽
@@ -188,8 +201,10 @@ class PieChart extends React.Component {
     for (let i = 0; i < this.state.pieSize.length; i++) {
       pies.push(
         <View key={`t${i}`} style={{
+
           transform: [{ rotate: `${this.state.piePos[i]}rad` }],
           position: 'absolute'
+
         }}>
           {this.drawPie(this.state.pieSize[i], this.props.colors[i])
             }
@@ -202,9 +217,9 @@ class PieChart extends React.Component {
   }
   render () {
     return (
-      <View>
+      <View ref='test'>
 
-        <TouchableWithoutFeedback onPress={(evt) => this.handleEvent(evt)} >
+        <TouchableWithoutFeedback onPress={(evt) => this.handleEvent(evt)}>
           <View style={styles.container}>
             {
               this.drawT()
@@ -222,16 +237,14 @@ class PieChart extends React.Component {
 
 PieChart.defaultProps = {
   data: [200000, 1000000],
-  colors: ['red', 'blue', 'green', 'yellow', 'pink']
+  colors: ['green', 'red', 'blue', 'black', 'yellow']
 }
 const styles = StyleSheet.create({
   container: {
     width: 200,
     height: 200,
     alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: 'red',
-    borderWidth: 3
+    justifyContent: 'center'
   },
   // 반지름이 100인 원
   circle: {
