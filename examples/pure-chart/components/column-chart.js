@@ -160,8 +160,7 @@ const styles = StyleSheet.create({
   chartView: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    height: '100%',
-    paddingTop: 20
+    height: '100%'
   },
   tooltipWrapper: {
     position: 'absolute',
