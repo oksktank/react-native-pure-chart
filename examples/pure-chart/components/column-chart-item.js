@@ -23,8 +23,10 @@ export default class ColumnChartItem extends Component {
     }
     return (
       <TouchableWithoutFeedback onPressIn={(evt) => this.props.onClick(evt)}>
-        <View style={styles.chartView}>
-          {renders}
+        <View style={{height: this.props.defaultHeight}}>
+          <View style={styles.chartView}>
+            {renders}
+          </View>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -48,6 +50,7 @@ ColumnChartItem.propTypes = {
   seriesArray: PropTypes.array,
   onClick: PropTypes.func,
   defaultWidth: PropTypes.number,
+  defaultHeight: PropTypes.number,
   defaultMargin: PropTypes.number,
   primaryColor: PropTypes.string,
   highlightColor: PropTypes.string

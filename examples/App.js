@@ -27,7 +27,7 @@ export default class App extends React.Component {
       data2.push(
         {
           x: startDate.format('YYYY-MM-DD'),
-          y: Math.round(Math.random() * 1000)
+          y: Math.round(Math.random() * 50)
         }
       )
       data3.push(
