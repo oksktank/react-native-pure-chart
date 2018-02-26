@@ -50,6 +50,7 @@ export default class ColumnChart extends Component {
           <ColumnChartItem key={i} seriesArray={this.state.sortedData}
             dataIndex={i}
             defaultWidth={this.props.defaultColumnWidth}
+            defaultHeight={this.props.height + 20}
             defaultMargin={this.props.defaultColumnMargin}
             isSelected={this.state.selectedIndex === i}
             highlightColor={this.props.highlightColor}
