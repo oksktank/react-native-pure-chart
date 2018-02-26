@@ -59,7 +59,6 @@ function getMaxValue (data) {
     }
   })
 
-
   if (values.length === 0) return 0
 
   return Math.max.apply(null, values)
@@ -161,12 +160,17 @@ export const refineData = (flattenData, max, height, gap) => {
 }
 
 export const getGuideArray = (max, height) => {
-  console.log('getGuideArray', max, height)
   let x = parseInt(max)
+
   let arr = []
   let length
   let temp
   let postfix = ''
+
+  if (x === 0) {
+    return []
+  }
+
   if (x > -1 && x < 1000) {
     x = Math.round(x * 10)
     temp = 1
@@ -195,13 +199,11 @@ export const getGuideArray = (max, height) => {
   } else {
     x = 10 * x / first
   }
-  
+
   for (let i = 1; i < 6; i++) {
     let v = x / 5 * i
-    console.log(v, temp, max, height)
     arr.push([v + postfix, v * temp / max * height])
   }
-  console.log('arr', arr)
 
   return arr
 }
@@ -229,7 +231,16 @@ export const drawYAxisLabels = (arr, height) => {
       alignItems: 'flex-end'
     }}>
 
-      {arr.map((v, i) => {
+      {arr.length === 0 ? (
+        <View
+          key={'guide0'}
+          style={{
+            bottom: 0,
+            position: 'absolute'
+          }}>
+          <Text style={{fontSize: 11}}>0</Text>
+        </View>
+      ) : arr.map((v, i) => {
         if (v[1] > height) return null
         return (
           <View
