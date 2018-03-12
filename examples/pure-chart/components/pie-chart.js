@@ -130,6 +130,7 @@ class PieChart extends React.Component {
     )
   }
   drawPie (angle, color) {
+    //
     // angle: 0 ~ 2PI
     return (
       <View>
