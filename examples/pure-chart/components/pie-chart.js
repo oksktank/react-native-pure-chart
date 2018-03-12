@@ -75,7 +75,6 @@ class PieChart extends React.Component {
       let marginLeft = x
       let marginTop = -y
 
-
       return (
         <View style={{
           width: 100,
@@ -130,7 +129,6 @@ class PieChart extends React.Component {
     )
   }
   drawPie (angle, color) {
-    //
     // angle: 0 ~ 2PI
     return (
       <View>
@@ -207,11 +205,16 @@ class PieChart extends React.Component {
         <TouchableWithoutFeedback onPress={(evt) => this.handleEvent(evt)}>
           <View style={styles.container}>
             {
-              this.drawT()
+              // this.drawT()
             }
             {
-              this.drawInfo(this.state.evtX - 100, -this.state.evtY + 100)
+              // this.drawInfo(this.state.evtX - 100, -this.state.evtY + 100)
+
             }
+            
+            <View style={[styles.rightUpQuarterCircle, {
+              backgroundColor: 'red'
+            }]} />
           </View>
 
         </TouchableWithoutFeedback>
@@ -254,6 +257,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderBottomRightRadius: 200,
     borderTopRightRadius: 200
+  },
+  // 사분원 우상사분원
+  rightUpQuarterCircle: {
+    width: 100,
+    height: 100,
+    position: 'absolute',
+    borderTopRightRadius: 100
   }
 })
 
