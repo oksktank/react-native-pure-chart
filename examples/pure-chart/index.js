@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {View} from 'react-native'
+
 import LineChart from './components/line-chart'
 import ColumnChart from './components/column-chart'
+
 export default class PureChart extends React.Component {
   constructor (props) {
     super(props)
@@ -10,9 +12,13 @@ export default class PureChart extends React.Component {
   }
   renderChart () {
     if (this.props.type === 'line') {
-      return <LineChart data={this.props.data} primaryColor={this.props.color} />
+      return <LineChart data={this.props.data}
+        primaryColor={this.props.color}
+        height={this.props.height} />
     } else if (this.props.type === 'bar') {
-      return <ColumnChart data={this.props.data} primaryColor={this.props.color} />
+      return <ColumnChart data={this.props.data}
+        primaryColor={this.props.color}
+        height={this.props.height} />
     } else if (this.props.type === 'pie') {
       return null
     }
@@ -29,8 +35,11 @@ export default class PureChart extends React.Component {
 PureChart.propTypes = {
   type: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired,
-  color: PropTypes.string
+  color: PropTypes.string,
+  height: 100
 }
 PureChart.defaultProps = {
   color: '#297AB1'
 }
+
+
