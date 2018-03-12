@@ -38,15 +38,12 @@ export default class App extends React.Component {
       )
     }
 
-    // this.setState({data: [
-    //   {seriesName: 'test', data: data, color: '#ff4b00'},
-    //    {seriesName: 'test2', data: data2, color: '#0e95de'},
-    //    {seriesName: 'test3', data: data3, color: '#00c19b'}
-    // ]})
+    this.setState({data: [
+      {seriesName: 'test', data: data, color: '#ff4b00'},
+       {seriesName: 'test2', data: data2, color: '#0e95de'},
+       {seriesName: 'test3', data: data3, color: '#00c19b'}
+    ]})
 
-    this.setState({
-      data: [{seriesName: 'test2', data: data2, color: '#0e95de'}]
-    })
   }
   render () {
     return (
@@ -54,6 +51,7 @@ export default class App extends React.Component {
         <View style={{padding: 20}}>
           <PureChart type={'line'} data={this.state.data} />
           <PureChart type={'bar'} data={this.state.data} />
+          <PureChart type={'bar-horizontal'} data={this.state.data} />
           <Button title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>
           </Button>
