@@ -36,10 +36,11 @@ PureChart.propTypes = {
   type: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired,
   color: PropTypes.string,
-  height: 100
+  height: PropTypes.number
 }
 PureChart.defaultProps = {
-  color: '#297AB1'
+  color: '#297AB1',
+  height: 100
 }
 
 
