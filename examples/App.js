@@ -8,7 +8,7 @@ export default class App extends React.Component {
     this.generateData = this.generateData.bind(this)
     this.state = {
       data: [],
-      pieData: [30, 20, 40, 50]
+      pieData: [20, 30, 40, 50]
     }
   }
 

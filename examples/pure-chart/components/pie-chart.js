@@ -91,11 +91,11 @@ class PieChart extends React.Component {
     }
   }
 
-  getTransform (rad, width) {
+  getTransform (rad, width, add = 0) {
     let x = (0 - width / 2) * Math.cos(rad) - (0 - width / 2) * Math.sin(rad)
     let y = (0 - width / 2) * Math.sin(rad) + (0 - width / 2) * Math.cos(rad)
-    
-    return [ {translateX: (-1 * x) - width / 2}, {translateY: (-1 * y) - width / 2 }, { rotate: rad + 'rad' } ]
+
+    return [ {translateX: (-1 * x) - width / 2 + add}, {translateY: (-1 * y) - width / 2 }, { rotate: rad + 'rad' } ]
   }
   drawTest (angle, color) {
     return (
@@ -135,40 +135,84 @@ class PieChart extends React.Component {
       </View>
     )
   }
-  drawPie (angle, color) {
+  drawPie (angle, color, big) {
     // angle: 0 ~ 2PI
     return (
       <View>
         {angle > 1 / 2 * Math.PI ? (
           <View>
-            {this.drawPie(1 / 2 * Math.PI, color)}
-            <View style={{
-              position: 'absolute',
-              transform: this.getTransform(angle > 1/2*Math.PI ? 1/2*Math.PI : angle, 50)
-            }}>
-              {this.drawPie(angle - 1 / 2 * Math.PI, color)}
+            <View style={{width: 100, height: 50}} />
+            <View style={{ flexDirection: 'row', backgroundColor: 'transparent', overflow: 'visible'}}>
+
+              <View style={{
+
+                width: 50,
+                height: 50,
+
+                transform: this.getTransform(Math.PI / 2, 50, 50)
+              }}>
+                <View style={{
+                }}>
+                  {this.drawPie(angle - 1 / 2 * Math.PI, color, false)}
+                </View>
+              </View>
+              <View style={{opacity: 1,
+
+                width: 50,
+                height: 50
+              }}>
+                {this.drawPie(1 / 2 * Math.PI, color, false)}
+              </View>
             </View>
           </View>
 
         ) : (
-          <View style={{
-            width: 50,
-            height: 50
-          }}>
+          big ? (
+            <View style={{
+              width: 100,
+              height: 100
+            }}>
+              <View style={{width: 100, height: 50}} />
+              <View style={{flexDirection: 'row'}}>
+                <View style={{width: 50, height: 50}} />
+                <View style={{
+                  width: 50,
+                  height: 50,
+                  overflow: 'hidden',
+                  borderWidth: 0,
+                  borderColor: 'yellow'
+                }}>
+                  <View style={{
+                    width: 50,
+                    height: 50,
+                    borderBottomRightRadius: 50,
+                    backgroundColor: color,
+                    transform: this.getTransform(angle - Math.PI / 2, 50)
+                  }} />
+                </View>
+              </View>
+            </View>
+          ) : (
             <View style={{
               width: 50,
               height: 50,
-              overflow: 'hidden'
             }}>
+
               <View style={{
                 width: 50,
                 height: 50,
-                borderBottomRightRadius: 50,
-                backgroundColor: color,
-                transform: this.getTransform(angle-Math.PI/2, 50)
-              }} />
+                overflow: 'hidden'
+              }}>
+                <View style={{
+                  width: 50,
+                  height: 50,
+                  borderBottomRightRadius: 50,
+                  backgroundColor: color,
+                  transform: this.getTransform(angle - Math.PI / 2, 50)
+                }} />
+              </View>
             </View>
-          </View>
+          )
         )}
       </View>
     )
@@ -176,16 +220,15 @@ class PieChart extends React.Component {
   drawT () {
     let pies = []
     if (this.state.pieSize.length === 0) return null
-    for (let i = 0; i < this.state.pieSize.length ; i++) {
-      
+    for (let i = 0; i < this.state.pieSize.length; i++) {
       pies.push(
         <View key={`t${i}`} style={{
 
-          transform: this.getTransform(this.state.piePos[i], 50),
+          transform: [{rotate: `${this.state.piePos[i]}rad`}],
           position: 'absolute'
 
         }}>
-          {this.drawPie(this.state.pieSize[i], this.props.colors[i])
+          {this.drawPie(this.state.pieSize[i], this.props.colors[i], true)
             }
         </View>
         )
@@ -217,7 +260,7 @@ class PieChart extends React.Component {
 
 PieChart.defaultProps = {
   data: [10, 20, 40, 60],
-  colors: ['green', 'red', 'blue', 'black', 'yellow', 'purple']
+  colors: ['green', 'red', 'blue', 'black', 'yellow', 'purple', 'blue', 'orange']
 }
 const styles = StyleSheet.create({
   container: {
