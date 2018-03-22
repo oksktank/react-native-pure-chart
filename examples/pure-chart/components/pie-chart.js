@@ -94,7 +94,7 @@ class PieChart extends React.Component {
   getTransform (rad, width) {
     let x = (0 - width / 2) * Math.cos(rad) - (0 - width / 2) * Math.sin(rad)
     let y = (0 - width / 2) * Math.sin(rad) + (0 - width / 2) * Math.cos(rad)
-
+    
     return [ {translateX: (-1 * x) - width / 2}, {translateY: (-1 * y) - width / 2 }, { rotate: rad + 'rad' } ]
   }
   drawTest (angle, color) {
@@ -144,7 +144,7 @@ class PieChart extends React.Component {
             {this.drawPie(1 / 2 * Math.PI, color)}
             <View style={{
               position: 'absolute',
-              transform: this.getTransform(angle - 1 / 2 * Math.PI, 50)
+              transform: this.getTransform(angle > 1/2*Math.PI ? 1/2*Math.PI : angle, 50)
             }}>
               {this.drawPie(angle - 1 / 2 * Math.PI, color)}
             </View>
@@ -165,7 +165,7 @@ class PieChart extends React.Component {
                 height: 50,
                 borderBottomRightRadius: 50,
                 backgroundColor: color,
-                transform: this.getTransform(Math.PI / 2 - angle, 50)
+                transform: this.getTransform(angle-Math.PI/2, 50)
               }} />
             </View>
           </View>
@@ -176,7 +176,8 @@ class PieChart extends React.Component {
   drawT () {
     let pies = []
     if (this.state.pieSize.length === 0) return null
-    for (let i = 0; i < this.state.pieSize.length; i++) {
+    for (let i = 0; i < this.state.pieSize.length ; i++) {
+      
       pies.push(
         <View key={`t${i}`} style={{
 
