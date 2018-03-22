@@ -90,6 +90,13 @@ class PieChart extends React.Component {
       )
     }
   }
+
+  getTransform (rad, width) {
+    let x = (0 - width / 2) * Math.cos(rad) - (0 - width / 2) * Math.sin(rad)
+    let y = (0 - width / 2) * Math.sin(rad) + (0 - width / 2) * Math.cos(rad)
+
+    return [ {translateX: (-1 * x) - width / 2}, {translateY: (-1 * y) - width / 2 }, { rotate: rad + 'rad' } ]
+  }
   drawTest (angle, color) {
     return (
       <View style={{
@@ -133,48 +140,36 @@ class PieChart extends React.Component {
     return (
       <View>
         {angle > 1 / 2 * Math.PI ? (
-          <View style={{position: 'relative'}}>
+          <View>
             {this.drawPie(1 / 2 * Math.PI, color)}
             <View style={{
-
-              position: 'absolute',
-              transform: [{ rotate: `${1 / 2 * Math.PI}rad` }]
+              // position: 'absolute',
+              transform: this.getTransform(1 / 2 * Math.PI, 50)
             }}>
               {this.drawPie(angle - 1 / 2 * Math.PI, color)}
             </View>
           </View>
+
         ) : (
-          // 예각인 파이를 그릴 공간
           <View style={{
-            position: 'relative',
-            width: 200,
-            height: 200
+            width: 50,
+            height: 50
           }}>
             <View style={{
-              width: Math.sin(angle) * 100,
-              position: 'relative',
-              marginLeft: 100,
-              overflow: 'hidden',
-              borderColor: '#AA0000',
-              borderWidth: 0,
-              height: (1 - Math.cos(angle)) * 100
+              width: 50,
+              height: 50,
+              overflow: 'hidden'
             }}>
-              <View style={{left: -100}}>
-                {this.drawTest(angle, color)}
-              </View>
+              <View style={{
+                width: 50,
+                height: 50,
+                borderBottomRightRadius: 50,
+                backgroundColor: color,
+                transform: this.getTransform(angle, 50)
+              }} />
             </View>
-            <View style={{
-              // right triangle
-              width: 0,
-              height: 0,
-              left: 100,
-              borderBottomWidth: Math.cos(angle) * 100,
-              borderBottomColor: 'transparent',
-              borderLeftWidth: Math.sin(angle) * 100,
-              borderLeftColor: color
-            }} />
           </View>
-          )}
+        )}
       </View>
     )
   }
@@ -205,16 +200,12 @@ class PieChart extends React.Component {
         <TouchableWithoutFeedback onPress={(evt) => this.handleEvent(evt)}>
           <View style={styles.container}>
             {
-              // this.drawT()
+               this.drawT()
             }
             {
               // this.drawInfo(this.state.evtX - 100, -this.state.evtY + 100)
-
             }
-            
-            <View style={[styles.rightUpQuarterCircle, {
-              backgroundColor: 'red'
-            }]} />
+
           </View>
 
         </TouchableWithoutFeedback>
@@ -224,7 +215,7 @@ class PieChart extends React.Component {
 }
 
 PieChart.defaultProps = {
-  data: [200000, 1000000],
+  data: [10, 20, 40, 60],
   colors: ['green', 'red', 'blue', 'black', 'yellow']
 }
 const styles = StyleSheet.create({
