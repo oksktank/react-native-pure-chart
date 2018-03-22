@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, Animated, Easing } from 'react-native'
+import { View, Animated, Easing, ScrollView } from 'react-native'
 import {initData} from '../common'
 import ColumnHorizontalChartItem from './column-horizontal-chart-item'
 
@@ -53,12 +53,14 @@ export default class ColumnHorizontalChart extends Component {
 
     return (
       <View style={{height: 200, borderWidth: 1, borderColor: 'black'}}>
-        <View style={{
-          flexDirection: 'column',
-          justifyContent: 'flex-start'
-        }}>
-          {renders}
-        </View>
+        <ScrollView>
+          <View style={{
+            flexDirection: 'column',
+            justifyContent: 'flex-start'
+          }}>
+            {renders}
+          </View>
+        </ScrollView>
       </View>
     )
   }

@@ -43,7 +43,6 @@ export default class App extends React.Component {
        {seriesName: 'test2', data: data2, color: '#0e95de'},
        {seriesName: 'test3', data: data3, color: '#00c19b'}
     ]})
-
   }
   render () {
     return (

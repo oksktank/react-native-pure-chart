@@ -2,10 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import {View, Text} from 'react-native'
 
-const SINGLE_SERIES_WITH_NUMBERS = 0
-const SINGLE_SERIES_WITH_OBJECTS = 1
-const MULTI_SERIES = 2
-
 function flattenData (data) {
   let numberCount = 0
   let objectWithYCount = 0
