@@ -52,8 +52,14 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{padding: 20}}>
-          <PureChart type={'line'} data={this.state.data} height={200} />
-          <PureChart type={'bar'} data={this.state.data} height={200} />
+          <PureChart type={'line'}
+            data={this.state.data}
+            height={200}
+            numberOfYAxisGuideLine={10} />
+          <PureChart type={'bar'}
+            data={this.state.data}
+            height={200}
+            numberOfYAxisGuideLine={10} />
           <Button title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>
           </Button>
