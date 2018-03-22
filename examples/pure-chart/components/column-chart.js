@@ -8,7 +8,7 @@ export default class ColumnChart extends Component {
   constructor (props) {
     super(props)
     let defaultGap = this.props.defaultColumnWidth + this.props.defaultColumnMargin
-    let newState = initData(this.props.data, this.props.height, defaultGap)
+    let newState = initData(this.props.data, this.props.height, defaultGap, this.props.numberOfYAxisGuideLine)
     this.state = {
       sortedData: newState.sortedData,
       max: newState.max,
@@ -26,7 +26,7 @@ export default class ColumnChart extends Component {
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
         fadeAnim: new Animated.Value(0)
-      }, initData(nextProps.data, this.props.height, this.state.gap)), () => {
+      }, initData(nextProps.data, this.props.height, this.state.gap, this.props.numberOfYAxisGuideLine)), () => {
         Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
       })
     }
@@ -80,7 +80,9 @@ export default class ColumnChart extends Component {
 
       let seriesCount = this.state.sortedData.length
       let plusGap = 10 * seriesCount
-      if (selectedIndex === standardSeries.data.length - 1) {
+      if (this.state.sortedData.length === 1) {
+        plusGap = 0
+      } else if (selectedIndex === standardSeries.data.length - 1) {
         plusGap = -50
       }
       // 차트 width를 마지막에 늘려야겠음.

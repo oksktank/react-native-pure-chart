@@ -5,7 +5,7 @@ import {initData, drawYAxis, drawGuideLine, drawYAxisLabels, numberWithCommas, d
 class LineChart extends React.Component {
   constructor (props) {
     super(props)
-    let newState = initData(this.props.data, this.props.height, this.props.gap)
+    let newState = initData(this.props.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine)
     this.state = {
       loading: false,
       sortedData: newState.sortedData,
@@ -43,7 +43,7 @@ class LineChart extends React.Component {
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
         fadeAnim: new Animated.Value(0)
-      }, initData(nextProps.data, this.props.height, this.props.gap)), () => {
+      }, initData(nextProps.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine)), () => {
         Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
       })
     }
@@ -161,16 +161,18 @@ class LineChart extends React.Component {
       borderColor: !seriesColor ? this.props.primaryColor : seriesColor
     }
     let dataLength = data.length
+    
     for (let i = 0; i < dataLength - 1; i++) {
       result.push(this.drawCoordinate(i, data[i], data[i + 1], '#FFFFFF00', lineStyle, false, false, seriesIndex))
     }
+
 
     let lastData = Object.assign({}, data[dataLength - 1])
     let lastCoordinate = Object.assign({}, data[dataLength - 1])
     lastCoordinate.gap = lastCoordinate.gap + this.props.gap
     result.push(this.drawCoordinate((dataLength), lastData, lastCoordinate, '#FFFFFF', {}, true, true, seriesIndex))
 
-    if (dataLength > 1) {
+    if (dataLength > 0) {
       result.push(this.drawPoint(0, data[0], seriesColor))
     }
 
@@ -198,7 +200,7 @@ class LineChart extends React.Component {
 
       let left = dataObject.gap
       let gap = 0
-      if (index === data.length - 1) {
+      if (index === data.length - 1 && index !== 0) {
         left = data[index - 1].gap
         gap = dataObject.gap - left
       }
@@ -272,7 +274,8 @@ class LineChart extends React.Component {
                         flexDirection: 'row',
                         alignItems: 'flex-end',
                         height: '100%',
-                        position: index === 0 ? 'relative' : 'absolute'
+                        position: index === 0 ? 'relative' : 'absolute',
+                        minWidth: 200
                       }} >
                         {this.drawCoordinates(obj.data, obj.seriesColor, index)}
                       </Animated.View>
@@ -304,7 +307,8 @@ LineChart.defaultProps = {
   gap: 60,
   onPointClick: (point) => {
 
-  }
+  },
+  numberOfYAxisGuideLine: 5
 }
 
 const styles = StyleSheet.create({
