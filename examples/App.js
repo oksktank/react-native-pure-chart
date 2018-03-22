@@ -16,7 +16,7 @@ export default class App extends React.Component {
     var data2 = []
     var data3 = []
     var startDate = moment()
-    for (var i = 0; i < Math.round(Math.random() * 10) + 30; i++) {
+    for (var i = 0; i < 10; i++) {
       startDate.add(1, 'days')
       data.push(
         {
