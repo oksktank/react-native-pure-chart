@@ -12,6 +12,20 @@ export default class App extends React.Component {
     }
   }
 
+  //파이차트 테스트 하기 
+  componentDidMount () {
+    
+    this.test = 0
+    setInterval(() => {
+      if (this.test < 360) {
+        this.test++
+        this.setState({
+          pieData: [this.test, 360 - this.test]
+        })
+      }
+    }, 5)
+  }
+
   generateData () {
     var data = []
     var data2 = []
