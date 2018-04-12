@@ -54,7 +54,13 @@ export default class App extends React.Component {
         <View style={{padding: 20}}>
           <PureChart type={'line'}
             data={this.state.data}
+            width={'100%'}
             height={200}
+            customValueRenderer={(index, point) => {
+              return (
+                <Text style={{textAlign: 'center'}}>{point.y}</Text>
+              )
+            }}
             numberOfYAxisGuideLine={10} />
           <PureChart type={'bar'}
             data={this.state.data}
