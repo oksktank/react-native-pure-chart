@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { AppRegistry, StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native'
+import { Alert, AppRegistry, StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native'
 class PieChart extends React.Component {
   constructor (props) {
     super(props)
@@ -9,9 +9,11 @@ class PieChart extends React.Component {
     this.state = {
       // pieSize[i] : size of ith pie, piePos[i] : starting position of ith pie;
       pieSize: [],
-      piePos: [],
-      evtX: 200,
-      evtY: 200
+      piePos: [],      
+      pieIndex: [],
+      currentPieIdx: -1,
+      evtX: 0,
+      evtY: 0
     }
   }
   // initData!!
@@ -31,20 +33,34 @@ class PieChart extends React.Component {
       sum += data[i]
     }
     // pieSize에는 각각 라디안값이 들어감
-    let pieSize = data.map((v) => {
-      return v / sum * 2 * Math.PI
-    })
+    let pieSize = [];
+    let pieIndex = [];
+    let index = 0;
+    for(let i=0; i<data.length; i++) {
+      if(data[i] / sum * 2 * Math.PI > Math.PI) {
+        pieIndex.push(index)
+        pieIndex.push(index)
+        pieSize.push(Math.PI)
+        pieSize.push(data[i] / sum * 2 * Math.PI - Math.PI)
+      } else {
+        pieIndex.push(index)
+        pieSize.push(data[i] / sum * 2 * Math.PI)
+      }
+      index++
+    }
+    // piePos에는 각각 시작위치가 라디안 값으로 들어감
     let piePos = []
     piePos[0] = 0
-    for (let i = 1; i < data.length; i++) {
+    for (let i = 1; i < pieSize.length; i++) {
       piePos[i] = piePos[i - 1] + pieSize[i - 1]
     }
     this.setState({
       pieSize: pieSize,
-      piePos: piePos
+      piePos: piePos,
+      pieIndex: pieIndex
     })
   }
-  handleEvent (evt) {
+  handleEventOld (evt) {
     /* this.setState({
       evtX: evt.nativeEvent.pageX,
       evtY: evt.nativeEvent.pageY
@@ -59,8 +75,28 @@ class PieChart extends React.Component {
       })
     })
   }
+  handleEvent (evt, idx) {
+    /* this.setState({
+      evtX: evt.nativeEvent.pageX,
+      evtY: evt.nativeEvent.pageY
+    }) */
 
-  drawInfo (x, y) {
+    console.log(idx)
+    let pageX = evt.nativeEvent.pageX
+    let pageY = evt.nativeEvent.pageY
+    this.setState({
+      currentPieIdx: idx
+    })
+    this.refs.test.measure((fx, fy, width, height, px, py) => {
+      this.setState({
+        evtX: pageX - px,
+        evtY: pageY - py
+
+      })
+    })
+  }
+
+  drawInfoOld (x, y) {
     let dist = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5)
     // console.log('x: ' + x + '  y: ' + y)
     if (dist <= 100) {
@@ -91,58 +127,36 @@ class PieChart extends React.Component {
     }
   }
 
+  drawInfo (index) {
+    if (index !== -1) {
+      Alert.alert('You pressed number ' + index)
+    }
+  }
+
   getTransform (rad, width, add = 0) {
     let x = (0 - width / 2) * Math.cos(rad) - (0 - width / 2) * Math.sin(rad)
     let y = (0 - width / 2) * Math.sin(rad) + (0 - width / 2) * Math.cos(rad)
 
-    return [ {translateX: (-1 * x) - width / 2 + add}, {translateY: (-1 * y) - width / 2 }, { rotate: rad + 'rad' } ]
-  }
-  drawTest (angle, color) {
-    return (
-      <View style={{
-        // ##위치 정해야함
-        width: 100 + Math.sin(angle) * 100,
-        height: (1 - Math.cos(angle)) * 100,
-        borderWidth: 0,
-        borderColor: '#00AA00'
-      }}>
-        <View style={{}}>
-          {
-              // 사각형 그릴 공간 여기에 .parent {overflow: hidden}을 넣을 것
-          }
-          <View style={[styles.circle, {
-            backgroundColor: color
-          }]} />
-          <View style={{
-            // 덮어씨우는 정사각형 반은 투명 반은 흰색
-            flexDirection: 'row',
-            width: 200,
-            height: 200,
-            transform: [{ rotate: `${angle}rad` }]
-          }}>
-            <View style={{
-              width: 100,
-              height: 200,
-              backgroundColor: 'transparent'
-            }} />
-            <View style={{
-              width: 100,
-              height: 200,
-              backgroundColor: 'white'
-            }} />
-          </View>
-        </View>
-      </View>
-    )
+    return [ {translateX: (-1 * x) - width / 2 + add}, { translateY: (-1 * y) - width / 2 }, { rotate: rad + 'rad' } ]
   }
   drawPie (angle, color, big) {
+    {
+      console.log(angle)
+    }
     // angle: 0 ~ 2PI
     return (
+
       <View>
-        {angle > 1 / 2 * Math.PI ? (
-          <View>
+        {angle == 0 ? (
+          
+          <View 
+          />
+        ) : (
+
+          angle > (1 / 2 * Math.PI) ? (
+            <View>
             <View style={{width: 100, height: 50}} />
-            <View style={{ flexDirection: 'row', backgroundColor: 'transparent', overflow: 'visible'}}>
+            <View style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
 
               <View style={{
 
@@ -151,18 +165,22 @@ class PieChart extends React.Component {
 
                 transform: this.getTransform(Math.PI / 2, 50, 50)
               }}>
+
                 <View style={{
                 }}>
                   {this.drawPie(angle - 1 / 2 * Math.PI, color, false)}
                 </View>
               </View>
-              <View style={{opacity: 1,
+
+              <View style={{
+                opacity: 1,
 
                 width: 50,
                 height: 50
               }}>
                 {this.drawPie(1 / 2 * Math.PI, color, false)}
               </View>
+
             </View>
           </View>
 
@@ -195,7 +213,7 @@ class PieChart extends React.Component {
           ) : (
             <View style={{
               width: 50,
-              height: 50,
+              height: 50
             }}>
 
               <View style={{
@@ -213,7 +231,7 @@ class PieChart extends React.Component {
               </View>
             </View>
           )
-        )}
+        ))}
       </View>
     )
   }
@@ -228,8 +246,16 @@ class PieChart extends React.Component {
           position: 'absolute'
 
         }}>
-          {this.drawPie(this.state.pieSize[i], this.props.colors[i], true)
+          <TouchableWithoutFeedback onPress={(evt) => {
+            let a = this.handleEvent.bind(this, evt, i)
+            a()
+          }}>
+            {this.drawPie(this.state.pieSize[i], this.props.colors[this.state.pieIndex[i]], true)
             }
+            {
+            // this.drawInfo(this.state.currentPieIdx)
+            }
+          </TouchableWithoutFeedback>
         </View>
         )
     }
@@ -240,26 +266,22 @@ class PieChart extends React.Component {
   render () {
     return (
       <View ref='test' collapsable={false}>
+        <View style={styles.container}>
+          {
+            this.drawT()
+          }
+          {
+            this.drawInfo(this.state.currentPieIdx)
+          }
 
-        <TouchableWithoutFeedback onPress={(evt) => this.handleEvent(evt)}>
-          <View style={styles.container}>
-            {
-               this.drawT()
-            }
-            {
-              // this.drawInfo(this.state.evtX - 100, -this.state.evtY + 100)
-            }
-
-          </View>
-
-        </TouchableWithoutFeedback>
+        </View>
       </View>
     )
   }
 }
 
 PieChart.defaultProps = {
-  data: [10, 20, 40, 60],
+  data: [10, 20, 40, 100],
   colors: ['green', 'red', 'blue', 'black', 'yellow', 'purple', 'blue', 'orange']
 }
 const styles = StyleSheet.create({
