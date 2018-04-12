@@ -166,5 +166,8 @@ add custom value on the point
     }}/>
 ```
 ![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/customValueRenderer.png)
+
+##### `numberOfYAxisGuideLine`: number
+set number of Y Axis guide line
 ## License
 MIT
