@@ -12,9 +12,10 @@ export default class App extends React.Component {
     }
   }
 
-  //파이차트 테스트 하기 
+  //파이차트 테스트 하기
+  
   componentDidMount () {
-    
+
     this.test = 0
     setInterval(() => {
       if (this.test < 360) {
