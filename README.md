@@ -117,6 +117,9 @@ render(
 ##### `type`: string
 type of chart. ['line' | 'bar'] is now available
 
+##### `height`: number
+height of chart
+
 ##### `data`: array
 data for chart 
 ```js 
@@ -147,5 +150,21 @@ multi series data for chart
     .... 
   ]
 ```
+
+##### `customValueRenderer`: func
+add custom value on the point
+```js
+  <PureChart type={'line'}
+    data={data}
+    width={'100%'}
+    height={200}
+    customValueRenderer={(index, point) => {
+      if (index % 2 === 0) return null
+      return (
+        <Text style={{textAlign: 'center'}}>{point.y}</Text>
+      )
+    }}/>
+```
+![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/customValueRenderer.png)
 ## License
 MIT
