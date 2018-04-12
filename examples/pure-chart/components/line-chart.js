@@ -158,7 +158,6 @@ class LineChart extends React.Component {
   drawValue (index, point) {
     let key = 'pointvalue' + index
     let size = 200
-    console.log('point', point)
     return (
 
       <View key={key} style={{
@@ -177,7 +176,6 @@ class LineChart extends React.Component {
   }
 
   drawCustomValue (index, point) {
-    console.log('custom', this.props.customValueRenderer)
     if (this.props.customValueRenderer) {
       return this.props.customValueRenderer(index, point)
     } else {

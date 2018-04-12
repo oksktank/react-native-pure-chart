@@ -57,6 +57,7 @@ export default class App extends React.Component {
             width={'100%'}
             height={200}
             customValueRenderer={(index, point) => {
+              if (index % 2 === 0) return null
               return (
                 <Text style={{textAlign: 'center'}}>{point.y}</Text>
               )
