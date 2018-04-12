@@ -140,6 +140,7 @@ class LineChart extends React.Component {
       <TouchableWithoutFeedback key={key} onPress={() => {
         this.setState({selectedIndex: index})
       }}>
+
         <View style={StyleSheet.flatten([styles.pointWrapper, {
           width: size,
           height: size,
@@ -154,6 +155,33 @@ class LineChart extends React.Component {
       </TouchableWithoutFeedback>
     )
   }
+  drawValue (index, point) {
+    let key = 'pointvalue' + index
+    let size = 200
+    return (
+
+      <View key={key} style={{
+        position: 'absolute',
+        left: index === 0 ? point.gap : point.gap - size / 2,
+        bottom: point.ratioY + 10,
+        backgroundColor: 'transparent',
+        width: index !== 0 ? 200 : undefined
+        
+      }} >
+        {this.drawCustomValue(index, point)}
+
+      </View>
+
+    )
+  }
+
+  drawCustomValue (index, point) {
+    if (this.props.customValueRenderer) {
+      return this.props.customValueRenderer(index, point)
+    } else {
+      return null
+    }
+  }
 
   drawCoordinates (data, seriesColor, seriesIndex) {
     let result = []
@@ -161,24 +189,25 @@ class LineChart extends React.Component {
       borderColor: !seriesColor ? this.props.primaryColor : seriesColor
     }
     let dataLength = data.length
-    
+
+    if (dataLength > 0) {
+      result.push(this.drawPoint(0, data[0], seriesColor))
+      result.push(this.drawValue(0, data[0], seriesColor))
+    }
+
+    for (let i = 0; i < dataLength - 1; i++) {
+      result.push(this.drawPoint((i + 1), data[i + 1], seriesColor))
+      result.push(this.drawValue((i + 1), data[i + 1], seriesColor))
+    }
+
     for (let i = 0; i < dataLength - 1; i++) {
       result.push(this.drawCoordinate(i, data[i], data[i + 1], '#FFFFFF00', lineStyle, false, false, seriesIndex))
     }
-
 
     let lastData = Object.assign({}, data[dataLength - 1])
     let lastCoordinate = Object.assign({}, data[dataLength - 1])
     lastCoordinate.gap = lastCoordinate.gap + this.props.gap
     result.push(this.drawCoordinate((dataLength), lastData, lastCoordinate, '#FFFFFF', {}, true, true, seriesIndex))
-
-    if (dataLength > 0) {
-      result.push(this.drawPoint(0, data[0], seriesColor))
-    }
-
-    for (let i = 0; i < dataLength - 1; i++) {
-      result.push(this.drawPoint((i + 1), data[i + 1], seriesColor))
-    }
 
     return result
   }
