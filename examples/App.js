@@ -13,7 +13,7 @@ export default class App extends React.Component {
   }
 
   //파이차트 테스트 하기
-  
+  /*
   componentDidMount () {
 
     this.test = 0
@@ -26,6 +26,7 @@ export default class App extends React.Component {
       }
     }, 5)
   }
+  */
 
   generateData () {
     var data = []
