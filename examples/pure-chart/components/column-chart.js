@@ -125,19 +125,19 @@ export default class ColumnChart extends Component {
         backgroundColor: this.props.backgroundColor
       }])}>
         <View style={{paddingRight: 5}}>
-          {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue)}
+          {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
         </View>
         <View style={styles.mainContainer}>
           <ScrollView horizontal>
             <View>
               <View ref='chartView' style={styles.chartContainer}>
-                {drawYAxis()}
-                {drawGuideLine(this.state.guideArray)}
+                {drawYAxis(this.props.yAxisColor)}
+                {drawGuideLine(this.state.guideArray, this.props.yAxisGridLineColor)}
                 {this.renderColumns(fadeAnim)}
               </View>
-              {drawXAxis()}
+              {drawXAxis(this.props.xAxisColor)}
               <View style={{ marginLeft: this.props.defaultColumnWidth / 2 }}>
-                {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap)}
+                {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap, this.props.labelColor)}
               </View>
             </View>
             {this.drawTooltip(this.state.selectedIndex)}

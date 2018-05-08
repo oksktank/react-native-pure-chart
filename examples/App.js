@@ -27,7 +27,7 @@ export default class App extends React.Component {
       data2.push(
         {
           x: startDate.format('YYYY-MM-DD'),
-          y: Math.round(Math.random() * 50)
+          y: Math.round(Math.random() * 50) + 0.5
         }
       )
       data3.push(
@@ -56,6 +56,11 @@ export default class App extends React.Component {
             data={this.state.data}
             width={'100%'}
             height={300}
+            xAxisColor={'red'}
+            yAxisColor={'red'}
+            xAxisGridLineColor={'red'}
+            yAxisGridLineColor={'red'}
+            labelColor={'red'}
             customValueRenderer={(index, point) => {
               if (index % 2 === 0) return null
               return (
@@ -66,6 +71,11 @@ export default class App extends React.Component {
           <PureChart type={'bar'}
             data={this.state.data}
             height={300}
+            xAxisColor={'red'}
+            yAxisColor={'red'}
+            xAxisGridLineColor={'red'}
+            yAxisGridLineColor={'red'}
+            labelColor={'red'}
             numberOfYAxisGuideLine={10} />
           <Button title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>

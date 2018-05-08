@@ -101,7 +101,8 @@ class LineChart extends React.Component {
         </View>
         {!lastCoordinate && seriesIndex === 0 ? (
           <View style={StyleSheet.flatten([styles.guideLine, {
-            width: dx
+            width: dx,
+            borderRightColor: this.props.xAxisGridLineColor
           }])} />
         ) : null}
         {seriesIndex === this.state.sortedData.length - 1 && (
@@ -287,7 +288,7 @@ class LineChart extends React.Component {
           backgroundColor: this.props.backgroundColor
         }])}>
           <View style={styles.yAxisLabelsWrapper}>
-            {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue)}
+            {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
 
           </View>
 
@@ -297,8 +298,8 @@ class LineChart extends React.Component {
 
                 <View ref='chartView' style={styles.chartViewWrapper}>
 
-                  {drawYAxis()}
-                  {drawGuideLine(this.state.guideArray)}
+                  {drawYAxis(this.props.yAxisColor)}
+                  {drawGuideLine(this.state.guideArray, this.props.yAxisGridLineColor)}
                   {this.state.sortedData.map((obj, index) => {
                     return (
                       <Animated.View key={'animated_' + index} style={{
@@ -318,8 +319,8 @@ class LineChart extends React.Component {
 
                 </View>
 
-                {drawXAxis()}
-                {drawXAxisLabels(this.state.sortedData[0].data, this.props.gap)}
+                {drawXAxis(this.props.xAxisColor)}
+                {drawXAxisLabels(this.state.sortedData[0].data, this.props.gap, this.props.labelColor)}
               </View>
 
             </ScrollView>
