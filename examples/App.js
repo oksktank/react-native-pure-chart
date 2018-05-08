@@ -55,7 +55,7 @@ export default class App extends React.Component {
           <PureChart type={'line'}
             data={this.state.data}
             width={'100%'}
-            height={200}
+            height={300}
             customValueRenderer={(index, point) => {
               if (index % 2 === 0) return null
               return (
@@ -65,7 +65,7 @@ export default class App extends React.Component {
             numberOfYAxisGuideLine={10} />
           <PureChart type={'bar'}
             data={this.state.data}
-            height={200}
+            height={300}
             numberOfYAxisGuideLine={10} />
           <Button title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>
@@ -79,6 +79,7 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#AA000050',
     marginTop: 100
   }
 })

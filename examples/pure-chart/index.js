@@ -34,12 +34,12 @@ PureChart.propTypes = {
   color: PropTypes.string,
   height: PropTypes.number,
   numberOfYAxisGuideLine: PropTypes.number,
-  customValueRenderer: PropTypes.func
+  customValueRenderer: PropTypes.func,
+  backgroundColor: PropTypes.string
 }
 PureChart.defaultProps = {
   color: '#297AB1',
   height: 100,
-  numberOfYAxisGuideLine: 5
+  numberOfYAxisGuideLine: 5,
+  backgroundColor: '#FFFFFF'
 }
-
-
