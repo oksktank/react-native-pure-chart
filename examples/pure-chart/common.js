@@ -202,17 +202,17 @@ export const getGuideArray = (max, height, numberOfPoints = 5) => {
 
   for (let i = 1; i < numberOfPoints + 1; i++) {
     let v = x / numberOfPoints * i
-    arr.push([v + postfix, v * temp / max * height])
+    arr.push([v + postfix, v * temp / max * height, 1 * temp / max * height])
   }
 
   return arr
 }
 
-export const drawYAxis = () => {
+export const drawYAxis = (color = '#e0e0e0') => {
   return (
     <View style={{
       borderRightWidth: 1,
-      borderColor: '#e0e0e0',
+      borderColor: color,
       width: 1,
       height: '100%',
       marginRight: 0
@@ -222,13 +222,15 @@ export const drawYAxis = () => {
   )
 }
 
-export const drawYAxisLabels = (arr, height) => {
+export const drawYAxisLabels = (arr, height, minValue, color = '#000000') => {
   return (
     <View style={{
       width: 33,
       height: height,
       justifyContent: 'flex-end',
-      alignItems: 'flex-end'
+      alignItems: 'flex-end',
+      marginBottom: minValue && arr && arr.length > 0 ? -1 * arr[0][2] * minValue : null,
+      overflow: 'hidden'
     }}>
 
       {arr.length === 0 ? (
@@ -249,7 +251,7 @@ export const drawYAxisLabels = (arr, height) => {
               bottom: v[1] - 5,
               position: 'absolute'
             }}>
-            <Text style={{fontSize: 11}}>{v[0]}</Text>
+            <Text style={{fontSize: 11, color: color}}>{v[0]}</Text>
           </View>
         )
       })}
@@ -257,12 +259,11 @@ export const drawYAxisLabels = (arr, height) => {
     </View>
   )
 }
-export const drawGuideLine = (arr) => {
+export const drawGuideLine = (arr, color = '#e0e0e0') => {
   return (
     <View style={{
       width: '100%',
       height: '100%',
-
       position: 'absolute'
     }}>
 
@@ -273,7 +274,7 @@ export const drawGuideLine = (arr) => {
             style={{
               width: '100%',
               borderTopWidth: 1,
-              borderTopColor: '#e0e0e0',
+              borderTopColor: color,
               bottom: v[1],
               position: 'absolute'
             }} />
@@ -302,16 +303,16 @@ export const numberWithCommas = (x, summary = true) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + postfix
 }
 
-export const drawXAxis = () => {
+export const drawXAxis = (color = '#e0e0e0') => {
   return (
     <View style={{
       width: '100%',
       borderTopWidth: 1,
-      borderTopColor: '#e0e0e0'
+      borderTopColor: color
     }} />
   )
 }
-export const drawXAxisLabels = (sortedData, gap) => {
+export const drawXAxisLabels = (sortedData, gap, color = '#000000') => {
   return (
     <View style={{
       width: '100%',
@@ -329,7 +330,7 @@ export const drawXAxisLabels = (sortedData, gap) => {
               width: gap,
               alignItems: 'center'
             }}>
-              <Text style={{fontSize: 9}}>
+              <Text style={{fontSize: 9, color: color}}>
                 {
                   // data[3]
                   data['x']

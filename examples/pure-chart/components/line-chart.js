@@ -101,7 +101,8 @@ class LineChart extends React.Component {
         </View>
         {!lastCoordinate && seriesIndex === 0 ? (
           <View style={StyleSheet.flatten([styles.guideLine, {
-            width: dx
+            width: dx,
+            borderRightColor: this.props.xAxisGridLineColor
           }])} />
         ) : null}
         {seriesIndex === this.state.sortedData.length - 1 && (
@@ -119,7 +120,8 @@ class LineChart extends React.Component {
               width: dx,
               height: '100%',
               position: 'absolute',
-              marginLeft: -1 * dx / 2
+              marginLeft: -1 * dx / 2,
+              backgroundColor: '#FFFFFF01'
             }} />
           </TouchableWithoutFeedback>
         )}
@@ -166,7 +168,7 @@ class LineChart extends React.Component {
         bottom: point.ratioY + 10,
         backgroundColor: 'transparent',
         width: index !== 0 ? 200 : undefined
-        
+
       }} >
         {this.drawCustomValue(index, point)}
 
@@ -190,6 +192,10 @@ class LineChart extends React.Component {
     }
     let dataLength = data.length
 
+    for (let i = 0; i < dataLength - 1; i++) {
+      result.push(this.drawCoordinate(i, data[i], data[i + 1], '#FFFFFF00', lineStyle, false, false, seriesIndex))
+    }
+
     if (dataLength > 0) {
       result.push(this.drawPoint(0, data[0], seriesColor))
       result.push(this.drawValue(0, data[0], seriesColor))
@@ -198,10 +204,6 @@ class LineChart extends React.Component {
     for (let i = 0; i < dataLength - 1; i++) {
       result.push(this.drawPoint((i + 1), data[i + 1], seriesColor))
       result.push(this.drawValue((i + 1), data[i + 1], seriesColor))
-    }
-
-    for (let i = 0; i < dataLength - 1; i++) {
-      result.push(this.drawCoordinate(i, data[i], data[i + 1], '#FFFFFF00', lineStyle, false, false, seriesIndex))
     }
 
     let lastData = Object.assign({}, data[dataLength - 1])
@@ -282,9 +284,11 @@ class LineChart extends React.Component {
     let {fadeAnim} = this.state
     return (
       this.state.sortedData.length > 0 ? (
-        <View style={styles.wrapper}>
+        <View style={StyleSheet.flatten([styles.wrapper, {
+          backgroundColor: this.props.backgroundColor
+        }])}>
           <View style={styles.yAxisLabelsWrapper}>
-            {drawYAxisLabels(this.state.guideArray, this.props.height + 20)}
+            {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
 
           </View>
 
@@ -294,8 +298,8 @@ class LineChart extends React.Component {
 
                 <View ref='chartView' style={styles.chartViewWrapper}>
 
-                  {drawYAxis()}
-                  {drawGuideLine(this.state.guideArray)}
+                  {drawYAxis(this.props.yAxisColor)}
+                  {drawGuideLine(this.state.guideArray, this.props.yAxisGridLineColor)}
                   {this.state.sortedData.map((obj, index) => {
                     return (
                       <Animated.View key={'animated_' + index} style={{
@@ -304,7 +308,8 @@ class LineChart extends React.Component {
                         alignItems: 'flex-end',
                         height: '100%',
                         position: index === 0 ? 'relative' : 'absolute',
-                        minWidth: 200
+                        minWidth: 200,
+                        marginBottom: this.props.minValue && this.state.guideArray && this.state.guideArray.length > 0 ? -1 * this.state.guideArray[0][2] * this.props.minValue : null
                       }} >
                         {this.drawCoordinates(obj.data, obj.seriesColor, index)}
                       </Animated.View>
@@ -314,8 +319,8 @@ class LineChart extends React.Component {
 
                 </View>
 
-                {drawXAxis()}
-                {drawXAxisLabels(this.state.sortedData[0].data, this.props.gap)}
+                {drawXAxis(this.props.xAxisColor)}
+                {drawXAxisLabels(this.state.sortedData[0].data, this.props.gap, this.props.labelColor)}
               </View>
 
             </ScrollView>
@@ -343,7 +348,7 @@ LineChart.defaultProps = {
 const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF'
+    overflow: 'hidden'
   },
   yAxisLabelsWrapper: {
     paddingRight: 5
@@ -352,7 +357,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     margin: 0,
-    paddingRight: 0
+    paddingRight: 0,
+    overflow: 'hidden'
   },
   coordinateWrapper: {
     overflow: 'hidden',

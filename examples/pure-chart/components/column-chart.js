@@ -59,7 +59,10 @@ export default class ColumnChart extends Component {
       }
     }
     return (
-      <Animated.View style={[styles.chartView, {transform: [{scaleY: fadeAnim}]}]}>
+      <Animated.View style={[styles.chartView, {
+        transform: [{scaleY: fadeAnim}],
+        marginBottom: this.props.minValue && this.state.guideArray && this.state.guideArray.length > 0 ? -1 * this.state.guideArray[0][2] * this.props.minValue : null
+      }]}>
         {renderColumns}
       </Animated.View>
     )
@@ -118,21 +121,23 @@ export default class ColumnChart extends Component {
     if (this.state.sortedData && this.state.sortedData.length === 0) return null
 
     return (
-      <View style={styles.wrapper}>
+      <View style={StyleSheet.flatten([styles.wrapper, {
+        backgroundColor: this.props.backgroundColor
+      }])}>
         <View style={{paddingRight: 5}}>
-          {drawYAxisLabels(this.state.guideArray, this.props.height + 20)}
+          {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
         </View>
         <View style={styles.mainContainer}>
           <ScrollView horizontal>
             <View>
               <View ref='chartView' style={styles.chartContainer}>
-                {drawYAxis()}
-                {drawGuideLine(this.state.guideArray)}
+                {drawYAxis(this.props.yAxisColor)}
+                {drawGuideLine(this.state.guideArray, this.props.yAxisGridLineColor)}
                 {this.renderColumns(fadeAnim)}
               </View>
-              {drawXAxis()}
+              {drawXAxis(this.props.xAxisColor)}
               <View style={{ marginLeft: this.props.defaultColumnWidth / 2 }}>
-                {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap)}
+                {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap, this.props.labelColor)}
               </View>
             </View>
             {this.drawTooltip(this.state.selectedIndex)}
@@ -146,7 +151,7 @@ export default class ColumnChart extends Component {
 const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF'
+    overflow: 'hidden'
   },
   mainContainer: {
     paddingBottom: 0,
@@ -158,7 +163,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     margin: 0,
-    paddingRight: 10
+    paddingRight: 10,
+    overflow: 'hidden'
   },
   chartView: {
     flexDirection: 'row',
@@ -200,5 +206,5 @@ ColumnChart.defaultProps = {
   defaultColumnWidth: 40,
   defaultColumnMargin: 20,
   primaryColor: '#297AB1',
-  highlightColor: '#FFFFFF'
+  highlightColor: 'red'
 }

@@ -1,6 +1,6 @@
 {
   "name": "react-native-pure-chart",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "",
   "devDependencies": {
     "jest-expo": "~20.0.0",
