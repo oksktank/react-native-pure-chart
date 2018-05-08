@@ -71,6 +71,7 @@ export const initData = (dataProp, height, gap) => {
   }
 
   max = getMaxValue(dataProp)
+  console.log('before GuideArray : ', max, height)
   guideArray = getGuideArray(max, height)
 
   dataProp = flattenData(dataProp)
@@ -253,6 +254,43 @@ export const drawYAxisLabels = (arr, height) => {
     </View>
   )
 }
+export const drawHorizontalXAxisLabels = (arr, width) => {
+  return (
+    <View style={{
+      width: width,
+      height: 33,
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start'
+    }}>
+
+      {arr.length === 0 ? (
+        <View
+          key={'guide0'}
+          style={{
+            left: 0,
+            position: 'absolute'
+          }}>
+          <Text style={{fontSize: 11}}>0</Text>
+        </View>
+      ) : arr.map((v, i) => {
+        if (v[1] > width) return null
+        return (
+          <View
+            key={'guide' + i}
+            style={{
+              left: v[1] - 5,
+              position: 'absolute',
+              borderWidth: 1,
+              borderColor: 'gray'
+            }}>
+            <Text style={{fontSize: 11}}>{v[0]}</Text>
+          </View>
+        )
+      })}
+
+    </View>
+  )
+}
 export const drawGuideLine = (arr) => {
   return (
     <View style={{
@@ -322,6 +360,42 @@ export const drawXAxisLabels = (sortedData, gap) => {
               position: 'absolute',
               // left: data[0] - gap / 2,
               left: data['gap'] - gap / 2,
+              width: gap,
+              alignItems: 'center'
+            }}>
+              <Text style={{fontSize: 9}}>
+                {
+                  // data[3]
+                  data['x']
+                }
+              </Text>
+            </View>
+          )
+        } else {
+          return null
+        }
+      })}
+    </View>
+  )
+}
+
+export const drawHorizontalYAxisLabels = (sortedData, gap) => {
+  return (
+    <View style={{
+      height: '100%',
+      paddingVertical: 10,
+      width: 10,
+      borderWidth: 1,
+      borderColor: 'black'
+    }}>
+      {sortedData.map((data, i) => {
+        // if (data[3] && i % 2 === 1) {
+        if (data['x'] && i % 2 === 1) {
+          return (
+            <View key={'label' + i} style={{
+              position: 'absolute',
+              // left: data[0] - gap / 2,
+              top: data['gap'] - gap / 2,
               width: gap,
               alignItems: 'center'
             }}>

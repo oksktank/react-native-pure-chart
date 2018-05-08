@@ -11,12 +11,18 @@ export default class ColumnHorizontalChartItem extends Component {
       return null
     }
     for (let i = 0; i < seriesCount; i++) {
+      console.log('i=', i, ', data=', seriesArray[i].data[this.props.dataIndex])
       chartItemRenders.push(
-        <View key={i} style={{width: seriesArray[i].data[this.props.dataIndex].ratioY, height: 10, backgroundColor: seriesArray[i].seriesColor}} />
+        <View key={i} style={{
+          width: seriesArray[i].data[this.props.dataIndex].ratioY + '%',
+          height: 10,
+          backgroundColor: seriesArray[i].seriesColor
+        }} />
         )
     }
+    let margin = this.props.isLast ? 0 : this.props.defaultMargin
     return (
-      <View>
+      <View style={{borderWidth: 1, borderColor: 'black', marginBottom: margin}}>
         {chartItemRenders}
       </View>
     )
@@ -25,9 +31,12 @@ export default class ColumnHorizontalChartItem extends Component {
 
 ColumnHorizontalChartItem.propTypes = {
   seriesArray: PropTypes.array,
-  dataIndex: PropTypes.number
+  dataIndex: PropTypes.number,
+  isLast: PropTypes.bool
+
 }
 ColumnHorizontalChartItem.defaultProps = {
   seriesArray: [],
-  dataIndex: -1
+  dataIndex: -1,
+  isLast: false
 }
