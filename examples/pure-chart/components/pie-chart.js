@@ -14,7 +14,9 @@ class PieChart extends React.Component {
       currentPieIdx: -1,
       evtX: 0,
       evtY: 0,
-      selectedIndex: 0
+      selectedIndex: 0,
+      labels: [],
+      colors: []
     }
   }
   // initData!!
@@ -28,24 +30,56 @@ class PieChart extends React.Component {
   }
   // initialize data
   initData (data) {
+    let colors = []
+    let labels = []
+    if (data[0].color) {
+      for (let i = 0; i < data.length; i++) {
+        colors[i] = data[i].color
+      }
+    } else {
+      for (let i = 0; i < data.length; i++) {
+        colors[i] = this.props.colors[i % this.props.colors.length]
+      }
+      if (data.length === this.props.colors.length + 1) {
+        // 임의로 3으로 지정함 바꿔도 무방
+        colors[data.length - 1] = this.props.colors[3]
+      }
+    }
+
+    if (data[0].label) {
+      for (let i = 0; i < data.length; i++) {
+        labels[i] = data[i].label
+      }
+    } else {
+      for (let i = 0; i < data.length; i++) {
+        labels[i] = null
+      }
+    }
+    
+    for(let i=0; i<data.length; i++) {
+      console.log(data[i].value)
+      console.log(data[i].label)
+      console.log(data[i].color)      
+    }
+
     // validation
     let sum = 0
     for (let i = 0; i < data.length; i++) {
-      sum += data[i]
+      sum += data[i].value
     }
     // pieSize에는 각각 라디안값이 들어감
     let pieSize = []
     let pieIndex = []
     let index = 0
     for (let i = 0; i < data.length; i++) {
-      if (data[i] / sum * 2 * Math.PI > Math.PI) {
+      if (data[i].value / sum * 2 * Math.PI > Math.PI) {
         pieIndex.push(index)
         pieIndex.push(index)
         pieSize.push(Math.PI)
-        pieSize.push(data[i] / sum * 2 * Math.PI - Math.PI)
+        pieSize.push(data[i].value / sum * 2 * Math.PI - Math.PI)
       } else {
         pieIndex.push(index)
-        pieSize.push(data[i] / sum * 2 * Math.PI)
+        pieSize.push(data[i].value / sum * 2 * Math.PI)
       }
       index++
     }
@@ -56,6 +90,8 @@ class PieChart extends React.Component {
       piePos[i] = piePos[i - 1] + pieSize[i - 1]
     }
     this.setState({
+      labels: labels,
+      colors: colors,
       pieSize: pieSize,
       piePos: piePos,
       pieIndex: pieIndex
@@ -76,7 +112,7 @@ class PieChart extends React.Component {
       })
     })
   }
-  
+
 
   handleEvent (idx) {
     console.log(idx)
@@ -136,7 +172,7 @@ class PieChart extends React.Component {
           marginLeft: marginLeft,
           marginTop: marginTop
         }} >
-          <Text>{Math.round(this.state.pieSize[index] / (2 * Math.PI) * 10000) / 100 + '\n' + this.props.data[index]} </Text>
+          <Text>{Math.round(this.state.pieSize[index] / (2 * Math.PI) * 10000) / 100 + '\n' + this.state.value[index]} </Text>
         </View>
       )
     }
@@ -176,8 +212,8 @@ class PieChart extends React.Component {
 
           angle > (1 / 2 * Math.PI) ? (
             <View>
-                <View style={{width: 100, height: 50}} />
-                <View style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
+              <View style={{width: 100, height: 50}} />
+              <View style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
 
                   <View style={{
 
@@ -277,7 +313,7 @@ class PieChart extends React.Component {
 
         }}>
           {
-            this.drawPie(this.state.pieSize[i], this.props.colors[this.state.pieIndex[i]], true, i)
+            this.drawPie(this.state.pieSize[i], this.state.colors[this.state.pieIndex[i]], true, i)
           }
         </View>
         )
@@ -300,7 +336,7 @@ class PieChart extends React.Component {
             {
             this.drawT()
           }
-          {
+            {
             // this.drawInfo(this.state.currentPieIdx)
           }
           </View>
@@ -314,7 +350,7 @@ class PieChart extends React.Component {
 }
 
 PieChart.defaultProps = {
-  data: [10, 20, 40, 100],
+  data: [{value: 10}, {value: 20}, {value: 40}, {value: 100}],
   colors: ['green', 'red', 'blue', 'black', 'yellow', 'purple', 'blue', 'orange']
 }
 const styles = StyleSheet.create({

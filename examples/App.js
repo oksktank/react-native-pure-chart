@@ -8,11 +8,13 @@ export default class App extends React.Component {
     this.generateData = this.generateData.bind(this)
     this.state = {
       data: [],
-      pieData: [220,140]
+      pieData: [{label: '사람', value: 220, color: 'red'}, {label: '동물', value: 140, color: 'green'} ],
+      pieData2: [{value: 220, color: 'red'}, { value: 140, color: 'yellow'} ],
+      pieData3: [{value: 220}, { value: 140} ]
     }
   }
 
-  //파이차트 테스트 하기
+  // 파이차트 테스트 하기
   /*
   componentDidMount () {
 
