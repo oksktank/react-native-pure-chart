@@ -75,15 +75,21 @@ class PieChart extends React.Component {
       })
     })
   }
+  
+
   handleEvent (idx) {
-    /* this.setState({
-      evtX: evt.nativeEvent.pageX,
-      evtY: evt.nativeEvent.pageY
-    }) */
+    console.log(idx)
     this.setState({
       currentPieIdx: this.state.pieIndex[idx]
     })
   }
+  /*
+  handleEvent (a, b, c) {
+    console.log(a)
+    console.log(b)
+    console.log(c)
+  }
+  */
 
   handleEventBak (evt, idx) {
     /* this.setState({
@@ -131,7 +137,6 @@ class PieChart extends React.Component {
         }} >
           <Text>{Math.round(this.state.pieSize[index] / (2 * Math.PI) * 10000) / 100 + '\n' + this.props.data[index]} </Text>
         </View>
-
       )
     }
   }
@@ -157,7 +162,7 @@ class PieChart extends React.Component {
 
     return [ {translateX: (-1 * x) - width / 2 + add}, { translateY: (-1 * y) - width / 2 }, { rotate: rad + 'rad' } ]
   }
-  drawPie (angle, color, big) {
+  drawPie (angle, color, big, idx) {
     {
      // console.log(angle)
     }
@@ -170,50 +175,76 @@ class PieChart extends React.Component {
 
           angle > (1 / 2 * Math.PI) ? (
             <View>
-              <View style={{width: 100, height: 50}} />
-              <View style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
-
-                <View style={{
-
-                  width: 50,
-                  height: 50,
-
-                  transform: this.getTransform(Math.PI / 2, 50, 50)
-                }}>
+              <TouchableWithoutFeedback onPress={this.handleEvent(idx)}>
+                <View style={{width: 100, height: 50}} />
+                <View style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
 
                   <View style={{
+
+                    width: 50,
+                    height: 50,
+
+                    transform: this.getTransform(Math.PI / 2, 50, 50)
                   }}>
-                    {this.drawPie(angle - 1 / 2 * Math.PI, color, false)}
+
+                    <View style={{
+                    }}>
+                      {this.drawPie(angle - 1 / 2 * Math.PI, color, false, idx)}
+                    </View>
                   </View>
+
+                  <View style={{
+                    opacity: 1,
+
+                    width: 50,
+                    height: 50
+                  }}>
+                    {this.drawPie(1 / 2 * Math.PI, color, false, idx)}
+                  </View>
+
                 </View>
-
-                <View style={{
-                  opacity: 1,
-
-                  width: 50,
-                  height: 50
-                }}>
-                  {this.drawPie(1 / 2 * Math.PI, color, false)}
-                </View>
-
-              </View>
+              </TouchableWithoutFeedback>
             </View>
 
         ) : (
+          // big 사용이유
           big ? (
             <View style={{
               width: 100,
               height: 100
             }}>
-              <View style={{width: 100, height: 50}} />
-              <View style={{flexDirection: 'row'}}>
-                <View style={{width: 50, height: 50}} />
+              <TouchableWithoutFeedback onPress={this.handleEvent(idx)}>
+                <View style={{width: 100, height: 50}} />
+                <View style={{flexDirection: 'row'}}>
+                  <View style={{width: 50, height: 50}} />
+                  <View style={{
+                    width: 50,
+                    height: 50,
+                    overflow: 'hidden',
+                    borderWidth: 0,
+                    borderColor: 'yellow'
+                  }}>
+                    <View style={{
+                      width: 50,
+                      height: 50,
+                      borderBottomRightRadius: 50,
+                      backgroundColor: color,
+                      transform: this.getTransform(angle - Math.PI / 2, 50)
+                    }} />
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          ) : (
+            <View style={{
+              width: 50,
+              height: 50
+            }}>
+              <TouchableWithoutFeedback onPress={this.handleEvent(idx)}>
                 <View style={{
                   width: 50,
                   height: 50,
-                  overflow: 'hidden',
-                  borderWidth: 0,
-                  borderColor: 'yellow'
+                  overflow: 'hidden'
                 }}>
                   <View style={{
                     width: 50,
@@ -223,27 +254,7 @@ class PieChart extends React.Component {
                     transform: this.getTransform(angle - Math.PI / 2, 50)
                   }} />
                 </View>
-              </View>
-            </View>
-          ) : (
-            <View style={{
-              width: 50,
-              height: 50
-            }}>
-
-              <View style={{
-                width: 50,
-                height: 50,
-                overflow: 'hidden'
-              }}>
-                <View style={{
-                  width: 50,
-                  height: 50,
-                  borderBottomRightRadius: 50,
-                  backgroundColor: color,
-                  transform: this.getTransform(angle - Math.PI / 2, 50)
-                }} />
-              </View>
+              </TouchableWithoutFeedback>
             </View>
           )
         ))}
@@ -261,11 +272,9 @@ class PieChart extends React.Component {
           position: 'absolute'
 
         }}>
-          <TouchableWithoutFeedback onPress={this.handleEvent(i)}>
-            {
-              this.drawPie(this.state.pieSize[i], this.props.colors[this.state.pieIndex[i]], true)
-            }
-          </TouchableWithoutFeedback>
+          {
+            this.drawPie(this.state.pieSize[i], this.props.colors[this.state.pieIndex[i]], true, i)
+          }
         </View>
         )
     }
@@ -281,7 +290,7 @@ class PieChart extends React.Component {
             this.drawT()
           }
           {
-            //this.drawInfo(this.state.currentPieIdx)
+            // this.drawInfo(this.state.currentPieIdx)
           }
 
         </View>
