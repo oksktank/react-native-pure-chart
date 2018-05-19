@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Alert, AppRegistry, StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native'
+import { Alert, AppRegistry, StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
 class PieChart extends React.Component {
   constructor (props) {
     super(props)
@@ -13,7 +13,8 @@ class PieChart extends React.Component {
       pieIndex: [],
       currentPieIdx: -1,
       evtX: 0,
-      evtY: 0
+      evtY: 0,
+      selectedIndex: 0
     }
   }
   // initData!!
@@ -215,14 +216,18 @@ class PieChart extends React.Component {
                   borderWidth: 0,
                   borderColor: 'yellow'
                 }}>
+
                   <View style={{
                     width: 50,
                     height: 50,
                     borderBottomRightRadius: 50,
                     backgroundColor: color,
+                    overflow: 'hidden',
                     transform: this.getTransform(angle - Math.PI / 2, 50)
                   }} />
+
                 </View>
+
               </View>
             </View>
           ) : (
@@ -236,14 +241,19 @@ class PieChart extends React.Component {
                 height: 50,
                 overflow: 'hidden'
               }}>
+
                 <View style={{
                   width: 50,
                   height: 50,
                   borderBottomRightRadius: 50,
                   backgroundColor: color,
-                  transform: this.getTransform(angle - Math.PI / 2, 50)
+                  borderWidth: 1,
+                  transform: this.getTransform(angle - Math.PI / 2, 50),
+                  overflow: 'hidden'
                 }} />
+
               </View>
+
             </View>
           )
         ))}
@@ -256,16 +266,13 @@ class PieChart extends React.Component {
     for (let i = 0; i < this.state.pieSize.length; i++) {
       pies.push(
         <View key={`t${i}`} style={{
-
           transform: [{rotate: `${this.state.piePos[i]}rad`}],
           position: 'absolute'
 
         }}>
-          <TouchableWithoutFeedback onPress={this.handleEvent(i)}>
-            {
-              this.drawPie(this.state.pieSize[i], this.props.colors[this.state.pieIndex[i]], true)
-            }
-          </TouchableWithoutFeedback>
+
+          {this.drawPie(this.state.pieSize[i], this.props.colors[this.state.pieIndex[i]], true)}
+
         </View>
         )
     }
@@ -274,17 +281,27 @@ class PieChart extends React.Component {
     )
   }
   render () {
+    const {selectedIndex, locationX, locationY, evtX, evtY} = this.state
     return (
-      <View ref='test' collapsable={false}>
-        <View style={styles.container}>
-          {
+      <View collapsable={false}>
+        <TouchableOpacity onPress={(e) => {
+          // const {locationX, locationY} = e.nativeEvent
+          // console.log(locationX, locationY)
+          // this.setState({locationX: locationX, locationY: locationY})
+          this.handleEventOld(e)
+        }}>
+          <View ref='test' style={styles.container}>
+            {
             this.drawT()
           }
-          {
-            //this.drawInfo(this.state.currentPieIdx)
+            {
+            // this.drawInfo(this.state.currentPieIdx)
           }
-
-        </View>
+          </View>
+        </TouchableOpacity>
+        <Text>selected: {selectedIndex}</Text>
+        <Text>({locationX},{locationY})</Text>
+        <Text>({evtX},{evtY})</Text>
       </View>
     )
   }
@@ -296,8 +313,12 @@ PieChart.defaultProps = {
 }
 const styles = StyleSheet.create({
   container: {
-    width: 200,
-    height: 200,
+    width: 100,
+    borderWidth: 1,
+    backgroundColor: '#AA000050',
+    overflow: 'hidden',
+    marginLeft: 100,
+    height: 100,
     alignItems: 'center',
     justifyContent: 'center'
   },
