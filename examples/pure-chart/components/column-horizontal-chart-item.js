@@ -11,10 +11,9 @@ export default class ColumnHorizontalChartItem extends Component {
       return null
     }
     for (let i = 0; i < seriesCount; i++) {
-      console.log('i=', i, ', data=', seriesArray[i].data[this.props.dataIndex])
       chartItemRenders.push(
         <View key={i} style={{
-          width: seriesArray[i].data[this.props.dataIndex].ratioY + '%',
+          width: seriesArray[i].data[this.props.dataIndex].ratioY,
           height: 10,
           backgroundColor: seriesArray[i].seriesColor
         }} />

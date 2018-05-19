@@ -74,7 +74,6 @@ export default class ColumnChart extends Component {
     if (typeof (selectedIndex) === 'number' && selectedIndex >= 0) {
       let standardSeries = this.state.sortedData[0]
       if (!standardSeries) {
-        console.warn('standardSeries is null')
         return null
       }
 
@@ -114,7 +113,6 @@ export default class ColumnChart extends Component {
   render () {
     let {fadeAnim} = this.state
     if (this.state.sortedData && this.state.sortedData.length === 0) return null
-    console.log('column guidArray : ', this.state.guideArray)
     return (
       <View style={styles.wrapper}>
         <View style={{paddingRight: 5}}>

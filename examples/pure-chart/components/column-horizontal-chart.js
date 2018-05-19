@@ -7,7 +7,6 @@ import ColumnHorizontalChartItem from './column-horizontal-chart-item'
 export default class ColumnHorizontalChart extends Component {
   constructor (props) {
     super(props)
-    console.log('constructor')
     let defaultGap = this.props.defaultColumnWidth + this.props.defaultColumnMargin
     let newState = initData(this.props.data, this.props.width, defaultGap)
     this.state = {
@@ -18,6 +17,7 @@ export default class ColumnHorizontalChart extends Component {
       guideArray: newState.guideArray,
       gap: defaultGap
     }
+    this.renderColumns = this.renderColumns.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -36,10 +36,7 @@ export default class ColumnHorizontalChart extends Component {
     }).start()
   }
 
-  render () {
-    let {fadeAnim} = this.state
-    if (this.state.sortedData && this.state.sortedData.length === 0) return null
-
+  renderColumns (fadeAnim) {
     let seriesArray = this.state.sortedData
     let seriesCount = seriesArray.length
     if (seriesCount <= 0) {
@@ -50,30 +47,37 @@ export default class ColumnHorizontalChart extends Component {
     let standardSeriesDataCount = standardSeriesData.length
     let renders = []
     for (let i = 0; i < standardSeriesDataCount; i++) {
-      console.log('i=', i, ', data=', seriesArray)
       renders.push(<ColumnHorizontalChartItem key={i} seriesArray={seriesArray} dataIndex={i} defaultMargin={this.props.defaultColumnMargin} isLast={i === (standardSeriesDataCount - 1)} />)
     }
-    console.log('guidArray : ', this.state.guideArray)
     return (
-      <Animated.View style={{width: this.props.width, height: this.props.height, borderWidth: 0, borderColor: 'black', transform: [{scaleY: fadeAnim}]}}>
-        <ScrollView>
+      <Animated.View style={{width: '100%', transform: [{scaleY: fadeAnim}]}}>
+        {renders}
+      </Animated.View>
+    )
+  }
+
+  render () {
+    let {fadeAnim} = this.state
+    if (this.state.sortedData && this.state.sortedData.length === 0) {
+      return null
+    }
+    return (
+      <View>
+        <ScrollView style={{width: this.props.width, height: this.props.height}}>
           <View style={{flexDirection: 'row'}}>
-            {drawHorizontalYAxisLabels(this.state.sortedData[0].data, this.state.gap)}
+            {/*drawHorizontalXAxisLabels(this.state.guideArray, this.props.width + 20)*/}
             <View style={{width: '100%', borderWidth: 1, borderColor: 'red'}}>
               <View style={{
                 flexDirection: 'column',
                 justifyContent: 'flex-start'
-              }} onLayout={(event) => {
-                const {x, y, height, width} = event.nativeEvent.layout
-                console.log('#####', x, y, height, width)
               }}>
-                {renders}
+                {this.renderColumns(fadeAnim)}
               </View>
             </View>
           </View>
         </ScrollView>
-        {drawHorizontalXAxisLabels(this.state.guideArray, this.props.width + 20)}
-      </Animated.View>
+        {/*drawHorizontalYAxisLabels(this.state.sortedData[0].data, this.state.gap)*/}
+      </View>
     )
   }
 }
