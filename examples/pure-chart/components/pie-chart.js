@@ -176,7 +176,6 @@ class PieChart extends React.Component {
 
           angle > (1 / 2 * Math.PI) ? (
             <View>
-              <TouchableWithoutFeedback onPress={this.handleEvent(idx)}>
                 <View style={{width: 100, height: 50}} />
                 <View style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
 
@@ -204,7 +203,6 @@ class PieChart extends React.Component {
                   </View>
 
                 </View>
-              </TouchableWithoutFeedback>
             </View>
 
         ) : (
