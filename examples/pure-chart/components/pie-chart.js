@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Alert, AppRegistry, StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
+
 class PieChart extends React.Component {
   constructor (props) {
     super(props)
@@ -111,18 +112,19 @@ class PieChart extends React.Component {
     let pageX = evt.nativeEvent.pageX
     let pageY = evt.nativeEvent.pageY
     const {angles} = this.state
+    const {size} = this.props
     this.refs.test.measure((fx, fy, width, height, px, py) => {
       let evtX = pageX - px
       let evtY = (pageY - py)
-      let originX = pageX - px - 50
-      let originY = 50 - (pageY - py)
+      let originX = pageX - px - size / 2
+      let originY = size / 2 - (pageY - py)
       let rSquare = Math.pow(originX, 2) + Math.pow(originY, 2)
       let dx = originX
       let dy = -1 * originY
       let rad = Math.atan2(dy, dx)
       let degree = (rad * 180) / Math.PI
       if (degree < 0) degree = 360 + degree
-      let inPie = rSquare < Math.pow(50, 2)
+      let inPie = rSquare < Math.pow(size / 2, 2)
       let selectedIndex = -1
       if (inPie) {
         for (let i = 0; i < angles.length; i++) {
@@ -181,9 +183,10 @@ class PieChart extends React.Component {
     })
   }
   drawInfoOld (x, y) {
+    const {size} = this.props
     let dist = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5)
     // console.log('x: ' + x + '  y: ' + y)
-    if (dist <= 100) {
+    if (dist <= size) {
       let index = -1
       // 중심 y축 기준으로 오른쪽 왼쪽
       let pos = x > 0 ? Math.PI / 2 - Math.asin(y / dist) : Math.PI * 3 / 2 + Math.asin(y / dist)
@@ -209,17 +212,18 @@ class PieChart extends React.Component {
   }
 
   drawInfo (index, x, y) {
+    const {size} = this.props
     if (index !== -1) {
       return (
         <View style={{
-          width: 100,
-          height: 100
+          width: size,
+          height: size
         }}>
           <View style={{
             width: 50,
             height: 40,
-            marginLeft: x - 25,
-            marginTop: y - 20,
+            marginLeft: x,
+            marginTop: y,
             borderWidth: 1,
             borderRadius: 5,
             borderColor: '#e0e0e0',
@@ -239,10 +243,7 @@ class PieChart extends React.Component {
     return [ {translateX: (-1 * x) - width / 2 + add}, { translateY: (-1 * y) - width / 2 }, { rotate: rad + 'rad' } ]
   }
   drawPie (angle, color, big, idx) {
-    {
-     // console.log(angle)
-    }
-    // angle: 0 ~ 2PI
+    const {size} = this.props
     return (
       <View>
         {angle === 0 ? (
@@ -251,15 +252,15 @@ class PieChart extends React.Component {
 
           angle > (1 / 2 * Math.PI) ? (
             <View>
-              <View style={{width: 100, height: 50}} />
+              <View style={{width: size, height: size / 2}} />
               <View style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
 
                 <View style={{
 
-                  width: 50,
-                  height: 50,
+                  width: size / 2,
+                  height: size / 2,
 
-                  transform: this.getTransform(Math.PI / 2, 50, 50)
+                  transform: this.getTransform(Math.PI / 2, size / 2, size / 2)
                 }}>
 
                   <View style={{
@@ -272,8 +273,8 @@ class PieChart extends React.Component {
                 <View style={{
                   opacity: 1,
 
-                  width: 50,
-                  height: 50
+                  width: size / 2,
+                  height: size / 2
                 }}>
                   {this.drawPie(1 / 2 * Math.PI, color, false, idx)}
                 </View>
@@ -285,25 +286,23 @@ class PieChart extends React.Component {
           // big 사용이유
           big ? (
             <View style={{
-              width: 100,
-              height: 100
+              width: size,
+              height: size
             }}>
-              <View style={{width: 100, height: 50}} />
+              <View style={{width: size, height: size / 2}} />
               <View style={{flexDirection: 'row'}}>
-                <View style={{width: 50, height: 50}} />
+                <View style={{width: size / 2, height: size / 2}} />
                 <View style={{
-                  width: 50,
-                  height: 50
+                  width: size / 2,
+                  height: size / 2
                 }}>
 
                   <View style={{
-                    width: 50,
-                    height: 50,
-                    borderBottomRightRadius: 50,
+                    width: size / 2,
+                    height: size / 2,
+                    borderBottomRightRadius: size / 2,
                     backgroundColor: color,
-                    borderWidth: 1,
-                    borderColor: color,
-                    transform: this.getTransform(angle - Math.PI / 2, 50)
+                    transform: this.getTransform(angle - Math.PI / 2, size / 2)
                   }} />
 
                 </View>
@@ -312,21 +311,23 @@ class PieChart extends React.Component {
             </View>
           ) : (
             <View style={{
-              width: 50,
-              height: 50
+              width: size / 2,
+              height: size / 2
             }}>
 
               <View style={{
-                width: 50,
-                height: 50
+                width: size / 2,
+                height: size / 2
               }}>
 
                 <View style={{
-                  width: 50,
-                  height: 50,
-                  borderBottomRightRadius: 50,
+                  width: size / 2,
+                  height: size / 2,
+                  borderBottomRightRadius: size / 2,
                   backgroundColor: color,
-                  transform: this.getTransform(angle - Math.PI / 2, 50)
+                  borderWidth: 0,
+                  borderColor: color,
+                  transform: this.getTransform(angle - Math.PI / 2, size / 2)
                 }} />
 
               </View>
@@ -360,6 +361,7 @@ class PieChart extends React.Component {
   render () {
     const {selectedIndex, locationX, locationY, evtX, evtY, inPie, selectedAngle,
       pieSize, angles} = this.state
+    const {size} = this.props
     return (
       <View collapsable={false}>
 
@@ -370,7 +372,10 @@ class PieChart extends React.Component {
           this.handleEventOld(e)
         }}>
 
-          <View ref='test' style={styles.container}>
+          <View ref='test' style={StyleSheet.flatten([styles.container, {
+            width: size,
+            height: size
+          }])}>
 
             {this.drawT()}
             {this.drawInfo(this.state.selectedIndex, this.state.evtX, this.state.evtY)}
@@ -390,47 +395,15 @@ class PieChart extends React.Component {
 
 PieChart.defaultProps = {
   data: [{value: 10}, {value: 20}, {value: 40}, {value: 100}],
-  colors: ['green', 'red', 'blue', 'black', 'yellow', 'purple', 'blue', 'orange']
+  colors: ['green', 'red', 'blue', 'black', 'yellow', 'purple', 'blue', 'orange'],
+  size: 200
 }
 const styles = StyleSheet.create({
   container: {
-    width: 100,
     overflow: 'hidden',
     marginLeft: 100,
-    height: 100,
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  // 반지름이 100인 원
-  circle: {
-    width: 200,
-    position: 'absolute',
-    height: 200,
-    borderRadius: 100
-  },
-  // 정사각형을 반토막낸 직사각형
-  rectangle: {
-    width: 100,
-    height: 200,
-    left: 0,
-    position: 'absolute',
-    backgroundColor: 'transparent'
-  },
-  // 우반원
-  rightHalfCircle: {
-    width: 100,
-    height: 200,
-    left: 100,
-    position: 'absolute',
-    borderBottomRightRadius: 200,
-    borderTopRightRadius: 200
-  },
-  // 사분원 우상사분원
-  rightUpQuarterCircle: {
-    width: 100,
-    height: 100,
-    position: 'absolute',
-    borderTopRightRadius: 100
   }
 })
 
