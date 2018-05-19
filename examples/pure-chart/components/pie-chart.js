@@ -14,7 +14,9 @@ class PieChart extends React.Component {
       currentPieIdx: -1,
       evtX: 0,
       evtY: 0,
-      selectedIndex: 0
+      selectedIndex: 0,
+      labels: [],
+      colors: []
     }
   }
   // initData!!
@@ -28,24 +30,61 @@ class PieChart extends React.Component {
   }
   // initialize data
   initData (data) {
+    let colors = []
+    let labels = []
+    if (data[0].color) {
+      for (let i = 0; i < data.length; i++) {
+        colors[i] = data[i].color
+      }
+    } else {
+      for (let i = 0; i < data.length; i++) {
+        colors[i] = this.props.colors[i % this.props.colors.length]
+      }
+      if (data.length === this.props.colors.length + 1) {
+        // 임의로 3으로 지정함 바꿔도 무방
+        colors[data.length - 1] = this.props.colors[3]
+      }
+    }
+
+    if (data[0].label) {
+      for (let i = 0; i < data.length; i++) {
+        labels[i] = data[i].label
+      }
+    } else {
+      for (let i = 0; i < data.length; i++) {
+        labels[i] = null
+      }
+    }
+
+    for (let i = 0; i < data.length; i++) {
+      console.log(data[i].value)
+      console.log(data[i].label)
+      console.log(data[i].color)
+    }
+
     // validation
     let sum = 0
     for (let i = 0; i < data.length; i++) {
-      sum += data[i]
+      sum += data[i].value
     }
     // pieSize에는 각각 라디안값이 들어감
     let pieSize = []
     let pieIndex = []
+    let angles = []
     let index = 0
+    let tempAngle = 0
     for (let i = 0; i < data.length; i++) {
-      if (data[i] / sum * 2 * Math.PI > Math.PI) {
+      let angle = Math.round(data[i].value / sum * 360)
+      angles.push(tempAngle + angle)
+      tempAngle = tempAngle + angle
+      if (data[i].value / sum * 2 * Math.PI > Math.PI) {
         pieIndex.push(index)
         pieIndex.push(index)
         pieSize.push(Math.PI)
-        pieSize.push(data[i] / sum * 2 * Math.PI - Math.PI)
+        pieSize.push(data[i].value / sum * 2 * Math.PI - Math.PI)
       } else {
         pieIndex.push(index)
-        pieSize.push(data[i] / sum * 2 * Math.PI)
+        pieSize.push(data[i].value / sum * 2 * Math.PI)
       }
       index++
     }
@@ -56,9 +95,12 @@ class PieChart extends React.Component {
       piePos[i] = piePos[i - 1] + pieSize[i - 1]
     }
     this.setState({
+      labels: labels,
+      colors: colors,
       pieSize: pieSize,
       piePos: piePos,
-      pieIndex: pieIndex
+      pieIndex: pieIndex,
+      angles: angles
     })
   }
   handleEventOld (evt) {
@@ -68,18 +110,26 @@ class PieChart extends React.Component {
     }) */
     let pageX = evt.nativeEvent.pageX
     let pageY = evt.nativeEvent.pageY
-
+    const {angles} = this.state
     this.refs.test.measure((fx, fy, width, height, px, py) => {
       let evtX = pageX - px
       let evtY = (pageY - py)
       let originX = pageX - px - 50
       let originY = 50 - (pageY - py)
-      let rSquare = Math.pow(evtX, 2) + Math.pow(evtY, 2)
-      let dx = evtX
-      let dy = -1 * evtY
+      let rSquare = Math.pow(originX, 2) + Math.pow(originY, 2)
+      let dx = originX
+      let dy = -1 * originY
       let rad = Math.atan2(dy, dx)
       let degree = (rad * 180) / Math.PI
       if (degree < 0) degree = 360 + degree
+
+      let selectedIndex = -1
+      for (let i = 0; i < angles.length; i++) {
+        if (degree < angles[i]) {
+          selectedIndex = i
+          break
+        }
+      }
       this.setState({
         evtX: evtX,
         evtY: evtY,
@@ -87,7 +137,8 @@ class PieChart extends React.Component {
         originY: originY,
         inPie: rSquare < Math.pow(50, 2),
         selectedAngle: degree,
-        selectedRad: rad
+        selectedRad: rad,
+        selectedIndex: selectedIndex
       })
     })
   }
@@ -150,7 +201,7 @@ class PieChart extends React.Component {
           marginLeft: marginLeft,
           marginTop: marginTop
         }} >
-          <Text>{Math.round(this.state.pieSize[index] / (2 * Math.PI) * 10000) / 100 + '\n' + this.props.data[index]} </Text>
+          <Text>{Math.round(this.state.pieSize[index] / (2 * Math.PI) * 10000) / 100 + '\n' + this.state.value[index]} </Text>
         </View>
       )
     }
@@ -291,7 +342,7 @@ class PieChart extends React.Component {
 
         }}>
           {
-            this.drawPie(this.state.pieSize[i], this.props.colors[this.state.pieIndex[i]], true, i)
+            this.drawPie(this.state.pieSize[i], this.state.colors[this.state.pieIndex[i]], true, i)
           }
         </View>
         )
@@ -302,7 +353,7 @@ class PieChart extends React.Component {
   }
   render () {
     const {selectedIndex, locationX, locationY, evtX, evtY, inPie, selectedAngle,
-      pieSize, selectedRad} = this.state
+      pieSize, angles} = this.state
     return (
       <View collapsable={false}>
         <TouchableWithoutFeedback onPress={(e) => {
@@ -325,14 +376,14 @@ class PieChart extends React.Component {
         <Text>({evtX},{evtY})</Text>
         <Text>is coordinate In Pie chart: {'' + inPie}</Text>
         <Text>angle: {selectedAngle}</Text>
-        <Text>rad: {selectedRad}</Text>
+        <Text>angles: {JSON.stringify(angles)}</Text>
       </View>
     )
   }
 }
 
 PieChart.defaultProps = {
-  data: [10, 20, 40, 100],
+  data: [{value: 10}, {value: 20}, {value: 40}, {value: 100}],
   colors: ['green', 'red', 'blue', 'black', 'yellow', 'purple', 'blue', 'orange']
 }
 const styles = StyleSheet.create({
