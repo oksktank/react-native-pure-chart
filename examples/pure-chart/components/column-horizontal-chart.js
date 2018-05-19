@@ -7,7 +7,7 @@ import ColumnHorizontalChartItem from './column-horizontal-chart-item'
 export default class ColumnHorizontalChart extends Component {
   constructor (props) {
     super(props)
-    let defaultGap = this.props.defaultColumnWidth + this.props.defaultColumnMargin
+    let defaultGap = (10 * 3) + this.props.defaultColumnMargin + 2 //columhHeight * serisCount + defaultMargin
     let newState = initData(this.props.data, this.props.width, defaultGap)
     this.state = {
       sortedData: newState.sortedData,
@@ -61,11 +61,12 @@ export default class ColumnHorizontalChart extends Component {
     if (this.state.sortedData && this.state.sortedData.length === 0) {
       return null
     }
+    console.log(this.state.sortedData)
     return (
       <View>
         <ScrollView style={{width: this.props.width, height: this.props.height}}>
           <View style={{flexDirection: 'row'}}>
-            {/*drawHorizontalXAxisLabels(this.state.guideArray, this.props.width + 20)*/}
+            {drawHorizontalXAxisLabels(this.state.sortedData[0].data, this.state.gap)}
             <View style={{width: '100%', borderWidth: 1, borderColor: 'red'}}>
               <View style={{
                 flexDirection: 'column',
@@ -76,7 +77,7 @@ export default class ColumnHorizontalChart extends Component {
             </View>
           </View>
         </ScrollView>
-        {/*drawHorizontalYAxisLabels(this.state.sortedData[0].data, this.state.gap)*/}
+        {drawHorizontalYAxisLabels(this.state.guideArray, this.props.width + 20)}
       </View>
     )
   }

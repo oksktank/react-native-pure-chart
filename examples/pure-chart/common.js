@@ -390,11 +390,10 @@ export const drawHorizontalXAxisLabels = (sortedData, gap) => {
       borderColor: 'black'
     }}>
       {sortedData.map((data, i) => {
-        console.log('[XAxis] ', data)
         return (
           <View key={'label' + i} style={{
             position: 'absolute',
-            top: data['gap'] - gap / 2,
+            top: data['gap'],
             width: gap,
             alignItems: 'center'
           }}>
