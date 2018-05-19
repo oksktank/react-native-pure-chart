@@ -8,7 +8,7 @@ export default class App extends React.Component {
     this.generateData = this.generateData.bind(this)
     this.state = {
       data: [],
-      pieData: [{label: '사람', value: 110, color: 'black'}, {label: '사람', value: 110, color: 'red'}, {label: '동물', value: 140, color: 'green'} ],
+      pieData:  [{label: '사람', value: 110, color: 'red'}, {label: '동물', value: 140, color: 'green'} ],
       pieData2: [{value: 220, color: 'red'}, { value: 140, color: 'yellow'} ],
       pieData3: [{value: 220}, { value: 140} ]
     }

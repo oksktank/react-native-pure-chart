@@ -199,8 +199,6 @@ class PieChart extends React.Component {
         <View style={{
           width: 100,
           height: 80,
-          borderWidth: 3,
-          borderColor: 'black',
           marginLeft: marginLeft,
           marginTop: marginTop
         }} >
@@ -214,14 +212,21 @@ class PieChart extends React.Component {
     if (index !== -1) {
       return (
         <View style={{
-          width: 50,
-          height: 40,
-          borderWidth: 3,
-          borderColor: 'black',
-          marginLeft: x - 25,
-          marginTop: y - 20,
+          width: 100,
+          height: 100
         }}>
-          <Text>{this.state.labels[index]}</Text>
+          <View style={{
+            width: 50,
+            height: 40,
+            marginLeft: x - 25,
+            marginTop: y - 20,
+            borderWidth: 1,
+            borderRadius: 5,
+            borderColor: '#e0e0e0',
+            backgroundColor: '#FFFFFF'
+          }}>
+            <Text>{this.state.labels[index]}</Text>
+          </View>
         </View>
       )
     }
@@ -288,10 +293,7 @@ class PieChart extends React.Component {
                 <View style={{width: 50, height: 50}} />
                 <View style={{
                   width: 50,
-                  height: 50,
-                  overflow: 'hidden',
-                  borderWidth: 0,
-                  borderColor: 'yellow'
+                  height: 50
                 }}>
 
                   <View style={{
@@ -299,7 +301,8 @@ class PieChart extends React.Component {
                     height: 50,
                     borderBottomRightRadius: 50,
                     backgroundColor: color,
-                    overflow: 'hidden',
+                    borderWidth: 1,
+                    borderColor: color,
                     transform: this.getTransform(angle - Math.PI / 2, 50)
                   }} />
 
@@ -315,8 +318,7 @@ class PieChart extends React.Component {
 
               <View style={{
                 width: 50,
-                height: 50,
-                overflow: 'hidden'
+                height: 50
               }}>
 
                 <View style={{
@@ -324,9 +326,7 @@ class PieChart extends React.Component {
                   height: 50,
                   borderBottomRightRadius: 50,
                   backgroundColor: color,
-                  borderWidth: 1,
-                  transform: this.getTransform(angle - Math.PI / 2, 50),
-                  overflow: 'hidden'
+                  transform: this.getTransform(angle - Math.PI / 2, 50)
                 }} />
 
               </View>
@@ -362,20 +362,20 @@ class PieChart extends React.Component {
       pieSize, angles} = this.state
     return (
       <View collapsable={false}>
+
         <TouchableWithoutFeedback onPress={(e) => {
           // const {locationX, locationY} = e.nativeEvent
           // console.log(locationX, locationY)
           // this.setState({locationX: locationX, locationY: locationY})
           this.handleEventOld(e)
         }}>
+
           <View ref='test' style={styles.container}>
-            {
-            this.drawT()
-          }
-            {
-            this.drawInfo(this.state.selectedIndex, this.state.evtX, this.state.evtY)
-          }
+
+            {this.drawT()}
+            {this.drawInfo(this.state.selectedIndex, this.state.evtX, this.state.evtY)}
           </View>
+
         </TouchableWithoutFeedback>
         <Text>selected: {selectedIndex}</Text>
         <Text>({locationX},{locationY})</Text>
@@ -395,8 +395,6 @@ PieChart.defaultProps = {
 const styles = StyleSheet.create({
   container: {
     width: 100,
-    borderWidth: 1,
-    backgroundColor: '#AA000050',
     overflow: 'hidden',
     marginLeft: 100,
     height: 100,
