@@ -220,12 +220,16 @@ class PieChart extends React.Component {
             height: 40,
             marginLeft: x - 25,
             marginTop: y - 20,
-            borderWidth: 1,
+            borderWidth: 2,
             borderRadius: 5,
             borderColor: '#e0e0e0',
             backgroundColor: '#FFFFFF'
           }}>
-            <Text>{this.state.labels[index]}</Text>
+            
+            {this.state.labels[index]!==null && 
+              <Text>{this.state.labels[index]}</Text>
+            }            
+            <Text>{this.props.data[index].value}</Text>            
           </View>
         </View>
       )
