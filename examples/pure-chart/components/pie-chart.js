@@ -55,12 +55,6 @@ class PieChart extends React.Component {
         labels[i] = null
       }
     }
-    
-    for(let i=0; i<data.length; i++) {
-      console.log(data[i].value)
-      console.log(data[i].label)
-      console.log(data[i].color)      
-    }
 
     // validation
     let sum = 0
@@ -89,6 +83,12 @@ class PieChart extends React.Component {
     for (let i = 1; i < pieSize.length; i++) {
       piePos[i] = piePos[i - 1] + pieSize[i - 1]
     }
+    for (let i = 0; i < data.length; i++) {
+      console.log(data[i].value)
+      console.log(labels[i])
+      console.log(colors[i])
+    }
+
     this.setState({
       labels: labels,
       colors: colors,
@@ -112,7 +112,6 @@ class PieChart extends React.Component {
       })
     })
   }
-
 
   handleEvent (idx) {
     console.log(idx)
@@ -178,16 +177,18 @@ class PieChart extends React.Component {
     }
   }
 
-  drawInfo (index) {
+  drawInfo (index, x, y) {
     if (index !== -1) {
       return (
         <View style={{
-          width: 100,
-          height: 80,
+          width: 50,
+          height: 40,
           borderWidth: 3,
-          borderColor: 'black'
+          borderColor: 'black',
+          marginLeft: x,
+          marginTop: y
         }}>
-          <Text>{index}</Text>
+          <Text>{this.state.labels[index]}</Text>
         </View>
       )
     }
@@ -215,30 +216,31 @@ class PieChart extends React.Component {
               <View style={{width: 100, height: 50}} />
               <View style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
 
+                <View style={{
+
+                  width: 50,
+                  height: 50,
+
+                  transform: this.getTransform(Math.PI / 2, 50, 50)
+                }}>
+
                   <View style={{
-
-                    width: 50,
-                    height: 50,
-
-                    transform: this.getTransform(Math.PI / 2, 50, 50)
-                  }}>
-
-                    <View style={{
                     }}>
                       {this.drawPie(angle - 1 / 2 * Math.PI, color, false, idx)}
                     </View>
-                  </View>
-
-                  <View style={{
-                    opacity: 1,
-
-                    width: 50,
-                    height: 50
-                  }}>
-                    {this.drawPie(1 / 2 * Math.PI, color, false, idx)}
-                  </View>
 
                 </View>
+
+                <View style={{
+                  opacity: 1,
+
+                  width: 50,
+                  height: 50
+                }}>
+                  {this.drawPie(1 / 2 * Math.PI, color, false, idx)}
+                </View>
+
+              </View>
             </View>
 
         ) : (
@@ -337,7 +339,7 @@ class PieChart extends React.Component {
             this.drawT()
           }
             {
-            // this.drawInfo(this.state.currentPieIdx)
+            this.drawInfo(0, 50, 60)
           }
           </View>
         </TouchableOpacity>
