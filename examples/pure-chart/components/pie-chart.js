@@ -14,7 +14,7 @@ class PieChart extends React.Component {
       currentPieIdx: -1,
       evtX: 0,
       evtY: 0,
-      selectedIndex: 0,
+      selectedIndex: -1,
       labels: [],
       colors: []
     }
@@ -122,20 +122,23 @@ class PieChart extends React.Component {
       let rad = Math.atan2(dy, dx)
       let degree = (rad * 180) / Math.PI
       if (degree < 0) degree = 360 + degree
-
+      let inPie = rSquare < Math.pow(50, 2)
       let selectedIndex = -1
-      for (let i = 0; i < angles.length; i++) {
-        if (degree < angles[i]) {
-          selectedIndex = i
-          break
+      if (inPie) {
+        for (let i = 0; i < angles.length; i++) {
+          if (degree < angles[i]) {
+            selectedIndex = i
+            break
+          }
         }
       }
+
       this.setState({
         evtX: evtX,
         evtY: evtY,
         originX: originX,
         originY: originY,
-        inPie: rSquare < Math.pow(50, 2),
+        inPie: inPie,
         selectedAngle: degree,
         selectedRad: rad,
         selectedIndex: selectedIndex
