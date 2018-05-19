@@ -14,7 +14,7 @@ class PieChart extends React.Component {
       currentPieIdx: -1,
       evtX: 0,
       evtY: 0,
-      selectedIndex: 0,
+      selectedIndex: -1,
       labels: [],
       colors: []
     }
@@ -215,8 +215,8 @@ class PieChart extends React.Component {
           height: 40,
           borderWidth: 3,
           borderColor: 'black',
-          marginLeft: x,
-          marginTop: y
+          marginLeft: x - 25,
+          marginTop: y - 20,
         }}>
           <Text>{this.state.labels[index]}</Text>
         </View>
@@ -370,7 +370,7 @@ class PieChart extends React.Component {
             this.drawT()
           }
             {
-            this.drawInfo(0, 50, 60)
+            this.drawInfo(this.state.selectedIndex, this.state.evtX, this.state.evtY)
           }
           </View>
         </TouchableWithoutFeedback>
