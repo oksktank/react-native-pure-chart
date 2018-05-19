@@ -56,12 +56,6 @@ class PieChart extends React.Component {
       }
     }
 
-    for (let i = 0; i < data.length; i++) {
-      console.log(data[i].value)
-      console.log(data[i].label)
-      console.log(data[i].color)
-    }
-
     // validation
     let sum = 0
     for (let i = 0; i < data.length; i++) {
@@ -94,6 +88,12 @@ class PieChart extends React.Component {
     for (let i = 1; i < pieSize.length; i++) {
       piePos[i] = piePos[i - 1] + pieSize[i - 1]
     }
+    for (let i = 0; i < data.length; i++) {
+      console.log(data[i].value)
+      console.log(labels[i])
+      console.log(colors[i])
+    }
+
     this.setState({
       labels: labels,
       colors: colors,
@@ -207,16 +207,18 @@ class PieChart extends React.Component {
     }
   }
 
-  drawInfo (index) {
+  drawInfo (index, x, y) {
     if (index !== -1) {
       return (
         <View style={{
-          width: 100,
-          height: 80,
+          width: 50,
+          height: 40,
           borderWidth: 3,
-          borderColor: 'black'
+          borderColor: 'black',
+          marginLeft: x,
+          marginTop: y
         }}>
-          <Text>{index}</Text>
+          <Text>{this.state.labels[index]}</Text>
         </View>
       )
     }
@@ -256,6 +258,7 @@ class PieChart extends React.Component {
                   }}>
                     {this.drawPie(angle - 1 / 2 * Math.PI, color, false, idx)}
                   </View>
+
                 </View>
 
                 <View style={{
@@ -367,7 +370,7 @@ class PieChart extends React.Component {
             this.drawT()
           }
             {
-            // this.drawInfo(this.state.currentPieIdx)
+            this.drawInfo(0, 50, 60)
           }
           </View>
         </TouchableWithoutFeedback>
