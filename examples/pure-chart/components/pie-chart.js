@@ -70,13 +70,27 @@ class PieChart extends React.Component {
     let pageY = evt.nativeEvent.pageY
 
     this.refs.test.measure((fx, fy, width, height, px, py) => {
+      let evtX = pageX - px
+      let evtY = (pageY - py)
+      let originX = pageX - px - 50
+      let originY = 50 - (pageY - py)
+      let rSquare = Math.pow(evtX, 2) + Math.pow(evtY, 2)
+      let dx = evtX
+      let dy = -1 * evtY
+      let rad = Math.atan2(dy, dx)
+      let degree = (rad * 180) / Math.PI
+      if (degree < 0) degree = 360 + degree
       this.setState({
-        evtX: pageX - px,
-        evtY: pageY - py
+        evtX: evtX,
+        evtY: evtY,
+        originX: originX,
+        originY: originY,
+        inPie: rSquare < Math.pow(50, 2),
+        selectedAngle: degree,
+        selectedRad: rad
       })
     })
   }
-  
 
   handleEvent (idx) {
     console.log(idx)
@@ -176,33 +190,33 @@ class PieChart extends React.Component {
 
           angle > (1 / 2 * Math.PI) ? (
             <View>
-                <View style={{width: 100, height: 50}} />
-                <View style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
+              <View style={{width: 100, height: 50}} />
+              <View style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
+
+                <View style={{
+
+                  width: 50,
+                  height: 50,
+
+                  transform: this.getTransform(Math.PI / 2, 50, 50)
+                }}>
 
                   <View style={{
-
-                    width: 50,
-                    height: 50,
-
-                    transform: this.getTransform(Math.PI / 2, 50, 50)
                   }}>
-
-                    <View style={{
-                    }}>
-                      {this.drawPie(angle - 1 / 2 * Math.PI, color, false, idx)}
-                    </View>
+                    {this.drawPie(angle - 1 / 2 * Math.PI, color, false, idx)}
                   </View>
-
-                  <View style={{
-                    opacity: 1,
-
-                    width: 50,
-                    height: 50
-                  }}>
-                    {this.drawPie(1 / 2 * Math.PI, color, false, idx)}
-                  </View>
-
                 </View>
+
+                <View style={{
+                  opacity: 1,
+
+                  width: 50,
+                  height: 50
+                }}>
+                  {this.drawPie(1 / 2 * Math.PI, color, false, idx)}
+                </View>
+
+              </View>
             </View>
 
         ) : (
@@ -287,10 +301,11 @@ class PieChart extends React.Component {
     )
   }
   render () {
-    const {selectedIndex, locationX, locationY, evtX, evtY} = this.state
+    const {selectedIndex, locationX, locationY, evtX, evtY, inPie, selectedAngle,
+      pieSize, selectedRad} = this.state
     return (
       <View collapsable={false}>
-        <TouchableOpacity onPress={(e) => {
+        <TouchableWithoutFeedback onPress={(e) => {
           // const {locationX, locationY} = e.nativeEvent
           // console.log(locationX, locationY)
           // this.setState({locationX: locationX, locationY: locationY})
@@ -300,14 +315,17 @@ class PieChart extends React.Component {
             {
             this.drawT()
           }
-          {
+            {
             // this.drawInfo(this.state.currentPieIdx)
           }
           </View>
-        </TouchableOpacity>
+        </TouchableWithoutFeedback>
         <Text>selected: {selectedIndex}</Text>
         <Text>({locationX},{locationY})</Text>
         <Text>({evtX},{evtY})</Text>
+        <Text>is coordinate In Pie chart: {'' + inPie}</Text>
+        <Text>angle: {selectedAngle}</Text>
+        <Text>rad: {selectedRad}</Text>
       </View>
     )
   }
