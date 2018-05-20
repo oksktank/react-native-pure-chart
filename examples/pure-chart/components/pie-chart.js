@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Alert, AppRegistry, StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
+import { numberWithCommas } from '../common'
 
 class PieChart extends React.Component {
   constructor (props) {
@@ -11,7 +12,9 @@ class PieChart extends React.Component {
       // pieSize[i] : size of ith pie, piePos[i] : starting position of ith pie;
       pieSize: [],
       piePos: [],
+      oldPiePos: [],
       pieIndex: [],
+      dataSum: 0,
       currentPieIdx: -1,
       evtX: 0,
       evtY: 0,
@@ -89,11 +92,30 @@ class PieChart extends React.Component {
     for (let i = 1; i < pieSize.length; i++) {
       piePos[i] = piePos[i - 1] + pieSize[i - 1]
     }
+
+    let oldPiePos = []
+    for (let i = 0; i < this.props.data.length; i++) {
+      oldPiePos[i] = -1
+    }
+    for (let i = 0; i < piePos.length; i++) {
+      if (oldPiePos[pieIndex[i]] === -1) {
+        oldPiePos[pieIndex[i]] = piePos[i]
+      }
+    }
+
+    /*
+    for (let i = 0; i < this.props.data.length; i++) {
+      console.log(oldPiePos[i])
+    }
+    */
+
+    /*
     for (let i = 0; i < data.length; i++) {
       console.log(data[i].value)
       console.log(labels[i])
       console.log(colors[i])
     }
+    */
 
     this.setState({
       labels: labels,
@@ -101,7 +123,9 @@ class PieChart extends React.Component {
       pieSize: pieSize,
       piePos: piePos,
       pieIndex: pieIndex,
-      angles: angles
+      angles: angles,
+      dataSum: sum,
+      oldPiePos: oldPiePos
     })
   }
   handleEventOld (evt) {
@@ -211,6 +235,57 @@ class PieChart extends React.Component {
     }
   }
 
+  drawInfoT (index) {
+    const {size} = this.props
+
+    let pos = (this.state.oldPiePos[index] + this.state.oldPiePos[(index + 1) % this.state.oldPiePos.length]) / 2
+    if (index + 1 === this.props.data.length) {
+      pos += Math.PI
+    }
+    console.log(pos)
+    let x = size / 4 * Math.cos(-pos) + size / 2
+    let y = -size / 4 * Math.sin(-pos) + size / 2
+
+    console.log(x)
+    console.log(y)
+    if (index !== -1) {
+      return (
+        <View style={{
+          width: size,
+          height: size
+        }}>
+          <View style={{
+            width: 60,
+            height: 80,
+            marginLeft: x - 30,
+            marginTop: y - 40,
+            borderWidth: 2,
+            borderRadius: 5,
+            borderColor: '#e0e0e0',
+            backgroundColor: '#FFFFFF'
+          }}>
+
+            {this.state.labels[index] !== null &&
+              <Text>{this.state.labels[index]}</Text>
+            }
+            <View style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
+              <View style={{
+                width: 10,
+                height: 5,
+                marginRight: 3,
+                borderRadius: 2,
+                backgroundColor: this.state.colors[index]
+              }} />
+              <Text style={styles.tooltipValue}>{numberWithCommas(this.props.data[index].value, false)}</Text>
+            </View>
+
+            <Text style={styles.tooltipValue}>{(this.props.data[index].value * 100 / this.state.dataSum).toFixed(1) + '%'}</Text>
+
+          </View>
+        </View>
+      )
+    }
+  }
   drawInfo (index, x, y) {
     const {size} = this.props
     if (index !== -1) {
@@ -220,20 +295,32 @@ class PieChart extends React.Component {
           height: size
         }}>
           <View style={{
-            width: 50,
-            height: 40,
-            marginLeft: x - 25,
-            marginTop: y - 20,
+            width: 60,
+            height: 80,
+            marginLeft: x - 30,
+            marginTop: y - 40,
             borderWidth: 2,
             borderRadius: 5,
             borderColor: '#e0e0e0',
             backgroundColor: '#FFFFFF'
           }}>
-            
-            {this.state.labels[index]!==null && 
+
+            {this.state.labels[index] !== null &&
               <Text>{this.state.labels[index]}</Text>
-            }            
-            <Text>{this.props.data[index].value}</Text>            
+            }
+            <View style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
+              <View style={{
+                width: 10,
+                height: 5,
+                marginRight: 3,
+                borderRadius: 2,
+                backgroundColor: this.state.colors[index]
+              }} />
+              <Text style={styles.tooltipValue}>{this.props.data[index].value}</Text>
+            </View>
+
+            <Text style={styles.tooltipValue}>{this.props.data[index].value * 100 / this.state.dataSum + '%'}</Text>
+
           </View>
         </View>
       )
@@ -253,7 +340,6 @@ class PieChart extends React.Component {
         {angle === 0 ? (
           <View />
         ) : (
-
           angle > (1 / 2 * Math.PI) ? (
             <View>
               <View style={{width: size, height: size / 2}} />
@@ -382,7 +468,7 @@ class PieChart extends React.Component {
           }])}>
 
             {this.drawT()}
-            {this.drawInfo(this.state.selectedIndex, this.state.evtX, this.state.evtY)}
+            {this.drawInfoT(this.state.selectedIndex)}
           </View>
 
         </TouchableWithoutFeedback>
@@ -408,7 +494,9 @@ const styles = StyleSheet.create({
     marginLeft: 100,
     alignItems: 'center',
     justifyContent: 'center'
-  }
+  },
+  tooltipTitle: {fontSize: 10},
+  tooltipValue: {fontWeight: 'bold', fontSize: 15}
 })
 
 export default PieChart
