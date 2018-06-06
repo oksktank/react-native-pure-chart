@@ -19,7 +19,7 @@ Pure react native chart library that not using svg or ART but only using `react-
 - **BarChart (Multi series)**
 ![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/multiseries_bar.jpeg)
 
-- **PieChart (Beta)**
+- **PieChart (Beta)**<br/>
 ![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/pie.png)
 
 ## Installation
