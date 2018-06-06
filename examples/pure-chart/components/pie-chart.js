@@ -242,32 +242,23 @@ class PieChart extends React.Component {
     if (index + 1 === this.props.data.length) {
       pos += Math.PI
     }
-    console.log(pos)
     let x = size / 4 * Math.cos(-pos) + size / 2
     let y = -size / 4 * Math.sin(-pos) + size / 2
 
-    console.log(x)
-    console.log(y)
     if (index !== -1) {
+      let percentage = Math.round((this.props.data[index].value * 1000 / this.state.dataSum)) / 10 + '%'
+      let valueStr = numberWithCommas(this.props.data[index].value, false)
       return (
         <View style={{
-          width: size,
-          height: size
         }}>
           <View style={{
-            width: 60,
-            height: 80,
             marginLeft: x - 30,
             marginTop: y - 40,
-            borderWidth: 2,
+            borderWidth: 1,
             borderRadius: 5,
-            borderColor: '#e0e0e0',
+            borderColor: '#ffffff',
             backgroundColor: '#FFFFFF'
           }}>
-
-            {this.state.labels[index] !== null &&
-              <Text>{this.state.labels[index]}</Text>
-            }
             <View style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
               <View style={{
                 width: 10,
@@ -276,10 +267,10 @@ class PieChart extends React.Component {
                 borderRadius: 2,
                 backgroundColor: this.state.colors[index]
               }} />
-              <Text style={styles.tooltipValue}>{numberWithCommas(this.props.data[index].value, false)}</Text>
+              <Text style={styles.tooltipTitle}>{this.state.labels[index] ? this.state.labels[index] : valueStr}</Text>
             </View>
 
-            <Text style={styles.tooltipValue}>{(this.props.data[index].value * 100 / this.state.dataSum).toFixed(1) + '%'}</Text>
+            <Text style={styles.tooltipValue}>{this.state.labels[index] ? `${valueStr} (${percentage})` : percentage}</Text>
 
           </View>
         </View>
@@ -495,8 +486,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  tooltipTitle: {fontSize: 10},
-  tooltipValue: {fontWeight: 'bold', fontSize: 15}
+  tooltipTitle: {fontSize: 18, fontWeight: 'bold'},
+  tooltipValue: {fontSize: 15, marginTop: 5}
 })
 
 export default PieChart
