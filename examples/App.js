@@ -8,7 +8,7 @@ export default class App extends React.Component {
     this.generateData = this.generateData.bind(this)
     this.state = {
       data: [],
-      pieData:  [{label: '사람', value: 110, color: 'red'}, {label: '동물', value: 140, color: 'green'} ],
+      pieData: [{label: '사람', value: 110, color: 'red'}, {label: '동물', value: 140, color: 'green'} ],
       pieData2: [{value: 220700.26, color: 'red'}, { value: 140700.89, color: 'yellow'} ],
       pieData3: [{value: 220}, { value: 140} ]
     }
@@ -34,6 +34,7 @@ export default class App extends React.Component {
     var data = []
     var data2 = []
     var data3 = []
+    var pieData = []
     var startDate = moment()
     for (var i = 0; i < Math.round(Math.random() * 10) + 30; i++) {
       startDate.add(1, 'days')
@@ -57,6 +58,12 @@ export default class App extends React.Component {
       )
     }
 
+    for (let i = 0; i < 5; i++) {
+      pieData.push({
+        value: Math.round(Math.random() * 500)
+      })
+    }
+
     // this.setState({data: [
     //   {seriesName: 'test', data: data, color: '#ff4b00'},
     //    {seriesName: 'test2', data: data2, color: '#0e95de'},
@@ -64,7 +71,8 @@ export default class App extends React.Component {
     // ]})
 
     this.setState({
-      data: [{seriesName: 'test2', data: data2, color: '#0e95de'}]
+      data: [{seriesName: 'test2', data: data2, color: '#0e95de'}],
+      pieData: pieData
     })
   }
   render () {
@@ -73,7 +81,7 @@ export default class App extends React.Component {
         <View style={{padding: 20}}>
           <PureChart type={'line'} data={this.state.data} />
           <PureChart type={'bar'} data={this.state.data} />
-          <PureChart type={'pie'} data={this.state.pieData2} />
+          <PureChart type={'pie'} data={this.state.pieData} />
           <Button title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>
           </Button>

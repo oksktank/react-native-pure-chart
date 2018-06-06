@@ -122,6 +122,7 @@ class PieChart extends React.Component {
       colors: colors,
       pieSize: pieSize,
       piePos: piePos,
+      selectedIndex: -1,
       pieIndex: pieIndex,
       angles: angles,
       dataSum: sum,
@@ -256,7 +257,8 @@ class PieChart extends React.Component {
             marginTop: y - 40,
             borderWidth: 1,
             borderRadius: 5,
-            borderColor: '#ffffff',
+            padding: 5,
+            borderColor: '#e0e0e0',
             backgroundColor: '#FFFFFF'
           }}>
             <View style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
@@ -476,7 +478,7 @@ class PieChart extends React.Component {
 
 PieChart.defaultProps = {
   data: [{value: 10}, {value: 20}, {value: 40}, {value: 100}],
-  colors: ['green', 'red', 'blue', 'black', 'yellow', 'purple', 'blue', 'orange'],
+  colors: ['#009ef2', '#ff4d7d', '#00c4c3', '#ffd12f', '#e7e9ed'],
   size: 200
 }
 const styles = StyleSheet.create({
