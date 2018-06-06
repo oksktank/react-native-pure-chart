@@ -60,7 +60,8 @@ export default class App extends React.Component {
 
     for (let i = 0; i < 5; i++) {
       pieData.push({
-        value: Math.round(Math.random() * 500)
+        value: Math.round(Math.random() * 500),
+        label: 'Marketing'
       })
     }
 
