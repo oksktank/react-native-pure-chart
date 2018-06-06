@@ -7,14 +7,34 @@ export default class App extends React.Component {
     super(props)
     this.generateData = this.generateData.bind(this)
     this.state = {
-      data: []
+      data: [],
+      pieData: [{label: '사람', value: 110, color: 'red'}, {label: '동물', value: 140, color: 'green'} ],
+      pieData2: [{value: 220700.26, color: 'red'}, { value: 140700.89, color: 'yellow'} ],
+      pieData3: [{value: 220}, { value: 140} ]
     }
   }
+
+  // 파이차트 테스트 하기
+  /*
+  componentDidMount () {
+
+    this.test = 0
+    setInterval(() => {
+      if (this.test < 360) {
+        this.test++
+        this.setState({
+          pieData: [this.test, 360 - this.test]
+        })
+      }
+    }, 5)
+  }
+  */
 
   generateData () {
     var data = []
     var data2 = []
     var data3 = []
+    var pieData = []
     var startDate = moment()
     for (var i = 0; i < 10; i++) {
       startDate.add(1, 'days')
@@ -38,6 +58,13 @@ export default class App extends React.Component {
       )
     }
 
+    for (let i = 0; i < 5; i++) {
+      pieData.push({
+        value: Math.round(Math.random() * 500),
+        label: 'Marketing'
+      })
+    }
+
     // this.setState({data: [
     //   {seriesName: 'test', data: data, color: '#ff4b00'},
     //    {seriesName: 'test2', data: data2, color: '#0e95de'},
@@ -45,7 +72,8 @@ export default class App extends React.Component {
     // ]})
 
     this.setState({
-      data: [{seriesName: 'test2', data: data2, color: '#0e95de'}]
+      data: [{seriesName: 'test2', data: data2, color: '#0e95de'}],
+      pieData: pieData
     })
   }
   render () {
@@ -55,7 +83,7 @@ export default class App extends React.Component {
           <PureChart type={'line'}
             data={this.state.data}
             width={'100%'}
-            height={300}
+            height={100}
             xAxisColor={'red'}
             yAxisColor={'red'}
             xAxisGridLineColor={'red'}
@@ -70,14 +98,17 @@ export default class App extends React.Component {
             numberOfYAxisGuideLine={10} />
           <PureChart type={'bar'}
             data={this.state.data}
-            height={300}
+            height={100}
             xAxisColor={'red'}
             yAxisColor={'red'}
             xAxisGridLineColor={'red'}
             yAxisGridLineColor={'red'}
             labelColor={'red'}
             numberOfYAxisGuideLine={10} />
-          <Button title='Generate chart data' onPress={this.generateData}>
+          <PureChart type={'line'} data={this.state.data} />
+          <PureChart type={'bar'} data={this.state.data} />
+          <PureChart type={'pie'} data={this.state.pieData} />
+          <Button style={{marginTop: 20}} title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>
           </Button>
 
@@ -89,7 +120,5 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#AA000050',
-    marginTop: 100
   }
 })
