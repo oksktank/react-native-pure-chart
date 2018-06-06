@@ -173,7 +173,7 @@ class PieChart extends React.Component {
   }
 
   handleEvent (idx) {
-    console.log(idx)
+ //   console.log(idx)
     this.setState({
       currentPieIdx: this.state.pieIndex[idx]
     })
