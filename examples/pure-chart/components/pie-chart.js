@@ -174,7 +174,7 @@ class PieChart extends React.Component {
   }
 
   handleEvent (idx) {
-    console.log(idx)
+ //   console.log(idx)
     this.setState({
       currentPieIdx: this.state.pieIndex[idx]
     })
@@ -251,9 +251,10 @@ class PieChart extends React.Component {
       let valueStr = numberWithCommas(this.props.data[index].value, false)
       return (
         <View style={{
+          height: size
         }}>
           <View style={{
-            marginLeft: x - 30,
+            marginLeft: x - 60,
             marginTop: y - 40,
             borderWidth: 1,
             borderRadius: 5,
