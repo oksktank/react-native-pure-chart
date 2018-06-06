@@ -19,6 +19,9 @@ Pure react native chart library that not using svg or ART but only using `react-
 - **BarChart (Multi series)**
 ![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/multiseries_bar.jpeg)
 
+- **PieChart (Beta)**
+![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/pie.png)
+
 ## Installation
 
 
@@ -111,11 +114,35 @@ render(
   ...
 );
 ```
+#### Pie chart
+```js
+render(
+  ...
+  let sampleData = [
+    {
+      value: 50,
+      label: 'Marketing',
+      color: 'red',
+    }, {
+      value: 40,
+      label: 'Sales',
+      color: 'blue'
+    }, {
+      value: 25,
+      label: 'Support',
+      color: 'green'
+    }
+
+  ]
+  <PureChart data={sampleData} type='pie' />
+  ...
+);
+```
 
 ### Props
 
 ##### `type`: string
-type of chart. ['line' | 'bar'] is now available
+type of chart. ['line' | 'bar' | 'pie'] is now available
 
 ##### `data`: array
 data for chart 
