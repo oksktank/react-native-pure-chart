@@ -82,7 +82,7 @@ export default class App extends React.Component {
           <PureChart type={'line'} data={this.state.data} />
           <PureChart type={'bar'} data={this.state.data} />
           <PureChart type={'pie'} data={this.state.pieData} />
-          <Button title='Generate chart data' onPress={this.generateData}>
+          <Button style={{marginTop: 20}} title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>
           </Button>
 
@@ -94,6 +94,5 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 100
   }
 })

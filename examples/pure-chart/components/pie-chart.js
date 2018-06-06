@@ -466,12 +466,6 @@ class PieChart extends React.Component {
           </View>
 
         </TouchableWithoutFeedback>
-        <Text>selected: {selectedIndex}</Text>
-        <Text>({locationX},{locationY})</Text>
-        <Text>({evtX},{evtY})</Text>
-        <Text>is coordinate In Pie chart: {'' + inPie}</Text>
-        <Text>angle: {selectedAngle}</Text>
-        <Text>angles: {JSON.stringify(angles)}</Text>
       </View>
     )
   }
