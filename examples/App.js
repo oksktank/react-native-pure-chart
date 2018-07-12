@@ -31,7 +31,7 @@ export default class App extends React.Component {
   */
 
   generateData () {
-    var data = []
+    var data = [{x: '1', y: 200}, { x: '2', y: null }, {x: '3', y: 300}]
     var data2 = []
     var data3 = []
     var pieData = []
@@ -72,31 +72,39 @@ export default class App extends React.Component {
     // ]})
 
     this.setState({
-      data: [{seriesName: 'test2', data: data2, color: '#0e95de'}],
+      data: [
+        {
+          seriesName: 'test2', data: data, color: '#0e95de'
+        }
+      ],
       pieData: pieData
     })
   }
   render () {
     return (
       <View style={styles.container}>
-        <View style={{padding: 20}}>
+        <View style={{padding: 20, marginTop: 100}}>
           <PureChart type={'line'}
             data={this.state.data}
             width={'100%'}
             height={100}
+            onPress={(a) => {
+              console.log('onPress', a)
+            }}
             xAxisColor={'red'}
             yAxisColor={'red'}
             xAxisGridLineColor={'red'}
             yAxisGridLineColor={'red'}
+            minValue={10}
             labelColor={'red'}
             customValueRenderer={(index, point) => {
-              if (index % 2 === 0) return null
+              if (index < 3) return null
               return (
                 <Text style={{textAlign: 'center'}}>{point.y}</Text>
               )
             }}
-            numberOfYAxisGuideLine={10} />
-          <PureChart type={'bar'}
+            />
+          {/* <PureChart type={'bar'}
             data={this.state.data}
             height={100}
             xAxisColor={'red'}
@@ -107,7 +115,7 @@ export default class App extends React.Component {
             numberOfYAxisGuideLine={10} />
           <PureChart type={'line'} data={this.state.data} />
           <PureChart type={'bar'} data={this.state.data} />
-          <PureChart type={'pie'} data={this.state.pieData} />
+          <PureChart type={'pie'} data={this.state.pieData} /> */}
           <Button style={{marginTop: 20}} title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>
           </Button>

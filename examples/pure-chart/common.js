@@ -125,13 +125,21 @@ export const refineData = (flattenData, max, height, gap) => {
           y: dataProp[i]
         }
       } else if (typeof dataProp[i] === 'object') {
+        let isEmpty = false
+        if (dataProp[i].y === null) {
+          if (dataProp[i + 1] && dataProp[i - 1]) {
+            dataProp[i].y = (dataProp[i - 1].y + dataProp[i + 1].y) / 2
+            isEmpty = true
+          }
+        }
         if (typeof dataProp[i].y === 'number' && dataProp[i].x) {
           objectTypeCount++
           dataObject = {
             gap: i * gap,
             ratioY: dataProp[i].y / maxClone * height,
             x: dataProp[i].x,
-            y: dataProp[i].y
+            y: dataProp[i].y,
+            isEmpty: isEmpty
           }
         }
       }

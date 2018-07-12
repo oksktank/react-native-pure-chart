@@ -71,6 +71,10 @@ export default class ColumnChart extends Component {
   handleClick (event, index) {
     this.setState({
       selectedIndex: index
+    }, () => {
+      if (typeof this.props.onPress === 'function') {
+        this.props.onPress(index)
+      }
     })
   }
   drawTooltip (selectedIndex) {
