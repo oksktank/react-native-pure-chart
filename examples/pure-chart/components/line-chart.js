@@ -108,11 +108,21 @@ class LineChart extends React.Component {
         {seriesIndex === this.state.sortedData.length - 1 && (
           <TouchableWithoutFeedback onPress={() => {
             let selectedIndex = lastCoordinate ? index - 1 : index
+
+            let emptyCount = 0
+            this.state.sortedData.map((series) => {
+              if (series.data[selectedIndex].isEmpty) emptyCount++
+            })
+            if (emptyCount === this.state.sortedData.length) {
+              return null
+            }
+            // console.log('point', selectedIndex, point)
+
             this.setState({
               selectedIndex: selectedIndex
             }, () => {
-              if (typeof this.props.onPointClick === 'function') {
-                this.props.onPointClick()
+              if (typeof this.props.onPress === 'function') {
+                this.props.onPress(selectedIndex)
               }
             })
           }}>
@@ -137,6 +147,8 @@ class LineChart extends React.Component {
     if (this.state.selectedIndex === index) {
       color = this.props.selectedColor
     }
+
+    if (point.isEmpty) return null
 
     return (
       <TouchableWithoutFeedback key={key} onPress={() => {
