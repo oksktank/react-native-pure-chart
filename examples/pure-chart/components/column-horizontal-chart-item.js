@@ -21,7 +21,7 @@ export default class ColumnHorizontalChartItem extends Component {
     }
     let margin = this.props.isLast ? 0 : this.props.defaultMargin
     return (
-      <View style={{borderWidth: 1, borderColor: 'black', marginBottom: margin}}>
+      <View style={{marginBottom: margin}}>
         {chartItemRenders}
       </View>
     )

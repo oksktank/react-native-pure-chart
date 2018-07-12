@@ -367,9 +367,7 @@ export const drawHorizontalYAxisLabels = (arr, width) => {
             key={'guide' + i}
             style={{
               left: v[1] - 5,
-              position: 'absolute',
-              borderWidth: 1,
-              borderColor: 'gray'
+              position: 'absolute'
             }}>
             <Text style={{fontSize: 11}}>{v[0]}</Text>
           </View>
@@ -385,7 +383,7 @@ export const drawHorizontalXAxisLabels = (sortedData, gap) => {
     <View style={{
       height: '100%',
       paddingHorizontal: 10,
-      width: 70,
+      width: 30,
       borderWidth: 1,
       borderColor: 'black'
     }}>
@@ -405,6 +403,34 @@ export const drawHorizontalXAxisLabels = (sortedData, gap) => {
           </View>
         )
       })}
+    </View>
+  )
+}
+
+export const drawHorizontalGuideLine = (arr) => {
+  return (
+    <View style={{
+      width: '100%',
+      height: '100%',
+
+      position: 'absolute'
+    }}>
+
+      {arr.map((v, i) => {
+        return (
+          <View
+            key={'guide' + i}
+            style={{
+              width: 1,
+              height: '100%',
+              borderWidth: 1,
+              borderColor: '#e0e0e0',
+              left: v[1],
+              position: 'absolute'
+            }} />
+        )
+      })}
+
     </View>
   )
 }
