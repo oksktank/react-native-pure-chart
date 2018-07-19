@@ -13,7 +13,7 @@ export default class PureChart extends React.Component {
     if (this.props.type === 'line') {
       return <LineChart data={this.props.data} primaryColor={this.props.color} />
     } else if (this.props.type === 'bar') {
-      return <ColumnChart data={this.props.data} primaryColor={this.props.color} />
+      return <ColumnChart data={this.props.data} primaryColor={this.props.color} highlightColor={this.props.highlightColor} />
     } else if (this.props.type === 'bar-horizontal') {
       return <ColumnHorizontalChart data={this.props.data} primaryColor={this.props.color} />
     } else if (this.props.type === 'pie') {
@@ -32,7 +32,8 @@ export default class PureChart extends React.Component {
 PureChart.propTypes = {
   type: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired,
-  color: PropTypes.string
+  color: PropTypes.string,
+  highlightColor: PropTypes.string
 }
 PureChart.defaultProps = {
   color: '#297AB1'

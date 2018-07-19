@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, Animated, Easing, ScrollView, Text } from 'react-native'
+import { View, Animated, Easing, ScrollView } from 'react-native'
 import {initData, drawYAxis, drawHorizontalXAxisLabels, drawHorizontalYAxisLabels, drawHorizontalGuideLine, numberWithCommas, drawXAxis, drawXAxisLabels} from '../common'
 import ColumnHorizontalChartItem from './column-horizontal-chart-item'
 
 export default class ColumnHorizontalChart extends Component {
   constructor (props) {
     super(props)
-    let defaultGap = (10 * 3) + this.props.defaultColumnMargin + 2 // columhHeight * serisCount + defaultMargin
+    let defaultGap = this.props.defaultColumnMargin + 2 // columhHeight * serisCount + defaultMargin
     let newState = initData(this.props.data, this.props.width, defaultGap)
     this.state = {
       sortedData: newState.sortedData,
@@ -63,8 +63,8 @@ export default class ColumnHorizontalChart extends Component {
     }
     console.log(this.state.sortedData)
     return (
-      <View>
-        <ScrollView style={{width: this.props.width, height: this.props.height}}>
+      <View style={{width: this.props.width + 20}}>
+        <ScrollView style={{height: this.props.height}}>
           <View style={{flexDirection: 'row'}}>
             {drawYAxis()}
             {drawHorizontalGuideLine(this.state.guideArray)}
@@ -80,7 +80,7 @@ export default class ColumnHorizontalChart extends Component {
           </View>
         </ScrollView>
         {drawXAxis()}
-        {drawHorizontalYAxisLabels(this.state.guideArray, this.props.width + 10)}
+        {drawHorizontalYAxisLabels(this.state.guideArray, this.props.width + 20)}
       </View>
     )
   }
@@ -92,7 +92,7 @@ ColumnHorizontalChart.propTypes = {
 ColumnHorizontalChart.defaultProps = {
   data: [],
   height: 150,
-  width: 300,
+  width: 200,
   defaultColumnWidth: 40,
   defaultColumnMargin: 20,
   primaryColor: '#297AB1',

@@ -397,8 +397,8 @@ export const drawHorizontalXAxisLabels = (sortedData, gap) => {
           }}>
             <Text style={{fontSize: 9}}>
               {
-                  data['x']
-                }
+                data['x']
+              }
             </Text>
           </View>
         )
@@ -412,7 +412,6 @@ export const drawHorizontalGuideLine = (arr) => {
     <View style={{
       width: '100%',
       height: '100%',
-
       position: 'absolute'
     }}>
 
