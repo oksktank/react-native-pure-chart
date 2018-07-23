@@ -148,7 +148,7 @@ class LineChart extends React.Component {
       color = this.props.selectedColor
     }
 
-    if (point.isEmpty) return null
+    if (point.isEmpty || this.props.hidePoints) return null
 
     return (
       <TouchableWithoutFeedback key={key} onPress={() => {
