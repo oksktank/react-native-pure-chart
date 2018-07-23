@@ -98,6 +98,7 @@ export default class App extends React.Component {
             minValue={10}
             labelColor={'red'}
             hidePoints={true}
+            showEvenNumberXaxisLabel={false}
             customValueRenderer={(index, point) => {
               if (index < 3) return null
               return (
