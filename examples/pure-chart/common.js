@@ -127,10 +127,20 @@ export const refineData = (flattenData, max, height, gap) => {
       } else if (typeof dataProp[i] === 'object') {
         let isEmpty = false
         if (dataProp[i].y === null) {
-          if (dataProp[i + 1] && dataProp[i - 1]) {
+          let nullCount = 0
+          for (let j = i; j < dataProp.length; j++) {
+            if (dataProp[j].y) {
+              break
+            } else {
+              nullCount++
+            }
+          }
+          dataProp[i].y = dataProp[i - 1].y + (dataProp[i + nullCount].y - dataProp[i - 1].y) / (nullCount + 1)
+          isEmpty = true
+          /* if (dataProp[i + 1] && dataProp[i - 1]) {
             dataProp[i].y = (dataProp[i - 1].y + dataProp[i + 1].y) / 2
             isEmpty = true
-          }
+          } */
         }
         if (typeof dataProp[i].y === 'number' && dataProp[i].x) {
           objectTypeCount++
@@ -320,7 +330,7 @@ export const drawXAxis = (color = '#e0e0e0') => {
     }} />
   )
 }
-export const drawXAxisLabels = (sortedData, gap, color = '#000000') => {
+export const drawXAxisLabels = (sortedData, gap, color = '#000000', showEvenNumberXaxisLabel) => {
   return (
     <View style={{
       width: '100%',
@@ -329,7 +339,7 @@ export const drawXAxisLabels = (sortedData, gap, color = '#000000') => {
     }}>
       {sortedData.map((data, i) => {
         // if (data[3] && i % 2 === 1) {
-        if (data['x'] && i % 2 === 1) {
+        if (data['x'] && i % 2 === 1 || !showEvenNumberXaxisLabel) {
           return (
             <View key={'label' + i} style={{
               position: 'absolute',

@@ -31,7 +31,7 @@ export default class App extends React.Component {
   */
 
   generateData () {
-    var data = [{x: '1', y: 200}, { x: '2', y: null }, {x: '3', y: 300}]
+    var data = [{x: '1', y: 300}, { x: '2', y: null }, { x: '2', y: null }, {x: '3', y: null}, {x: '4', y: 400}]
     var data2 = []
     var data3 = []
     var pieData = []
@@ -74,7 +74,7 @@ export default class App extends React.Component {
     this.setState({
       data: [
         {
-          seriesName: 'test2', data: data, color: '#0e95de'
+          seriesName: 'test2', data: data.slice(), color: '#0e95de'
         }
       ],
       pieData: pieData
@@ -91,12 +91,13 @@ export default class App extends React.Component {
             onPress={(a) => {
               console.log('onPress', a)
             }}
-            xAxisColor={'red'}
+            xAxisColor={'black'}
             yAxisColor={'red'}
             xAxisGridLineColor={'red'}
             yAxisGridLineColor={'red'}
             minValue={10}
             labelColor={'red'}
+            showEvenNumberXaxisLabel={false}
             customValueRenderer={(index, point) => {
               if (index < 3) return null
               return (
