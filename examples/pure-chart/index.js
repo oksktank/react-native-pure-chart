@@ -16,7 +16,7 @@ export default class PureChart extends React.Component {
     } else if (this.props.type === 'bar') {
       return <ColumnChart {...this.props} />
     } else if (this.props.type === 'pie') {
-      return <PieChart data={this.props.data} primaryColor={this.props.color} />
+      return <PieChart {...this.props} />
     }
   }
   render () {
