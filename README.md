@@ -196,5 +196,12 @@ add custom value on the point
 
 ##### `numberOfYAxisGuideLine`: number
 set number of Y Axis guide line
+
+## Contributing
+
+Contributions are welcome. Any kind of contribution, such as writing a documentaion, bug fix, or solving issues are helpful.
+
+The `master` branch of this repository contains the latest stable release of *react-native-pure-chart*. In general, pull requests should be submitted from a separate branch starting from the `develop` branch. 
+
 ## License
 MIT
