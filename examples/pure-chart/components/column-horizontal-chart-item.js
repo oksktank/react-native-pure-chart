@@ -17,7 +17,7 @@ export default class ColumnHorizontalChartItem extends Component {
           height: 10,
           backgroundColor: seriesArray[i].seriesColor
         }} />
-        )
+      )
     }
     let margin = this.props.isLast ? 0 : this.props.defaultMargin
     return (

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { View, Animated, Easing, ScrollView } from 'react-native'
-import {initData, drawYAxis, drawHorizontalXAxisLabels, drawHorizontalYAxisLabels, drawHorizontalGuideLine, numberWithCommas, drawXAxis, drawXAxisLabels} from '../common'
+import {initData, drawYAxis, drawHorizontalYAxisLabels, drawHorizontalGuideLine, drawXAxis} from '../common'
 import ColumnHorizontalChartItem from './column-horizontal-chart-item'
 
 export default class ColumnHorizontalChart extends Component {
@@ -50,7 +50,7 @@ export default class ColumnHorizontalChart extends Component {
       renders.push(<ColumnHorizontalChartItem key={i} seriesArray={seriesArray} dataIndex={i} defaultMargin={this.props.defaultColumnMargin} isLast={i === (standardSeriesDataCount - 1)} />)
     }
     return (
-      <Animated.View style={{width: '100%', transform: [{scaleY: fadeAnim}]}}>
+      <Animated.View style={{width: '100%', transform: [{scaleX: fadeAnim}]}}>
         {renders}
       </Animated.View>
     )
