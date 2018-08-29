@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, Animated, Easing, ScrollView } from 'react-native'
-import {initData, drawYAxis, drawHorizontalYAxisLabels, drawHorizontalGuideLine, drawXAxis} from '../common'
+import { View, StyleSheet, Text, Animated, Easing, ScrollView } from 'react-native'
+import {initData, drawYAxis, drawHorizontalYAxisLabels, drawHorizontalGuideLine, drawXAxis, numberWithCommas} from '../common'
 import ColumnHorizontalChartItem from './column-horizontal-chart-item'
 
 export default class ColumnHorizontalChart extends Component {
@@ -18,6 +18,8 @@ export default class ColumnHorizontalChart extends Component {
       gap: defaultGap
     }
     this.renderColumns = this.renderColumns.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+    this.drawTooltip = this.drawTooltip.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -47,13 +49,65 @@ export default class ColumnHorizontalChart extends Component {
     let standardSeriesDataCount = standardSeriesData.length
     let renders = []
     for (let i = 0; i < standardSeriesDataCount; i++) {
-      renders.push(<ColumnHorizontalChartItem key={i} seriesArray={seriesArray} dataIndex={i} defaultMargin={this.props.defaultColumnMargin} isLast={i === (standardSeriesDataCount - 1)} />)
+      renders.push(<ColumnHorizontalChartItem key={i}
+        seriesArray={seriesArray} dataIndex={i} defaultMargin={this.props.defaultColumnMargin} isLast={i === (standardSeriesDataCount - 1)}
+        onClick={(evt) => this.handleClick(evt, i)} />)
     }
     return (
       <Animated.View style={{width: '100%', transform: [{scaleX: fadeAnim}]}}>
         {renders}
       </Animated.View>
     )
+  }
+
+  handleClick (event, index) {
+    console.log('click event : ', index)
+    this.setState({
+      selectedIndex: index
+    })
+  }
+
+  drawTooltip (selectedIndex) {
+    console.log('drawTooltip')
+    if (typeof (selectedIndex) === 'number' && selectedIndex >= 0) {
+      let standardSeries = this.state.sortedData[0]
+      console.log('standardSeries : ', standardSeries)
+      if (!standardSeries) {
+        return null
+      }
+      /*
+      let seriesCount = this.state.sortedData.length
+      let plusGap = 10 * seriesCount
+      if (selectedIndex === standardSeries.data.length - 1) {
+        plusGap = -50
+      }
+      // 차트 width를 마지막에 늘려야겠음.
+      */
+      let plusGap = 0
+      let position = standardSeries.data[selectedIndex]['gap'] + plusGap
+      let tooltipRenders = []
+      for (let i = 0; i < this.state.sortedData.length; i++) {
+        let series = this.state.sortedData[i]
+        if (series.data[selectedIndex]['x']) {
+          tooltipRenders.push(<Text key={'tooltipTitle-' + i} style={styles.tooltipTitle}>{series.data[selectedIndex]['x']}</Text>)
+        }
+        tooltipRenders.push(
+          <View key={'tooltipText-' + i} style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
+            <View style={[styles.tooltipColor, {backgroundColor: !series.seriesColor ? this.props.primaryColor : series.seriesColor}]} />
+            <Text style={styles.tooltipValue}>{numberWithCommas(series.data[selectedIndex]['y'], false)}</Text>
+          </View>
+        )
+      }
+      return (
+        <View style={[styles.tooltipWrapper, { top: position }]}>
+          <View style={styles.tooltip}>
+            {tooltipRenders}
+          </View>
+        </View>
+      )
+    } else {
+      return null
+    }
   }
 
   render () {
@@ -78,6 +132,7 @@ export default class ColumnHorizontalChart extends Component {
               </View>
             </View>
           </View>
+          {this.drawTooltip(this.state.selectedIndex)}
         </ScrollView>
         {drawXAxis()}
         {drawHorizontalYAxisLabels(this.state.guideArray, this.props.width + 20)}
@@ -85,6 +140,39 @@ export default class ColumnHorizontalChart extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF'
+  },
+  tooltipWrapper: {
+    position: 'absolute',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'black'
+  },
+  tooltip: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    borderColor: '#AAAAAA',
+    borderWidth: 1,
+    padding: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0.8
+  },
+  tooltipTitle: {fontSize: 10},
+  tooltipValue: {fontWeight: 'bold', fontSize: 15},
+  tooltipColor: {
+    width: 10,
+    height: 5,
+    marginRight: 3,
+    borderRadius: 2
+  }
+})
 
 ColumnHorizontalChart.propTypes = {
   data: PropTypes.array

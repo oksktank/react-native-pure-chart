@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View } from 'react-native'
+import { View, TouchableWithoutFeedback } from 'react-native'
 
 export default class ColumnHorizontalChartItem extends Component {
   render () {
@@ -21,9 +21,11 @@ export default class ColumnHorizontalChartItem extends Component {
     }
     let margin = this.props.isLast ? 0 : this.props.defaultMargin
     return (
-      <View style={{marginBottom: margin}}>
-        {chartItemRenders}
-      </View>
+      <TouchableWithoutFeedback onPressIn={(evt) => this.props.onClick(evt)}>
+        <View style={{marginBottom: margin}}>
+          {chartItemRenders}
+        </View>
+      </TouchableWithoutFeedback>
     )
   }
 }
