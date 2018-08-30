@@ -99,7 +99,7 @@ export default class ColumnChart extends Component {
         )
       }
       return (
-        <View style={[styles.tooltipWrapper, { left: left }]}>
+        <View style={[styles.tooltipWrapper, { left: left, borderWidth: 1, borderColor: 'black'}]}>
           <View style={styles.tooltip}>
             {tooltipRenders}
           </View>
@@ -114,7 +114,7 @@ export default class ColumnChart extends Component {
     let {fadeAnim} = this.state
     if (this.state.sortedData && this.state.sortedData.length === 0) return null
     return (
-      <View style={styles.wrapper}>
+      <View style={[styles.wrapper, {borderWidth:1, borderColor:'red'}]}>
         <View style={{paddingRight: 5}}>
           {drawYAxisLabels(this.state.guideArray, this.props.height + 20)}
         </View>
@@ -192,7 +192,7 @@ ColumnChart.propTypes = {
 }
 ColumnChart.defaultProps = {
   data: [],
-  height: 100,
+  height: 80,
   defaultColumnWidth: 40,
   defaultColumnMargin: 20,
   primaryColor: '#297AB1',

@@ -68,7 +68,6 @@ export default class ColumnHorizontalChart extends Component {
   }
 
   drawTooltip (selectedIndex) {
-    console.log('drawTooltip')
     if (typeof (selectedIndex) === 'number' && selectedIndex >= 0) {
       let standardSeries = this.state.sortedData[0]
       console.log('standardSeries : ', standardSeries)
@@ -84,6 +83,9 @@ export default class ColumnHorizontalChart extends Component {
       // 차트 width를 마지막에 늘려야겠음.
       */
       let plusGap = 0
+      /**
+       * Position 조정이 필요함
+       */
       let position = standardSeries.data[selectedIndex]['gap'] + plusGap
       let tooltipRenders = []
       for (let i = 0; i < this.state.sortedData.length; i++) {
@@ -99,7 +101,7 @@ export default class ColumnHorizontalChart extends Component {
         )
       }
       return (
-        <View style={[styles.tooltipWrapper, { top: position }]}>
+        <View style={[styles.tooltipWrapper, { left: this.props.width/2, top: position, borderWidth:1, borderColor: 'black'}]}>
           <View style={styles.tooltip}>
             {tooltipRenders}
           </View>
@@ -117,18 +119,20 @@ export default class ColumnHorizontalChart extends Component {
     }
     console.log(this.state.sortedData)
     return (
-      <View style={{width: this.props.width + 20}}>
+      <View style={{width: this.props.width + 20, borderWidth: 1, borderColor: 'blue'}}>
         <ScrollView style={{height: this.props.height}}>
-          <View style={{flexDirection: 'row'}}>
-            {drawYAxis()}
-            {drawHorizontalGuideLine(this.state.guideArray)}
-            { /* drawHorizontalXAxisLabels(this.state.sortedData[0].data, this.state.gap) */ }
-            <View style={{width: '100%'}}>
-              <View style={{
-                flexDirection: 'column',
-                justifyContent: 'flex-start'
-              }}>
-                {this.renderColumns(fadeAnim)}
+          <View>
+            <View style={{flexDirection: 'row'}}>
+              {drawYAxis()}
+              {drawHorizontalGuideLine(this.state.guideArray)}
+              { /* drawHorizontalXAxisLabels(this.state.sortedData[0].data, this.state.gap) */ }
+              <View style={{width: '100%'}}>
+                <View style={{
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start'
+                }}>
+                  {this.renderColumns(fadeAnim)}
+                </View>
               </View>
             </View>
           </View>
@@ -148,11 +152,9 @@ const styles = StyleSheet.create({
   },
   tooltipWrapper: {
     position: 'absolute',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'black'
+    height: '100%',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start'
   },
   tooltip: {
     backgroundColor: '#FFFFFF',
@@ -160,9 +162,9 @@ const styles = StyleSheet.create({
     borderColor: '#AAAAAA',
     borderWidth: 1,
     padding: 3,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    opacity: 0.8
+    opacity: 0.8,
   },
   tooltipTitle: {fontSize: 10},
   tooltipValue: {fontWeight: 'bold', fontSize: 15},
