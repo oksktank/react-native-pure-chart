@@ -70,7 +70,6 @@ export default class ColumnHorizontalChart extends Component {
   drawTooltip (selectedIndex) {
     if (typeof (selectedIndex) === 'number' && selectedIndex >= 0) {
       let standardSeries = this.state.sortedData[0]
-      console.log('standardSeries : ', standardSeries)
       if (!standardSeries) {
         return null
       }
@@ -101,7 +100,7 @@ export default class ColumnHorizontalChart extends Component {
         )
       }
       return (
-        <View style={[styles.tooltipWrapper, { left: this.props.width/2, top: position, borderWidth:1, borderColor: 'black'}]}>
+        <View style={[styles.tooltipWrapper, { left: this.props.width/2, top: position}]}>
           <View style={styles.tooltip}>
             {tooltipRenders}
           </View>
@@ -119,7 +118,7 @@ export default class ColumnHorizontalChart extends Component {
     }
     console.log(this.state.sortedData)
     return (
-      <View style={{width: this.props.width + 20, borderWidth: 1, borderColor: 'blue'}}>
+      <View style={{width: this.props.width + 20}}>
         <ScrollView style={{height: this.props.height}}>
           <View>
             <View style={{flexDirection: 'row'}}>

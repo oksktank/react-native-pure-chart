@@ -114,7 +114,7 @@ export default class ColumnChart extends Component {
     let {fadeAnim} = this.state
     if (this.state.sortedData && this.state.sortedData.length === 0) return null
     return (
-      <View style={[styles.wrapper, {borderWidth:1, borderColor:'red'}]}>
+      <View style={[styles.wrapper]}>
         <View style={{paddingRight: 5}}>
           {drawYAxisLabels(this.state.guideArray, this.props.height + 20)}
         </View>
