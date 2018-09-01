@@ -479,7 +479,7 @@ PieChart.defaultProps = {
 const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
-    marginLeft: 100,
+    marginLeft: 0,
     alignItems: 'center',
     justifyContent: 'center'
   },
