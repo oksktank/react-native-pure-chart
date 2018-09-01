@@ -148,7 +148,7 @@ class LineChart extends React.Component {
       color = this.props.selectedColor
     }
 
-    if (point.isEmpty) return null
+    if (point.isEmpty || this.props.hidePoints) return null
 
     return (
       <TouchableWithoutFeedback key={key} onPress={() => {
@@ -332,7 +332,7 @@ class LineChart extends React.Component {
                 </View>
 
                 {drawXAxis(this.props.xAxisColor)}
-                {drawXAxisLabels(this.state.sortedData[0].data, this.props.gap, this.props.labelColor)}
+                {drawXAxisLabels(this.state.sortedData[0].data, this.props.gap, this.props.labelColor, this.props.showEvenNumberXaxisLabel)}
               </View>
 
             </ScrollView>
@@ -351,6 +351,7 @@ LineChart.defaultProps = {
   selectedColor: '#FF0000',
   height: 100,
   gap: 60,
+  showEvenNumberXaxisLabel: true,
   onPointClick: (point) => {
 
   },

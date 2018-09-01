@@ -106,12 +106,14 @@ export default class App extends React.Component {
             onPress={(a) => {
               console.log('onPress', a)
             }}
-            xAxisColor={'red'}
+            xAxisColor={'black'}
             yAxisColor={'red'}
             xAxisGridLineColor={'red'}
             yAxisGridLineColor={'red'}
             minValue={10}
             labelColor={'red'}
+            hidePoints={true}
+            showEvenNumberXaxisLabel={false}
             customValueRenderer={(index, point) => {
               if (index < 3) return null
               return (
