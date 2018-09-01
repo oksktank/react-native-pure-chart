@@ -95,6 +95,7 @@ export default class ColumnHorizontalChart extends Component {
       console.log('top position : ', position)
       for (let i = 0; i < this.state.sortedData.length; i++) {
         let series = this.state.sortedData[i]
+        tooltipRenders.push(<View style={{flexDirection:'column'}}>)
         if (series.data[selectedIndex]['x']) {
           tooltipRenders.push(<Text key={'tooltipTitle-' + i} style={styles.tooltipTitle}>{series.data[selectedIndex]['x']}</Text>)
         }
@@ -104,6 +105,7 @@ export default class ColumnHorizontalChart extends Component {
             <Text style={styles.tooltipValue}>{numberWithCommas(series.data[selectedIndex]['y'], false)}</Text>
           </View>
         )
+        tooltipRenders.push(</View>)
       }
       return (
         <View style={[styles.tooltipWrapper, { left: this.props.width/2, top: position, borderWidth: 1, borderColor: 'red'}]}>
@@ -166,6 +168,7 @@ const styles = StyleSheet.create({
     borderColor: '#AAAAAA',
     borderWidth: 1,
     padding: 3,
+    flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'center',
     opacity: 0.8,
