@@ -6,6 +6,7 @@ export default class App extends React.Component {
   constructor (props) {
     super(props)
     this.generateData = this.generateData.bind(this)
+    this.generateHData = this.generateHData.bind(this)
     this.state = {
       data: [],
       pieData: [{label: '사람', value: 110, color: 'red'}, {label: '동물', value: 140, color: 'green'} ],
@@ -80,10 +81,24 @@ export default class App extends React.Component {
       pieData: pieData
     })
   }
+
+  generateHData () {
+    var data1 = [{key: 'Points', value: 10}, {key: 'Assists', value: 17}, {key: 'Rebounds', value: 9}, {key: 'Steals', value: 3}, {key: 'Blocks', value: 18}]
+
+    this.setState({
+      data: data1
+    })
+  }
+
   render () {
     return (
       <View style={styles.container}>
         <View style={{padding: 20, marginTop: 100}}>
+          
+          <PureChart type={'hbar'}
+            data={this.state.data} />
+          
+       {/*
           <PureChart type={'line'}
             data={this.state.data}
             width={'100%'}
@@ -105,6 +120,8 @@ export default class App extends React.Component {
               )
             }}
             />
+          */}
+          
           {/* <PureChart type={'bar'}
             data={this.state.data}
             height={100}
@@ -117,10 +134,16 @@ export default class App extends React.Component {
           <PureChart type={'line'} data={this.state.data} />
           <PureChart type={'bar'} data={this.state.data} />
           <PureChart type={'pie'} data={this.state.pieData} /> */}
+
+          {/*
           <Button style={{marginTop: 20}} title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>
           </Button>
-
+          */}
+          
+          <Button title='hbar data generate' onPress={this.generateHData}>
+          </Button>
+          
         </View>
       </View>
     )

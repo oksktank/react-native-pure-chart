@@ -19,8 +19,8 @@ Pure react native chart library that not using svg or ART but only using `react-
 - **BarChart (Multi series)**
 ![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/multiseries_bar.jpeg)
 
-- **PieChart (Beta)**
-![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/pie.png)
+- **PieChart (Beta)**<br/>
+![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/pie.jpg)
 
 ## Installation
 
@@ -144,6 +144,9 @@ render(
 ##### `type`: string
 type of chart. ['line' | 'bar' | 'pie'] is now available
 
+##### `height`: number
+height of chart
+
 ##### `data`: array
 data for chart 
 ```js 
@@ -174,5 +177,24 @@ multi series data for chart
     .... 
   ]
 ```
+
+##### `customValueRenderer`: func
+add custom value on the point
+```js
+  <PureChart type={'line'}
+    data={data}
+    width={'100%'}
+    height={200}
+    customValueRenderer={(index, point) => {
+      if (index % 2 === 0) return null
+      return (
+        <Text style={{textAlign: 'center'}}>{point.y}</Text>
+      )
+    }}/>
+```
+![alt tag](https://raw.githubusercontent.com/oksktank/react-native-pure-chart/master/examples/customValueRenderer.png)
+
+##### `numberOfYAxisGuideLine`: number
+set number of Y Axis guide line
 ## License
 MIT
