@@ -19,10 +19,10 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "expo": "^21.0.2",
+    "expo": "^28.0.0",
     "moment": "^2.19.1",
     "prop-types": "^15.6.0",
     "react": "16.0.0-alpha.12",
-    "react-native": "^0.48.4"
+    "react-native": "^0.55.0"
   }
 }
