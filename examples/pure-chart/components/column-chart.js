@@ -99,7 +99,7 @@ export default class ColumnChart extends Component {
         )
       }
       return (
-        <View style={[styles.tooltipWrapper, { left: left, borderWidth: 1, borderColor: 'black'}]}>
+        <View style={[styles.tooltipWrapper, { left: left}]}>
           <View style={styles.tooltip}>
             {tooltipRenders}
           </View>

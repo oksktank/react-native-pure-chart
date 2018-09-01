@@ -7,7 +7,13 @@ import ColumnHorizontalChartItem from './column-horizontal-chart-item'
 export default class ColumnHorizontalChart extends Component {
   constructor (props) {
     super(props)
-    let defaultGap = this.props.defaultColumnMargin + 2 // columhHeight * serisCount + defaultMargin
+    /**
+     * SeriesCount를 알아야하는데, 데이터형식이 다양하기때문에 common유틸 필요함.
+     */
+    let seriesCount = 4
+    let defaultColumnHeight = 10
+    let defaultGap = (defaultColumnHeight * seriesCount) + this.props.defaultColumnMargin
+    console.log('horizontal defaultGap : ',defaultGap)
     let newState = initData(this.props.data, this.props.width, defaultGap)
     this.state = {
       sortedData: newState.sortedData,
@@ -61,7 +67,6 @@ export default class ColumnHorizontalChart extends Component {
   }
 
   handleClick (event, index) {
-    console.log('click event : ', index)
     this.setState({
       selectedIndex: index
     })
@@ -73,20 +78,21 @@ export default class ColumnHorizontalChart extends Component {
       if (!standardSeries) {
         return null
       }
-      /*
+      
       let seriesCount = this.state.sortedData.length
-      let plusGap = 10 * seriesCount
-      if (selectedIndex === standardSeries.data.length - 1) {
+      let plusGap = (10 * seriesCount) + this.props.defaultColumnMargin
+      if(selectedIndex === 0){
+        plusGap = 0
+      }else if (selectedIndex === standardSeries.data.length - 1) {
         plusGap = -50
       }
-      // 차트 width를 마지막에 늘려야겠음.
-      */
-      let plusGap = 0
+      console.log('plusGap : ',plusGap)
       /**
        * Position 조정이 필요함
        */
-      let position = standardSeries.data[selectedIndex]['gap'] + plusGap
+      let position = standardSeries.data[selectedIndex]['gap']
       let tooltipRenders = []
+      console.log('top position : ', position)
       for (let i = 0; i < this.state.sortedData.length; i++) {
         let series = this.state.sortedData[i]
         if (series.data[selectedIndex]['x']) {
@@ -100,7 +106,7 @@ export default class ColumnHorizontalChart extends Component {
         )
       }
       return (
-        <View style={[styles.tooltipWrapper, { left: this.props.width/2, top: position}]}>
+        <View style={[styles.tooltipWrapper, { left: this.props.width/2, top: position, borderWidth: 1, borderColor: 'red'}]}>
           <View style={styles.tooltip}>
             {tooltipRenders}
           </View>
@@ -116,7 +122,6 @@ export default class ColumnHorizontalChart extends Component {
     if (this.state.sortedData && this.state.sortedData.length === 0) {
       return null
     }
-    console.log(this.state.sortedData)
     return (
       <View style={{width: this.props.width + 20}}>
         <ScrollView style={{height: this.props.height}}>
