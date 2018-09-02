@@ -15,7 +15,9 @@ export default class ColumnHorizontalChartItem extends Component {
         <View key={i} style={{
           width: seriesArray[i].data[this.props.dataIndex].ratioY,
           height: 10,
-          backgroundColor: seriesArray[i].seriesColor
+          backgroundColor: seriesArray[i].seriesColor,
+          borderWidth: 1,
+          borderColor: this.props.isSelected ? this.props.highlightColor : '#FFFFFF'
         }} />
       )
     }

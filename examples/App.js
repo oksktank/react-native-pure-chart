@@ -58,7 +58,7 @@ export default class App extends React.Component {
         <View style={{padding: 20}}>
           <PureChart type={'line'} data={this.state.data} />
           <PureChart type={'bar'} data={this.state.data} highlightColor='red' />
-          <PureChart type={'bar-horizontal'} data={this.state.data} width={400}/>
+          <PureChart type={'bar-horizontal'} data={this.state.data} width={400} highlightColor='red'/>
           <Button title='Generate chart data' onPress={this.generateData}>
             <Text>Generate chart data</Text>
           </Button>

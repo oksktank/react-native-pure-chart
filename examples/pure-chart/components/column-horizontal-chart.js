@@ -13,7 +13,6 @@ export default class ColumnHorizontalChart extends Component {
     let seriesCount = 4
     let defaultColumnHeight = 10
     let defaultGap = (defaultColumnHeight * seriesCount) + this.props.defaultColumnMargin
-    console.log('horizontal defaultGap : ',defaultGap)
     let newState = initData(this.props.data, this.props.width, defaultGap)
     this.state = {
       sortedData: newState.sortedData,
@@ -56,7 +55,12 @@ export default class ColumnHorizontalChart extends Component {
     let renders = []
     for (let i = 0; i < standardSeriesDataCount; i++) {
       renders.push(<ColumnHorizontalChartItem key={i}
-        seriesArray={seriesArray} dataIndex={i} defaultMargin={this.props.defaultColumnMargin} isLast={i === (standardSeriesDataCount - 1)}
+        seriesArray={seriesArray} 
+        dataIndex={i} 
+        defaultMargin={this.props.defaultColumnMargin} 
+        isLast={i === (standardSeriesDataCount - 1)}
+        isSelected={this.state.selectedIndex === i}
+        highlightColor={this.props.highlightColor}
         onClick={(evt) => this.handleClick(evt, i)} />)
     }
     return (
@@ -78,37 +82,42 @@ export default class ColumnHorizontalChart extends Component {
       if (!standardSeries) {
         return null
       }
-      
+      let columnHeight = 10
       let seriesCount = this.state.sortedData.length
-      let plusGap = (10 * seriesCount) + this.props.defaultColumnMargin
-      if(selectedIndex === 0){
-        plusGap = 0
-      }else if (selectedIndex === standardSeries.data.length - 1) {
+      let plusGap = ( columnHeight * seriesCount )
+      //if(selectedIndex === 0){
+      //  plusGap = 0
+      //}else 
+      if (selectedIndex === standardSeries.data.length - 1) {
         plusGap = -50
       }
-      console.log('plusGap : ',plusGap)
-      /**
-       * Position 조정이 필요함
-       */
-      let position = standardSeries.data[selectedIndex]['gap']
+      let position = standardSeries.data[selectedIndex]['gap'] + plusGap
       let tooltipRenders = []
-      console.log('top position : ', position)
       for (let i = 0; i < this.state.sortedData.length; i++) {
         let series = this.state.sortedData[i]
-        tooltipRenders.push(<View style={{flexDirection:'column'}}>)
         if (series.data[selectedIndex]['x']) {
-          tooltipRenders.push(<Text key={'tooltipTitle-' + i} style={styles.tooltipTitle}>{series.data[selectedIndex]['x']}</Text>)
+          tooltipRenders.push(
+            <View key={'tooltipItemWrapper-' + i} style={styles.tooltipItemWrapper}>
+              <Text key={'tooltipTitle-' + i} style={styles.tooltipTitle}>{series.data[selectedIndex]['x']}</Text>
+              <View key={'tooltipText-' + i} style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
+                <View style={[styles.tooltipColor, {backgroundColor: !series.seriesColor ? this.props.primaryColor : series.seriesColor}]} />
+                <Text style={styles.tooltipValue}>{numberWithCommas(series.data[selectedIndex]['y'], false)}</Text>
+              </View>
+            </View>
+          )
+        }else{
+          tooltipRenders.push(
+            <View key={'tooltipWrapper-' + i} style={styles.tooltipItemWrapper}>
+              <View key={'tooltipText-' + i} style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
+                <View style={[styles.tooltipColor, {backgroundColor: !series.seriesColor ? this.props.primaryColor : series.seriesColor}]} />
+                <Text style={styles.tooltipValue}>{numberWithCommas(series.data[selectedIndex]['y'], false)}</Text>
+              </View>
+            </View>
+          )
         }
-        tooltipRenders.push(
-          <View key={'tooltipText-' + i} style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
-            <View style={[styles.tooltipColor, {backgroundColor: !series.seriesColor ? this.props.primaryColor : series.seriesColor}]} />
-            <Text style={styles.tooltipValue}>{numberWithCommas(series.data[selectedIndex]['y'], false)}</Text>
-          </View>
-        )
-        tooltipRenders.push(</View>)
       }
       return (
-        <View style={[styles.tooltipWrapper, { left: this.props.width/2, top: position, borderWidth: 1, borderColor: 'red'}]}>
+        <View style={[styles.tooltipWrapper, { left: 10, top: position}]}>
           <View style={styles.tooltip}>
             {tooltipRenders}
           </View>
@@ -158,9 +167,13 @@ const styles = StyleSheet.create({
   },
   tooltipWrapper: {
     position: 'absolute',
-    height: '100%',
+    height: 50,
     alignItems: 'flex-start',
     justifyContent: 'flex-start'
+  },
+  tooltipItemWrapper: {
+    flexDirection:'column',
+    paddingRight: 5
   },
   tooltip: {
     backgroundColor: '#FFFFFF',
