@@ -85,9 +85,9 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{padding: 20, marginTop: 100}}>
-          <PureChart type={'hbar'}
-            data={this.state.data} />
-          <Button title='hbar data generate' onPress={this.generateHData} />
+          <PureChart type={'bar'} data={this.state.data} />
+          <PureChart type={'bar-horizontal'} data={this.state.data} />
+          <Button title='hbar data generate' onPress={this.generateData} />
         </View>
       </View>
     )

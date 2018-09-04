@@ -7,12 +7,7 @@ import ColumnHorizontalChartItem from './column-horizontal-chart-item'
 export default class ColumnHorizontalChart extends Component {
   constructor (props) {
     super(props)
-    /**
-     * SeriesCount를 알아야하는데, 데이터형식이 다양하기때문에 common유틸 필요함.
-     */
-    let seriesCount = 4
-    let defaultColumnHeight = 10
-    let defaultGap = (defaultColumnHeight * seriesCount) + this.props.defaultColumnMargin
+    let defaultGap = this.props.defaultColumnMargin
     let newState = initData(this.props.data, this.props.width, defaultGap)
     this.state = {
       sortedData: newState.sortedData,
@@ -55,9 +50,9 @@ export default class ColumnHorizontalChart extends Component {
     let renders = []
     for (let i = 0; i < standardSeriesDataCount; i++) {
       renders.push(<ColumnHorizontalChartItem key={i}
-        seriesArray={seriesArray} 
-        dataIndex={i} 
-        defaultMargin={this.props.defaultColumnMargin} 
+        seriesArray={seriesArray}
+        dataIndex={i}
+        defaultMargin={this.props.defaultColumnMargin}
         isLast={i === (standardSeriesDataCount - 1)}
         isSelected={this.state.selectedIndex === i}
         highlightColor={this.props.highlightColor}
@@ -71,6 +66,7 @@ export default class ColumnHorizontalChart extends Component {
   }
 
   handleClick (event, index) {
+    console.log('event : ', event)
     this.setState({
       selectedIndex: index
     })
@@ -84,14 +80,14 @@ export default class ColumnHorizontalChart extends Component {
       }
       let columnHeight = 10
       let seriesCount = this.state.sortedData.length
-      let plusGap = ( columnHeight * seriesCount )
-      //if(selectedIndex === 0){
-      //  plusGap = 0
-      //}else 
+      let plusGap = (columnHeight * seriesCount) * selectedIndex
       if (selectedIndex === standardSeries.data.length - 1) {
-        plusGap = -50
+        plusGap = plusGap - 50
       }
       let position = standardSeries.data[selectedIndex]['gap'] + plusGap
+      console.log('plusGap : ', plusGap)
+      console.log('gap : ', standardSeries.data[selectedIndex]['gap'])
+      console.log('position : ', position)
       let tooltipRenders = []
       for (let i = 0; i < this.state.sortedData.length; i++) {
         let series = this.state.sortedData[i]
@@ -105,7 +101,7 @@ export default class ColumnHorizontalChart extends Component {
               </View>
             </View>
           )
-        }else{
+        } else {
           tooltipRenders.push(
             <View key={'tooltipWrapper-' + i} style={styles.tooltipItemWrapper}>
               <View key={'tooltipText-' + i} style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
@@ -117,7 +113,7 @@ export default class ColumnHorizontalChart extends Component {
         }
       }
       return (
-        <View style={[styles.tooltipWrapper, { left: 10, top: position}]}>
+        <View style={[styles.tooltipWrapper, { left: 10, top: position }]}>
           <View style={styles.tooltip}>
             {tooltipRenders}
           </View>
@@ -172,7 +168,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start'
   },
   tooltipItemWrapper: {
-    flexDirection:'column',
+    flexDirection: 'column',
     paddingRight: 5
   },
   tooltip: {
@@ -184,7 +180,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'center',
-    opacity: 0.8,
+    opacity: 0.8
   },
   tooltipTitle: {fontSize: 10},
   tooltipValue: {fontWeight: 'bold', fontSize: 15},
