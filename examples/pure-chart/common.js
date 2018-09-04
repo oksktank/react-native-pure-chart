@@ -2,10 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import {View, Text} from 'react-native'
 
-const SINGLE_SERIES_WITH_NUMBERS = 0
-const SINGLE_SERIES_WITH_OBJECTS = 1
-const MULTI_SERIES = 2
-
 function flattenData (data) {
   let numberCount = 0
   let objectWithYCount = 0
@@ -360,6 +356,98 @@ export const drawXAxisLabels = (sortedData, gap, color = '#000000', showEvenNumb
           return null
         }
       })}
+    </View>
+  )
+}
+
+export const drawHorizontalYAxisLabels = (arr, width) => {
+  return (
+    <View style={{
+      width: width,
+      height: 33,
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start'
+    }}>
+
+      {arr.length === 0 ? (
+        <View
+          key={'guide0'}
+          style={{
+            left: 0,
+            position: 'absolute'
+          }}>
+          <Text style={{fontSize: 11}}>0</Text>
+        </View>
+      ) : arr.map((v, i) => {
+        if (v[1] > width) return null
+        return (
+          <View
+            key={'guide' + i}
+            style={{
+              left: v[1] - 5,
+              position: 'absolute'
+            }}>
+            <Text style={{fontSize: 11}}>{v[0]}</Text>
+          </View>
+        )
+      })}
+
+    </View>
+  )
+}
+
+export const drawHorizontalXAxisLabels = (sortedData, gap) => {
+  return (
+    <View style={{
+      height: '100%',
+      paddingHorizontal: 10,
+      width: 30,
+      borderWidth: 1,
+      borderColor: 'black'
+    }}>
+      {sortedData.map((data, i) => {
+        return (
+          <View key={'label' + i} style={{
+            position: 'absolute',
+            top: data['gap'],
+            width: gap,
+            alignItems: 'center'
+          }}>
+            <Text style={{fontSize: 9}}>
+              {
+                data['x']
+              }
+            </Text>
+          </View>
+        )
+      })}
+    </View>
+  )
+}
+
+export const drawHorizontalGuideLine = (arr) => {
+  return (
+    <View style={{
+      width: '100%',
+      height: '100%',
+      position: 'absolute'
+    }}>
+
+      {arr.map((v, i) => {
+        return (
+          <View
+            key={'guide' + i}
+            style={{
+              width: 1,
+              height: '100%',
+              borderWidth: 1,
+              borderColor: '#e0e0e0',
+              left: v[1],
+              position: 'absolute'
+            }} />
+        )
+      })}
+
     </View>
   )
 }
