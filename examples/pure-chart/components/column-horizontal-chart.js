@@ -127,7 +127,7 @@ export default class ColumnHorizontalChart extends Component {
     }
     return (
       <View style={{width: this.props.width + 20, height: this.props.height}}>
-        <ScrollView style={{height: this.props.height}}>
+        <ScrollView style={{height: '100%'}}>
           <View>
             <View style={{flexDirection: 'row'}}>
               {drawYAxis()}
@@ -189,12 +189,12 @@ const styles = StyleSheet.create({
 })
 
 ColumnHorizontalChart.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  height: PropTypes.number
 }
 ColumnHorizontalChart.defaultProps = {
   data: [],
-  height: 150,
-  width: 250,
+  width: 200,
   defaultColumnWidth: 40,
   defaultColumnMargin: 20,
   primaryColor: '#297AB1',

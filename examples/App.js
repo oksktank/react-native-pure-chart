@@ -85,7 +85,7 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{padding: 20, marginTop: 100}}>
-          <PureChart type={'bar-horizontal'} data={this.state.data} height={300} />
+          <PureChart type={'bar-horizontal'} data={this.state.data} highlightColor={'red'} height={300} />
           <Button title='data generate' onPress={this.generateData} />
         </View>
       </View>
