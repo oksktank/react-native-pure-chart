@@ -66,7 +66,6 @@ export default class ColumnHorizontalChart extends Component {
   }
 
   handleClick (event, index) {
-    console.log('event : ', event)
     this.setState({
       selectedIndex: index
     })
@@ -82,12 +81,9 @@ export default class ColumnHorizontalChart extends Component {
       let seriesCount = this.state.sortedData.length
       let plusGap = (columnHeight * seriesCount) * selectedIndex
       if (selectedIndex === standardSeries.data.length - 1) {
-        plusGap = plusGap - 50
+        plusGap = plusGap - this.props.defaultColumnMargin
       }
       let position = standardSeries.data[selectedIndex]['gap'] + plusGap
-      console.log('plusGap : ', plusGap)
-      console.log('gap : ', standardSeries.data[selectedIndex]['gap'])
-      console.log('position : ', position)
       let tooltipRenders = []
       for (let i = 0; i < this.state.sortedData.length; i++) {
         let series = this.state.sortedData[i]
@@ -130,7 +126,7 @@ export default class ColumnHorizontalChart extends Component {
       return null
     }
     return (
-      <View style={{width: this.props.width + 20}}>
+      <View style={{width: this.props.width + 20, height: this.props.height}}>
         <ScrollView style={{height: this.props.height}}>
           <View>
             <View style={{flexDirection: 'row'}}>
@@ -198,7 +194,7 @@ ColumnHorizontalChart.propTypes = {
 ColumnHorizontalChart.defaultProps = {
   data: [],
   height: 150,
-  width: 200,
+  width: 250,
   defaultColumnWidth: 40,
   defaultColumnMargin: 20,
   primaryColor: '#297AB1',

@@ -16,7 +16,7 @@ export default class App extends React.Component {
   }
 
   generateData () {
-    var data = [{x: '1', y: 300}, { x: '2', y: null }, { x: '2', y: null }, {x: '3', y: null}, {x: '4', y: 400}]
+    var data = []
     var data2 = []
     var data3 = []
     var pieData = []
@@ -57,20 +57,20 @@ export default class App extends React.Component {
       })
     }
 
-    // this.setState({data: [
-    //   {seriesName: 'test', data: data, color: '#ff4b00'},
-    //    {seriesName: 'test2', data: data2, color: '#0e95de'},
-    //    {seriesName: 'test3', data: data3, color: '#00c19b'}
-    // ]})
+    this.setState({data: [
+      {seriesName: 'test', data: data, color: '#ff4b00'},
+      {seriesName: 'test2', data: data2, color: '#0e95de'},
+      {seriesName: 'test3', data: data3, color: '#00c19b'}
+    ]})
 
-    this.setState({
-      data: [
-        {
-          seriesName: 'test2', data: data.slice(), color: '#0e95de'
-        }
-      ],
-      pieData: pieData
-    })
+    // this.setState({
+    //   data: [
+    //     {
+    //       seriesName: 'test2', data: data.slice(), color: '#0e95de'
+    //     }
+    //   ],
+    //   pieData: pieData
+    // })
   }
 
   generateHData () {
@@ -85,9 +85,8 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{padding: 20, marginTop: 100}}>
-          <PureChart type={'bar'} data={this.state.data} />
-          <PureChart type={'bar-horizontal'} data={this.state.data} />
-          <Button title='hbar data generate' onPress={this.generateData} />
+          <PureChart type={'bar-horizontal'} data={this.state.data} height={300} />
+          <Button title='data generate' onPress={this.generateData} />
         </View>
       </View>
     )
