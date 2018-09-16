@@ -5,7 +5,10 @@ class HBarChart extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            data: [{key: 'Points', value: 25}, {key: 'Assists', value: 7}, {key: 'Rebounds', value: 18}, {key: 'Steals', value: 15}, {key: 'Blocks', value: 3}],
+            data: [
+                {date:'20180602', 
+                datas:[{key: 'Points', value: 25}, {key: 'Assists', value: 7}, {key: 'Rebounds', value: 18}, {key: 'Steals', value: 15}, {key: 'Blocks', value: 3}]}
+            ]
         }
 
         this.drawOneBar = this.drawOneBar.bind(this)
