@@ -81,7 +81,6 @@ export default class ColumnChart extends Component {
     if (typeof (selectedIndex) === 'number' && selectedIndex >= 0) {
       let standardSeries = this.state.sortedData[0]
       if (!standardSeries) {
-        console.warn('standardSeries is null')
         return null
       }
 
@@ -123,7 +122,6 @@ export default class ColumnChart extends Component {
   render () {
     let {fadeAnim} = this.state
     if (this.state.sortedData && this.state.sortedData.length === 0) return null
-
     return (
       <View style={StyleSheet.flatten([styles.wrapper, {
         backgroundColor: this.props.backgroundColor
@@ -206,7 +204,7 @@ ColumnChart.propTypes = {
 }
 ColumnChart.defaultProps = {
   data: [],
-  height: 100,
+  height: 80,
   defaultColumnWidth: 40,
   defaultColumnMargin: 20,
   primaryColor: '#297AB1',
