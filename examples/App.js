@@ -79,7 +79,7 @@ export default class App extends React.Component {
     var data3 = [{key: 'Points', value: 19}, {key: 'Assists', value: 6}, {key: 'Rebounds', value: 15}, {key: 'Steals', value: 1}, {key: 'Blocks', value: 9}]
     var dataset = [{date: '20170901', datas: data1}, {date: '20170302', datas: data2}, {date: '20171022', datas: data3}]
     this.setState({
-      data: data1
+      data: dataset
     })
   }
 
@@ -87,8 +87,8 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <View style={{padding: 20, marginTop: 100}}>
-          <PureChart type={'bar-horizontal'} data={this.state.data} highlightColor={'red'} height={300} />
-          <Button title='data generate' onPress={this.generateData} />
+          <PureChart type={'hbar'} data={this.state.data} />
+          <Button title='data generate' onPress={this.generateHData} />
         </View>
       </View>
     )

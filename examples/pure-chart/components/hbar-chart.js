@@ -4,11 +4,15 @@ import { View, Text, StyleSheet, Button, Animated, Easing } from 'react-native'
 class HBarChart extends React.Component{
     constructor(props){
         super(props)
+
         this.state = {
             data: [
                 {date:'20180602', 
-                datas:[{key: 'Points', value: 25}, {key: 'Assists', value: 7}, {key: 'Rebounds', value: 18}, {key: 'Steals', value: 15}, {key: 'Blocks', value: 3}]}
-            ]
+                datas:[
+                    {key: 'Points', value: 25}, {key: 'Assists', value: 7}, {key: 'Rebounds', value: 18}, {key: 'Steals', value: 15}, {key: 'Blocks', value: 3}
+                ]}
+            ],
+            index: 0
         }
 
         this.drawOneBar = this.drawOneBar.bind(this)
@@ -19,7 +23,8 @@ class HBarChart extends React.Component{
 
     componentWillReceiveProps (nextProps) {
         this.setState({
-          data: nextProps.data
+          data: nextProps.data,
+          index: 0
         });
     }
 
@@ -36,36 +41,56 @@ class HBarChart extends React.Component{
         )
     }
 
-    drawHBarData (data) {
+    drawHBarData (datas, index) {
         let result = []
 
-        let dataLength = data.length
+        if(datas.length > 0){
+            let data = datas[index].datas
+            let dataLength = data.length
 
-        for (let i=0; i<dataLength; i++) {
-            result.push(this.drawOneBar(data[i].key, data[i].value))
+            for (let i=0; i<dataLength; i++) {
+                result.push(this.drawOneBar(data[i].key, data[i].value))
+            }
         }
 
         return result
     }
 
     moveToPreDate () {
-        alert('pre')
+        var preIndex = this.state.index
+       
+        if(preIndex > 0){
+            var nextDate = this.state.data[preIndex-1].date;
+            this.setState({
+                index: preIndex-1
+            })
+        }
+            
     }
     moveToPostDate () {
-        alert('post')
+        var preIndex = this.state.index
+        var dataLength = this.state.data.length
+        
+        if(preIndex < dataLength-1){
+            var nextDate = this.state.data[preIndex+1].date;
+            this.setState({
+                index: preIndex + 1
+            })
+        }
+            
     }
 
     render () {
         return (
             <View style={styles.container}>
-                {this.drawHBarData(this.state.data)}
+                {this.drawHBarData(this.state.data, this.state.index)}
 
                 <View style={{
                     justifyContent: 'center',
                     flexDirection: 'row',
                 }}>
                     <View style={styles.button}><Button title="<" onPress={this.moveToPreDate} /></View>
-                    <View style={styles.button}><Button title="2017-09-01" onPress={this.moveToPostDate} /></View>
+                    <View style={styles.button}><Button title={this.state.data[this.state.index].date} onPress={this.moveToPostDate} /></View>
                     <View style={styles.button}><Button title=">" onPress={this.moveToPostDate} /></View>
                 </View>
             </View>
@@ -93,7 +118,7 @@ const styles = StyleSheet.create({
 })
 
 HBarChart.defaultProps = {
-    data: [{key:'abc', value: 9}]
+    
 }
 
 
