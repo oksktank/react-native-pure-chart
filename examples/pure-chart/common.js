@@ -248,7 +248,7 @@ export const drawYAxisLabels = (arr, height, minValue, color = '#000000') => {
       justifyContent: 'flex-end',
       alignItems: 'flex-end',
       marginBottom: minValue && arr && arr.length > 0 ? -1 * arr[0][2] * minValue : null,
-      overflow: 'hidden'
+      overflow: 'hidden',
     }}>
 
       {arr.length === 0 ? (
@@ -325,7 +325,7 @@ export const drawXAxis = (color = '#e0e0e0') => {
   return (
     <View style={{
       width: '100%',
-      borderTopWidth: 1,
+      borderTopWidth: 3,
       borderTopColor: color
     }} />
   )
@@ -335,7 +335,7 @@ export const drawXAxisLabels = (sortedData, gap, color = '#000000', showEvenNumb
     <View style={{
       width: '100%',
       paddingVertical: 10,
-      height: 10
+      height: 10,
     }}>
       {sortedData.map((data, i) => {
         // if (data[3] && i % 2 === 1) {
@@ -346,9 +346,15 @@ export const drawXAxisLabels = (sortedData, gap, color = '#000000', showEvenNumb
               // left: data[0] - gap / 2,
               left: data['gap'] - gap / 2,
               width: gap,
-              alignItems: 'center'
+              alignItems: i == 0 ? 'flex-end' : 'center'
             }}>
-              <Text style={{fontSize: 9, color: color}}>
+              <Text 
+                style={{
+                  fontSize: 10, 
+                  color: color,
+                  fontWeight:"600"
+                }}
+              >
                 {
                   // data[3]
                   data['x']

@@ -90,7 +90,7 @@ class LineChart extends React.Component {
             width: size,
             height: size,
             borderColor: isBlank ? backgroundColor : this.props.primaryColor,
-            borderTopWidth: 1,
+            borderTopWidth: 3,
             transform: this.getTransform(angleRad, size)
           }, styles.lineBox, lineStyle])} />
           <View style={StyleSheet.flatten([styles.absolute, {
@@ -297,7 +297,7 @@ class LineChart extends React.Component {
     return (
       this.state.sortedData.length > 0 ? (
         <View style={StyleSheet.flatten([styles.wrapper, {
-          backgroundColor: this.props.backgroundColor
+          backgroundColor: "#06B85E"
         }])}>
           <View style={styles.yAxisLabelsWrapper}>
             {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     margin: 0,
     paddingRight: 0,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   coordinateWrapper: {
     overflow: 'hidden',
