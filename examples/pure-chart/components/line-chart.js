@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, TouchableWithoutFeedback, Text, Animated, Easing, ScrollView, StyleSheet } from 'react-native'
-import {initData, drawYAxis, drawGuideLine, drawXAxisLabels, drawYAxisLabels, numberWithCommas, drawXAxis, drawYAxisRightLabels} from '../common'
+import {initData, drawYAxis, drawGuideLine, drawXAxisLabels, drawYAxisLabels, numberWithCommas, drawXAxis, drawYAxisRightLabels, drawYLeftAxisLabels} from '../common'
 
 class LineChart extends React.Component {
   constructor (props) {
@@ -300,10 +300,18 @@ class LineChart extends React.Component {
         <View style={StyleSheet.flatten([styles.wrapper, {
           backgroundColor: "#06B85E"
         }])}>
-          <View style={styles.yAxisLabelsWrapper}>
-            {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
 
-          </View>
+          {
+            this.state.showRightLablelCol ? (
+              <View style={styles.yAxisLeftLabelsWrapper}>
+                {drawYLeftAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
+              </View>
+            ) : (
+              <View style={styles.yAxisLabelsWrapper}>
+                {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
+              </View>
+            )
+          }
 
           <View>
             <ScrollView horizontal>
@@ -374,9 +382,13 @@ const styles = StyleSheet.create({
   yAxisLabelsWrapper: {
     paddingRight: 5
   },
+  yAxisLeftLabelsWrapper: {
+    position: 'absolute',
+    left: 0,
+  },
   yAxisRightLabelsWrapper: {
     position: 'absolute',
-    right: 0
+    right: 10,
   },
   chartViewWrapper: {
     flexDirection: 'row',
