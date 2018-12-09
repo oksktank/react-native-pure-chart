@@ -277,7 +277,50 @@ export const drawYAxisLabels = (arr, height, minValue, color = '#000000') => {
     </View>
   )
 
-}export const drawYAxisRightLabels = (arr, height, minValue, color = '#000000') => {
+}
+
+export const drawYLeftAxisLabels = (arr, height, minValue, color = '#000000') => {
+  return (
+    <View style={{
+      width: 33,
+      height: height,
+      justifyContent: 'flex-end',
+      alignItems: 'flex-end',
+      marginBottom: minValue && arr && arr.length > 0 ? -1 * arr[0][2] * minValue : null,
+      overflow: 'hidden',
+    }}>
+
+      {arr.length === 0 ? (
+        <View
+          key={'guide0'}
+          style={{
+            bottom: 0,
+            position: 'absolute'
+          }}>
+          <Text style={{fontSize: 11}}>0</Text>
+        </View>
+      ) : arr.map((v, i) => {
+        if (v[1] > height) return null
+        return (
+          <View
+            key={'guide' + i}
+            style={{
+              bottom: v[1] - 5,
+              position: 'absolute',
+              left: 5,
+              paddingBottom: 5,
+            }}>
+            <Text style={{fontSize: 11, color: color}}>{v[0]}</Text>
+          </View>
+        )
+      })}
+
+    </View>
+  )
+
+}
+
+export const drawYAxisRightLabels = (arr, height, minValue, color = '#000000') => {
   return (
     <View style={{
       width: 33,
@@ -304,8 +347,10 @@ export const drawYAxisLabels = (arr, height, minValue, color = '#000000') => {
             key={'r-guide' + i}
             style={{
               bottom: v[1] - 5,
-              position: 'absolute'
-            }}>
+              position: 'absolute',
+              left: 15,
+              paddingBottom: 5,
+        }}>
             <Text style={{fontSize: 11, color: color}}>{v[0]}</Text>
           </View>
         )
