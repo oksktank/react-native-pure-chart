@@ -17,7 +17,8 @@ class LineChart extends React.Component {
       nowY: 0,
       max: newState.max,
       fadeAnim: new Animated.Value(0),
-      guideArray: newState.guideArray
+      guideArray: newState.guideArray,
+      showRightLablelCol: this.props.showRightLablelCol
     }
 
     this.drawCoordinates = this.drawCoordinates.bind(this)
@@ -338,6 +339,13 @@ class LineChart extends React.Component {
             </ScrollView>
           </View>
 
+          {
+            this.state.showRightLablelCol ? (
+                <View style={styles.yAxisRightLabelsWrapper}>
+                {drawYAxisRightLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
+          </View>
+          ) : null
+          }
         </View>
       ) : null
 
@@ -365,6 +373,10 @@ const styles = StyleSheet.create({
   },
   yAxisLabelsWrapper: {
     paddingRight: 5
+  },
+  yAxisRightLabelsWrapper: {
+    position: 'absolute',
+    right: 0
   },
   chartViewWrapper: {
     flexDirection: 'row',
