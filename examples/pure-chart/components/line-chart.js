@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, TouchableWithoutFeedback, Text, Animated, Easing, ScrollView, StyleSheet } from 'react-native'
-import {initData, drawYAxis, drawGuideLine, drawYAxisLabels, numberWithCommas, drawXAxis, drawXAxisLabels} from '../common'
+import {initData, drawYAxis, drawGuideLine, drawXAxisLabels, drawYAxisLabels, numberWithCommas, drawXAxis, drawYAxisRightLabels} from '../common'
 
 class LineChart extends React.Component {
   constructor (props) {
