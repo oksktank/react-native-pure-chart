@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TouchableWithoutFeedback, Text, Animated, Easing, ScrollView, StyleSheet } from 'react-native'
+import { View, TouchableWithoutFeedback, Text, Animated, Easing, ScrollView, StyleSheet, Dimensions } from 'react-native'
 import {initData, drawYAxis, drawGuideLine, drawXAxisLabels, drawYAxisLabels, numberWithCommas, drawXAxis, drawYAxisRightLabels, drawYLeftAxisLabels} from '../common'
 
 class LineChart extends React.Component {
@@ -117,7 +117,6 @@ class LineChart extends React.Component {
             if (emptyCount === this.state.sortedData.length) {
               return null
             }
-            // console.log('point', selectedIndex, point)
 
             this.setState({
               selectedIndex: selectedIndex
@@ -298,23 +297,18 @@ class LineChart extends React.Component {
     return (
       this.state.sortedData.length > 0 ? (
         <View style={StyleSheet.flatten([styles.wrapper, {
-          backgroundColor: "#06B85E"
+          backgroundColor: "transparent"
         }])}>
 
-          {
-            this.state.showRightLablelCol ? (
-              <View style={styles.yAxisLeftLabelsWrapper}>
-                {drawYLeftAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
-              </View>
-            ) : (
-              <View style={styles.yAxisLabelsWrapper}>
-                {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
-              </View>
-            )
-          }
+          <View style={styles.yAxisLabelsWrapper}>
+            {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
+          </View>
 
           <View>
-            <ScrollView horizontal>
+            <ScrollView horizontal style={{
+              maxWidth: '92%',
+              minWidth: '92%'
+            }}>
               <View>
 
                 <View ref='chartView' style={styles.chartViewWrapper}>
@@ -382,13 +376,11 @@ const styles = StyleSheet.create({
   yAxisLabelsWrapper: {
     paddingRight: 5
   },
-  yAxisLeftLabelsWrapper: {
-    position: 'absolute',
-    left: 0,
-  },
   yAxisRightLabelsWrapper: {
+    marginLeft: 0,
+    paddingLeft:0,
     position: 'absolute',
-    right: 10,
+    right: -10,
   },
   chartViewWrapper: {
     flexDirection: 'row',
