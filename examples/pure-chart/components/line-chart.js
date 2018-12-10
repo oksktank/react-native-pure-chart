@@ -306,8 +306,8 @@ class LineChart extends React.Component {
 
           <View>
             <ScrollView horizontal style={{
-              maxWidth: '92%',
-              minWidth: '92%'
+              maxWidth: '90%',
+              minWidth: '90%'
             }}>
               <View>
 
