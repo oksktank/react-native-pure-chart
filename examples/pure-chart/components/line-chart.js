@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     paddingLeft:0,
     position: 'absolute',
-    right: -10,
+    right: 5,
   },
   chartViewWrapper: {
     flexDirection: 'row',
