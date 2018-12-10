@@ -348,8 +348,8 @@ export const drawYAxisRightLabels = (arr, height, minValue, color = '#000000') =
             style={{
               bottom: v[1] - 5,
               position: 'absolute',
-              left: 15,
-              paddingBottom: 5,
+              // left: -5,
+              // paddingBottom: 5,
         }}>
             <Text style={{fontSize: 11, color: color}}>{v[0]}</Text>
           </View>
