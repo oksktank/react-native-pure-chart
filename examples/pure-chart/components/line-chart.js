@@ -197,15 +197,20 @@ class LineChart extends React.Component {
     }
   }
 
+
   drawCoordinates (data, seriesColor, seriesIndex) {
     let result = []
     let lineStyle = {
       borderColor: !seriesColor ? this.props.primaryColor : seriesColor
+      //borderColor: "blue"
     }
     let dataLength = data.length
 
     for (let i = 0; i < dataLength - 1; i++) {
-      result.push(this.drawCoordinate(i, data[i], data[i + 1], '#FFFFFF00', lineStyle, false, false, seriesIndex))
+      let customStyle = {
+        borderColor: data[i] && data[i].color ? data[i].color : lineStyle.borderColor
+      }
+      result.push(this.drawCoordinate(i, data[i], data[i + 1], '#FFFFFF00', customStyle, false, false, seriesIndex))
     }
 
     if (dataLength > 0) {
@@ -294,6 +299,7 @@ class LineChart extends React.Component {
 
   render () {
     let {fadeAnim} = this.state
+    console.log("this.state.sortedData", this.state.sortedData)
     return (
       this.state.sortedData.length > 0 ? (
         <View style={StyleSheet.flatten([styles.wrapper, {

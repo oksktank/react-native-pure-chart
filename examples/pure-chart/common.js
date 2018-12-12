@@ -153,6 +153,8 @@ export const refineData = (flattenData, max, height, gap) => {
           }
         }
       }
+
+      dataObject.color = dataProp[i] && dataProp[i].color ? dataProp[i].color : series.color
       data.push(dataObject)
     }
 

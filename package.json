@@ -1,25 +1,29 @@
 {
-  "_from": "git+https://github.com/hapo-nghiavd/react-native-pure-chart.git",
-  "_id": "react-native-pure-chart@0.0.24",
+  "_args": [
+    [
+      "git+https://github.com/haposoft/react-native-pure-chart.git",
+      "/Users/hapo-nghiavd/Desktop/js/HeathCare"
+    ]
+  ],
+  "_from": "git+https://github.com/haposoft/react-native-pure-chart.git",
+  "_id": "react-native-pure-chart@git+https://github.com/haposoft/react-native-pure-chart.git#757b43034ede8f6429a188a8fe9a7e12e370140c",
   "_inBundle": false,
   "_integrity": "",
   "_location": "/react-native-pure-chart",
   "_phantomChildren": {},
   "_requested": {
     "type": "git",
-    "raw": "react-native-pure-chart@git+https://github.com/hapo-nghiavd/react-native-pure-chart.git",
-    "name": "react-native-pure-chart",
-    "escapedName": "react-native-pure-chart",
-    "rawSpec": "git+https://github.com/hapo-nghiavd/react-native-pure-chart.git",
-    "saveSpec": "git+https://github.com/hapo-nghiavd/react-native-pure-chart.git",
-    "fetchSpec": "https://github.com/hapo-nghiavd/react-native-pure-chart.git",
+    "raw": "git+https://github.com/haposoft/react-native-pure-chart.git",
+    "rawSpec": "git+https://github.com/haposoft/react-native-pure-chart.git",
+    "saveSpec": "git+https://github.com/haposoft/react-native-pure-chart.git",
+    "fetchSpec": "https://github.com/haposoft/react-native-pure-chart.git",
     "gitCommittish": null
   },
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "git+https://github.com/hapo-nghiavd/react-native-pure-chart.git#44313c6893b92ffa0db690ac97d21b64c6af5b96",
-  "_spec": "react-native-pure-chart@git+https://github.com/hapo-nghiavd/react-native-pure-chart.git",
+  "_resolved": "git+https://github.com/haposoft/react-native-pure-chart.git#757b43034ede8f6429a188a8fe9a7e12e370140c",
+  "_spec": "git+https://github.com/haposoft/react-native-pure-chart.git",
   "_where": "/Users/hapo-nghiavd/Desktop/js/HeathCare",
   "author": "",
   "bugs": {
