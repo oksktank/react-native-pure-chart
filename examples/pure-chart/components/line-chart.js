@@ -5,7 +5,6 @@ import {initData, drawYAxis, drawGuideLine, drawXAxisLabels, drawYAxisLabels, nu
 class LineChart extends React.Component {
   constructor (props) {
     super(props)
-    console.log("constructor LineChart")
     let newState = initData(this.props.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine,this.props.minY,this.props.maxY)
     this.state = {
       loading: false,
@@ -44,7 +43,6 @@ class LineChart extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log("componentWillReceiveProps LineChart")
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
         fadeAnim: new Animated.Value(0)
