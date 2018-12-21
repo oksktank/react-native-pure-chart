@@ -301,7 +301,6 @@ class LineChart extends React.Component {
 
   render () {
     let {fadeAnim} = this.state
-    console.log("this.state.sortedData", this.state.sortedData)
     return (
       this.state.sortedData.length > 0 ? (
         <View style={StyleSheet.flatten([styles.wrapper, {
