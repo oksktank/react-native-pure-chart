@@ -2,11 +2,11 @@
   "_args": [
     [
       "git+https://github.com/haposoft/react-native-pure-chart.git",
-      "/Users/hapo-nghiavd/Desktop/js/HeathCare"
+      "C:\\Users\\tsuji\\Documents\\git\\KARADAYORI"
     ]
   ],
   "_from": "git+https://github.com/haposoft/react-native-pure-chart.git",
-  "_id": "react-native-pure-chart@git+https://github.com/haposoft/react-native-pure-chart.git#757b43034ede8f6429a188a8fe9a7e12e370140c",
+  "_id": "react-native-pure-chart@git+https://github.com/haposoft/react-native-pure-chart.git#67a568a84045a9392f902b698e4bcb1c2020e0ba",
   "_inBundle": false,
   "_integrity": "",
   "_location": "/react-native-pure-chart",
@@ -22,9 +22,9 @@
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "git+https://github.com/haposoft/react-native-pure-chart.git#757b43034ede8f6429a188a8fe9a7e12e370140c",
+  "_resolved": "git+https://github.com/haposoft/react-native-pure-chart.git#67a568a84045a9392f902b698e4bcb1c2020e0ba",
   "_spec": "git+https://github.com/haposoft/react-native-pure-chart.git",
-  "_where": "/Users/hapo-nghiavd/Desktop/js/HeathCare",
+  "_where": "C:\\Users\\tsuji\\Documents\\git\\KARADAYORI",
   "author": "",
   "bugs": {
     "url": "https://github.com/oksktank/react-native-pure-chart/issues"

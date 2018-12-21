@@ -64,7 +64,7 @@ function getMaxValue (data) {
   return Math.max.apply(null, values)
 }
 
-export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
+export const initData = (dataProp, height, gap, numberOfPoints = 5,minY,maxY) => {
   let guideArray, max, sortedData
   if (!dataProp || !Array.isArray(dataProp) || dataProp.length === 0) {
     return {
@@ -75,11 +75,11 @@ export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
   }
 
   max = getMaxValue(dataProp)
-  guideArray = getGuideArray(max, height, numberOfPoints)
+  guideArray = getGuideArray_handb(max, height, minY,maxY,numberOfPoints)
 
   dataProp = flattenData(dataProp)
 
-  sortedData = refineData(dataProp, max, height, gap)
+  sortedData = refineData(dataProp, max, height, gap,minY,maxY)
   return {
     sortedData: sortedData,
     max: max,
@@ -93,7 +93,7 @@ export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
   }
 }
 
-export const refineData = (flattenData, max, height, gap) => {
+export const refineData = (flattenData, max, height, gap,minY,maxY) => {
   let result = []
 
   flattenData.map((series) => {
@@ -117,7 +117,8 @@ export const refineData = (flattenData, max, height, gap) => {
 
       if (typeof dataProp[i] === 'number') {
         simpleTypeCount++
-        dataObject.ratioY = dataProp[i] / maxClone * height
+        //dataObject.ratioY = dataProp[i] / maxClone * height
+        dataObject.ratioY = (dataProp[i]-minY) / (maxY-minY) * height
         dataObject.y = dataProp[i]
         dataObject = {
           gap: i * gap,
@@ -135,7 +136,19 @@ export const refineData = (flattenData, max, height, gap) => {
               nullCount++
             }
           }
-          dataProp[i].y = dataProp[i - 1].y + (dataProp[i + nullCount].y - dataProp[i - 1].y) / (nullCount + 1)
+          
+          if(dataProp[i-1] && dataProp[i + nullCount]){
+          	  dataProp[i].y = dataProp[i - 1].y + (dataProp[i + nullCount].y - dataProp[i - 1].y) / (nullCount + 1)
+          }
+          else if(dataProp[i + nullCount]){
+             dataProp[i].y = dataProp[i + nullCount].y
+          }
+          else if(dataProp[i-1]){
+          	dataProp[i].y = dataProp[i - 1].y
+          }else{
+            dataProp[i].y = 0
+          }
+          
           isEmpty = true
           /* if (dataProp[i + 1] && dataProp[i - 1]) {
             dataProp[i].y = (dataProp[i - 1].y + dataProp[i + 1].y) / 2
@@ -146,7 +159,8 @@ export const refineData = (flattenData, max, height, gap) => {
           objectTypeCount++
           dataObject = {
             gap: i * gap,
-            ratioY: dataProp[i].y / maxClone * height,
+            //ratioY: dataProp[i].y / maxClone * height,
+            ratioY: (dataProp[i].y-minY) / (maxY-minY) * height,
             x: dataProp[i].x,
             y: dataProp[i].y,
             isEmpty: isEmpty
@@ -178,6 +192,21 @@ export const refineData = (flattenData, max, height, gap) => {
 
   return result
 }
+
+export const getGuideArray_handb = (max, height, minY,maxY,numberOfPoints = 5) => {
+  let arr = []
+  
+  let dy=(maxY-minY)/(numberOfPoints-1)
+  for (let i = 0; i < numberOfPoints; i++) {
+    let v = minY+dy*i
+    v = Math.round(v * 10) / 10
+    let postfix=""
+    arr.push([v + postfix, (v-minY) / (maxY-minY) * height, 1 / maxY * height])
+  }
+  return arr
+}
+
+
 
 export const getGuideArray = (max, height, numberOfPoints = 5) => {
   let x = parseInt(max)
