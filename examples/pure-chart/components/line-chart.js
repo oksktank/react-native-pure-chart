@@ -5,7 +5,7 @@ import {initData, drawYAxis, drawGuideLine, drawXAxisLabels, drawYAxisLabels, nu
 class LineChart extends React.Component {
   constructor (props) {
     super(props)
-    let newState = initData(this.props.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine)
+    let newState = initData(this.props.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine,this.props.minY,this.props.maxY)
     this.state = {
       loading: false,
       sortedData: newState.sortedData,
@@ -16,6 +16,8 @@ class LineChart extends React.Component {
       nowX: 0,
       nowY: 0,
       max: newState.max,
+      minY: this.props.minY,
+      maxY: this.props.maxY,
       fadeAnim: new Animated.Value(0),
       guideArray: newState.guideArray,
       showRightLablelCol: this.props.showRightLablelCol
@@ -44,7 +46,7 @@ class LineChart extends React.Component {
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
         fadeAnim: new Animated.Value(0)
-      }, initData(nextProps.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine)), () => {
+      }, initData(nextProps.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine,nextProps.minY,nextProps.maxY)), () => {
         Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
       })
     }
@@ -142,7 +144,7 @@ class LineChart extends React.Component {
 
   drawPoint (index, point, seriesColor) {
     let key = 'point' + index
-    let size = 8
+    let size = 18
     let color = !seriesColor ? this.props.primaryColor : seriesColor
     if (this.state.selectedIndex === index) {
       color = this.props.selectedColor
@@ -299,7 +301,6 @@ class LineChart extends React.Component {
 
   render () {
     let {fadeAnim} = this.state
-    console.log("this.state.sortedData", this.state.sortedData)
     return (
       this.state.sortedData.length > 0 ? (
         <View style={StyleSheet.flatten([styles.wrapper, {
