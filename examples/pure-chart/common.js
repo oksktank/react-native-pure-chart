@@ -138,13 +138,17 @@ export const refineData = (flattenData, max, height, gap,minY,maxY) => {
             }
           }
           
-          if(dataProp[i-1] && dataProp[i + nullCount]){
+          if(dataProp[i-1] && 
+            dataProp[i + nullCount] && 
+            dataProp[i-1].y && 
+            dataProp[i + nullCount].y
+          ){
           	  dataProp[i].y = dataProp[i - 1].y + (dataProp[i + nullCount].y - dataProp[i - 1].y) / (nullCount + 1)
           }
-          else if(dataProp[i + nullCount]){
+          else if(dataProp[i + nullCount] && dataProp[i + nullCount].y){
              dataProp[i].y = dataProp[i + nullCount].y
           }
-          else if(dataProp[i-1]){
+          else if(dataProp[i-1] && dataProp[i - 1].y){
           	dataProp[i].y = dataProp[i - 1].y
           }else{
             dataProp[i].y = 0
