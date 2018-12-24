@@ -100,7 +100,8 @@ export const refineData = (flattenData, max, height, gap,minY,maxY) => {
     let dataProp = series.data
     let object = {
       seriesName: series.seriesName,
-      seriesColor: series.color
+      seriesColor: series.color,
+      seriesLabel: series.seriesLabel ? series.seriesLabel : '',
     }
     let data = []
     let length = dataProp.length
