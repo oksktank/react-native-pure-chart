@@ -64,7 +64,7 @@ class LineChart extends React.Component {
     let dx = end.gap - start.gap
     let dy = end.ratioY - start.ratioY
     let size = Math.sqrt(dx * dx + dy * dy)
-    let angleRad = -1 * Math.atan2(dy, dx)
+    let angleRad = Math.atan2(dy, dx) == 0 ? 0 : -1 * Math.atan2(dy, dx)
     let height
     let top
     let topMargin = 20

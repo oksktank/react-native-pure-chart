@@ -118,14 +118,15 @@ export const refineData = (flattenData, max, height, gap,minY,maxY) => {
       if (typeof dataProp[i] === 'number') {
         simpleTypeCount++
         //dataObject.ratioY = dataProp[i] / maxClone * height
-        dataObject.ratioY = (dataProp[i]-minY) / (maxY-minY) * height
+        dataObject.ratioY = (maxY-minY) != 0 ? (dataProp[i]-minY) / (maxY-minY) * height : 0
         dataObject.y = dataProp[i]
         dataObject = {
           gap: i * gap,
           ratioY: dataProp[i] / maxClone * height,
           y: dataProp[i]
         }
-      } else if (typeof dataProp[i] === 'object') {
+      } 
+      else if (typeof dataProp[i] === 'object') {
         let isEmpty = false
         if (dataProp[i].y === null) {
           let nullCount = 0
@@ -137,13 +138,17 @@ export const refineData = (flattenData, max, height, gap,minY,maxY) => {
             }
           }
           
-          if(dataProp[i-1] && dataProp[i + nullCount]){
+          if(dataProp[i-1] && 
+            dataProp[i + nullCount] && 
+            dataProp[i-1].y && 
+            dataProp[i + nullCount].y
+          ){
           	  dataProp[i].y = dataProp[i - 1].y + (dataProp[i + nullCount].y - dataProp[i - 1].y) / (nullCount + 1)
           }
-          else if(dataProp[i + nullCount]){
+          else if(dataProp[i + nullCount] && dataProp[i + nullCount].y){
              dataProp[i].y = dataProp[i + nullCount].y
           }
-          else if(dataProp[i-1]){
+          else if(dataProp[i-1] && dataProp[i - 1].y){
           	dataProp[i].y = dataProp[i - 1].y
           }else{
             dataProp[i].y = 0
@@ -160,7 +165,7 @@ export const refineData = (flattenData, max, height, gap,minY,maxY) => {
           dataObject = {
             gap: i * gap,
             //ratioY: dataProp[i].y / maxClone * height,
-            ratioY: (dataProp[i].y-minY) / (maxY-minY) * height,
+            ratioY: (maxY-minY) != 0 ? (dataProp[i].y-minY) / (maxY-minY) * height : 0,
             x: dataProp[i].x,
             y: dataProp[i].y,
             isEmpty: isEmpty
