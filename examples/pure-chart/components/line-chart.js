@@ -274,7 +274,7 @@ class LineChart extends React.Component {
               return (
                 <View key={series.seriesName}>
                   {dataObject.x ? (
-                    <Text style={styles.tooltipTitle}>{dataObject.x}</Text>
+                      <Text style={styles.tooltipTitle}>{series.seriesLabel ? series.seriesLabel :dataObject.x}</Text>
                 ) : null}
                   <View style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
                     <View style={{
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   selectedBox: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#164103',
     borderRadius: 5,
     opacity: 0.8,
     borderColor: '#AAAAAA',
@@ -441,8 +441,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     justifyContent: 'center'
   },
-  tooltipTitle: {fontSize: 10},
-  tooltipValue: {fontWeight: 'bold', fontSize: 15}
+  tooltipTitle: {fontSize: 10, color: 'white'},
+  tooltipValue: {fontWeight: 'bold', fontSize: 15, color: 'white'}
 })
 
 export default LineChart
