@@ -205,7 +205,7 @@ export const getGuideArray_handb = (max, height, minY,maxY,numberOfPoints = 5) =
   let dy=(maxY-minY)/(numberOfPoints-1)
   for (let i = 0; i < numberOfPoints; i++) {
     let v = minY+dy*i
-    v = Math.round(v * 10) / 10
+    v = Math.round(v / 10) * 10
     let postfix=""
     arr.push([v + postfix, (v-minY) / (maxY-minY) * height, 1 / maxY * height])
   }
