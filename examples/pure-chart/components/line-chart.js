@@ -307,16 +307,20 @@ class LineChart extends React.Component {
           backgroundColor: "transparent"
         }])}>
 
+
           <View style={styles.yAxisLabelsWrapper}>
             {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
           </View>
 
-          <View>
+          <View style={{
+            flex: 1,
+          }}>
             <ScrollView horizontal style={{
-              maxWidth: '90%',
-              minWidth: '90%'
+              flex: 1,
             }}>
-              <View>
+              <View style={{
+                flex: 1,
+              }}>
 
                 <View ref='chartView' style={styles.chartViewWrapper}>
 
@@ -378,16 +382,16 @@ LineChart.defaultProps = {
 const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    flex: 1,
+    justifyContent: 'space-between'
   },
   yAxisLabelsWrapper: {
     paddingRight: 5
   },
   yAxisRightLabelsWrapper: {
-    marginLeft: 0,
-    paddingLeft:0,
-    position: 'absolute',
-    right: 5,
+    width: 35,
+    marginLeft: 5
   },
   chartViewWrapper: {
     flexDirection: 'row',

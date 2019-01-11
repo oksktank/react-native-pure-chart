@@ -285,7 +285,7 @@ export const drawYAxisLabels = (arr, height, minValue, color = '#000000') => {
       justifyContent: 'flex-end',
       alignItems: 'flex-end',
       marginBottom: minValue && arr && arr.length > 0 ? -1 * arr[0][2] * minValue : null,
-      overflow: 'hidden',
+      //overflow: 'hidden',
     }}>
 
       {arr.length === 0 ? (
@@ -324,7 +324,7 @@ export const drawYLeftAxisLabels = (arr, height, minValue, color = '#000000') =>
       justifyContent: 'flex-end',
       alignItems: 'flex-end',
       marginBottom: minValue && arr && arr.length > 0 ? -1 * arr[0][2] * minValue : null,
-      overflow: 'hidden',
+      // overflow: 'hidden',
     }}>
 
       {arr.length === 0 ? (
@@ -360,12 +360,12 @@ export const drawYLeftAxisLabels = (arr, height, minValue, color = '#000000') =>
 export const drawYAxisRightLabels = (arr, height, minValue, color = '#000000') => {
   return (
     <View style={{
-      width: 33,
+      width: 40,
       height: height,
       justifyContent: 'flex-start',
       alignItems: 'flex-start',
       marginBottom: minValue && arr && arr.length > 0 ? -1 * arr[0][2] * minValue : null,
-      overflow: 'hidden',
+      //overflow: 'hidden',
     }}>
 
       {arr.length === 0 ? (
@@ -385,7 +385,6 @@ export const drawYAxisRightLabels = (arr, height, minValue, color = '#000000') =
             style={{
               bottom: v[1] - 5,
               position: 'absolute',
-              left: 15,
               paddingTop: 5
         }}>
             <Text style={{fontSize: 11, color: color}}>{v[0]}</Text>
