@@ -76,7 +76,7 @@ class LineChart extends React.Component {
       height = end.ratioY
       top = -1 * (size - Math.abs(dy))
     }
-
+    backgroundColor = 'rgba(255,255,255,0)'
     return (
       <View key={key} style={{
         height: this.props.height + topMargin,
@@ -98,7 +98,7 @@ class LineChart extends React.Component {
           }, styles.lineBox, lineStyle])} />
           <View style={StyleSheet.flatten([styles.absolute, {
             height: height - Math.abs(dy) - 2,
-            backgroundColor: lastCoordinate ? '#FFFFFF00' : backgroundColor,
+            backgroundColor: lastCoordinate ? 'rgba(255,255,255,0)' : backgroundColor,
             marginTop: Math.abs(dy) + 2
           }])} />
         </View>
@@ -142,7 +142,7 @@ class LineChart extends React.Component {
     )
   }
 
-  drawPoint (index, point, seriesColor) {
+  drawPoint (index, point, seriesColor, isTarget = false) {
     let key = 'point' + index
     let size = 18
     let color = !seriesColor ? this.props.primaryColor : seriesColor
@@ -151,25 +151,45 @@ class LineChart extends React.Component {
     }
 
     if (point.isEmpty || this.props.hidePoints) return null
+    if (isTarget) {
+      return (
+        <TouchableWithoutFeedback key={key} onPress={() => {
+          this.setState({selectedIndex: index})
+        }}>
 
-    return (
-      <TouchableWithoutFeedback key={key} onPress={() => {
-        this.setState({selectedIndex: index})
-      }}>
+          <View style={StyleSheet.flatten([styles.pointWrapperTarget, {
+            width: 18,
+            height: 3,
 
-        <View style={StyleSheet.flatten([styles.pointWrapper, {
-          width: size,
-          height: size,
+            left: point.gap - size / 2,
+            bottom: point.ratioY - size / 2 + 6,
 
-          left: point.gap - size / 2,
-          bottom: point.ratioY - size / 2,
+            borderColor: color,
+            backgroundColor: color
 
-          borderColor: color,
-          backgroundColor: color
+          }])} />
+        </TouchableWithoutFeedback>
+      )
+    } else {
+      return (
+        <TouchableWithoutFeedback key={key} onPress={() => {
+          this.setState({selectedIndex: index})
+        }}>
 
-        }])} />
-      </TouchableWithoutFeedback>
-    )
+          <View style={StyleSheet.flatten([styles.pointWrapper, {
+            width: size,
+            height: size,
+
+            left: point.gap - size / 2,
+            bottom: point.ratioY - size / 2,
+
+            borderColor: color,
+            backgroundColor: color
+
+          }])} />
+        </TouchableWithoutFeedback>
+      )
+    }
   }
   drawValue (index, point) {
     let key = 'pointvalue' + index
@@ -200,7 +220,7 @@ class LineChart extends React.Component {
   }
 
 
-  drawCoordinates (data, seriesColor, seriesIndex) {
+  drawCoordinates (data, seriesColor, seriesIndex, isTarget = false) {
     let result = []
     let lineStyle = {
       borderColor: !seriesColor ? this.props.primaryColor : seriesColor
@@ -212,16 +232,16 @@ class LineChart extends React.Component {
       let customStyle = {
         borderColor: data[i] && data[i].color ? data[i].color : lineStyle.borderColor
       }
-      result.push(this.drawCoordinate(i, data[i], data[i + 1], '#FFFFFF00', customStyle, false, false, seriesIndex))
+      result.push(this.drawCoordinate(i, data[i], data[i + 1], 'rgba(255,255,255,0)', customStyle, false, false, seriesIndex))
     }
 
     if (dataLength > 0) {
-      result.push(this.drawPoint(0, data[0], seriesColor))
+      result.push(this.drawPoint(0, data[0], seriesColor, isTarget))
       result.push(this.drawValue(0, data[0], seriesColor))
     }
 
     for (let i = 0; i < dataLength - 1; i++) {
-      result.push(this.drawPoint((i + 1), data[i + 1], seriesColor))
+      result.push(this.drawPoint((i + 1), data[i + 1], seriesColor, isTarget))
       result.push(this.drawValue((i + 1), data[i + 1], seriesColor))
     }
 
@@ -301,6 +321,7 @@ class LineChart extends React.Component {
 
   render () {
     let {fadeAnim} = this.state
+    console.log('this.state.sortedData: ', this.state.sortedData)
     return (
       this.state.sortedData.length > 0 ? (
         <View style={StyleSheet.flatten([styles.wrapper, {
@@ -337,7 +358,7 @@ class LineChart extends React.Component {
                         minWidth: 200,
                         marginBottom: this.props.minValue && this.state.guideArray && this.state.guideArray.length > 0 ? -1 * this.state.guideArray[0][2] * this.props.minValue : null
                       }} >
-                        {this.drawCoordinates(obj.data, obj.seriesColor, index)}
+                        {this.drawCoordinates(obj.data, obj.seriesColor, index, obj.isTarget)}
                       </Animated.View>
                     )
                   })}
@@ -422,6 +443,11 @@ const styles = StyleSheet.create({
   pointWrapper: {
     position: 'absolute',
     borderRadius: 10,
+    borderWidth: 1
+  },
+  pointWrapperTarget: {
+    position: 'absolute',
+    borderRadius: 0,
     borderWidth: 1
   },
   selectedWrapper: {

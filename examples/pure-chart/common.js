@@ -93,7 +93,7 @@ export const initData = (dataProp, height, gap, numberOfPoints = 5,minY,maxY) =>
   }
 }
 
-export const refineData = (flattenData, max, height, gap,minY,maxY) => {
+export const refineData = (flattenData, max, height, gap, minY, maxY) => {
   let result = []
 
   flattenData.map((series) => {
@@ -102,6 +102,7 @@ export const refineData = (flattenData, max, height, gap,minY,maxY) => {
       seriesName: series.seriesName,
       seriesColor: series.color,
       seriesLabel: series.seriesLabel ? series.seriesLabel : '',
+      isTarget: series.isTarget ? true : false,
     }
     let data = []
     let length = dataProp.length
