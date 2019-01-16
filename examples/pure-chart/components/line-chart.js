@@ -6,6 +6,7 @@ class LineChart extends React.Component {
   constructor (props) {
     super(props)
     let newState = initData(this.props.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine,this.props.minY,this.props.maxY)
+    console.log('newState.sortedData: ', newState.sortedData)
     this.state = {
       loading: false,
       sortedData: newState.sortedData,
@@ -133,7 +134,7 @@ class LineChart extends React.Component {
               height: '100%',
               position: 'absolute',
               marginLeft: -1 * dx / 2,
-              backgroundColor: '#FFFFFF01'
+              backgroundColor: 'rgba(255,255,255,0)'
             }} />
           </TouchableWithoutFeedback>
         )}
@@ -220,18 +221,18 @@ class LineChart extends React.Component {
   }
 
 
-  drawCoordinates (data, seriesColor, seriesIndex, isTarget = false) {
+  drawCoordinates (data, seriesColor, seriesIndex, isTarget = false, lastIsBlank = false) {
+          console.log('lastIsBlank: ', lastIsBlank)
     let result = []
     let lineStyle = {
       borderColor: !seriesColor ? this.props.primaryColor : seriesColor
       //borderColor: "blue"
     }
     let dataLength = data.length
-
+    let customStyle = {
+      borderColor: data[0] && data[0].color ? data[0].color : lineStyle.borderColor
+    }
     for (let i = 0; i < dataLength - 1; i++) {
-      let customStyle = {
-        borderColor: data[i] && data[i].color ? data[i].color : lineStyle.borderColor
-      }
       result.push(this.drawCoordinate(i, data[i], data[i + 1], 'rgba(255,255,255,0)', customStyle, false, false, seriesIndex))
     }
 
@@ -248,7 +249,11 @@ class LineChart extends React.Component {
     let lastData = Object.assign({}, data[dataLength - 1])
     let lastCoordinate = Object.assign({}, data[dataLength - 1])
     lastCoordinate.gap = lastCoordinate.gap + this.props.gap
-    result.push(this.drawCoordinate((dataLength), lastData, lastCoordinate, '#FFFFFF', {}, true, true, seriesIndex))
+    if (lastIsBlank) {
+      result.push(this.drawCoordinate((dataLength), lastData, lastCoordinate, 'rgba(255,255,255,0)', {}, true, true, seriesIndex))
+    } else {
+      result.push(this.drawCoordinate((dataLength), lastData, lastCoordinate, 'rgba(255,255,255,0)', customStyle, false, true, seriesIndex))
+    }
 
     return result
   }
@@ -321,7 +326,6 @@ class LineChart extends React.Component {
 
   render () {
     let {fadeAnim} = this.state
-    console.log('this.state.sortedData: ', this.state.sortedData)
     return (
       this.state.sortedData.length > 0 ? (
         <View style={StyleSheet.flatten([styles.wrapper, {
@@ -358,7 +362,7 @@ class LineChart extends React.Component {
                         minWidth: 200,
                         marginBottom: this.props.minValue && this.state.guideArray && this.state.guideArray.length > 0 ? -1 * this.state.guideArray[0][2] * this.props.minValue : null
                       }} >
-                        {this.drawCoordinates(obj.data, obj.seriesColor, index, obj.isTarget)}
+                        {this.drawCoordinates(obj.data, obj.seriesColor, index, obj.isTarget, obj.lastIsBlank)}
                       </Animated.View>
                     )
                   })}
@@ -418,8 +422,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     margin: 0,
-    paddingRight: 0,
-    overflow: 'hidden',
+    paddingRight: 0
+    //overflow: 'hidden',
   },
   coordinateWrapper: {
     overflow: 'hidden',
