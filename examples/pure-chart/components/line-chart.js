@@ -6,7 +6,6 @@ class LineChart extends React.Component {
   constructor (props) {
     super(props)
     let newState = initData(this.props.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine,this.props.minY,this.props.maxY)
-    console.log('newState.sortedData: ', newState.sortedData)
     this.state = {
       loading: false,
       sortedData: newState.sortedData,
@@ -69,6 +68,9 @@ class LineChart extends React.Component {
     let height
     let top
     let topMargin = 20
+    if (lastCoordinate) {
+      dx = dx/3
+    }
 
     if (start.ratioY > end.ratioY) {
       height = start.ratioY
@@ -219,21 +221,23 @@ class LineChart extends React.Component {
       return null
     }
   }
-
-
   drawCoordinates (data, seriesColor, seriesIndex, isTarget = false, lastIsBlank = false) {
-          console.log('lastIsBlank: ', lastIsBlank)
     let result = []
     let lineStyle = {
       borderColor: !seriesColor ? this.props.primaryColor : seriesColor
       //borderColor: "blue"
     }
     let dataLength = data.length
-    let customStyle = {
-      borderColor: data[0] && data[0].color ? data[0].color : lineStyle.borderColor
-    }
     for (let i = 0; i < dataLength - 1; i++) {
-      result.push(this.drawCoordinate(i, data[i], data[i + 1], 'rgba(255,255,255,0)', customStyle, false, false, seriesIndex))
+      let styleDetail = {
+        borderColor: data[i] && data[i].color ? data[i].color : lineStyle.borderColor
+      }
+      if ((data[i] && data[i].color && data[i].color == 'rgba(255,255,255,0)') || data[i + 1] && data[i + 1].color && data[i + 1].color == 'rgba(255,255,255,0)') {
+        styleDetail = {
+          borderColor: 'rgba(255,255,255,0)'
+        }
+      }
+      result.push(this.drawCoordinate(i, data[i], data[i + 1], 'rgba(255,255,255,0)', styleDetail, false, false, seriesIndex))
     }
 
     if (dataLength > 0) {
@@ -249,12 +253,14 @@ class LineChart extends React.Component {
     let lastData = Object.assign({}, data[dataLength - 1])
     let lastCoordinate = Object.assign({}, data[dataLength - 1])
     lastCoordinate.gap = lastCoordinate.gap + this.props.gap
+    let customStyle = {
+      borderColor: data[0] && data[0].color ? data[0].color : lineStyle.borderColor
+    }
     if (lastIsBlank) {
       result.push(this.drawCoordinate((dataLength), lastData, lastCoordinate, 'rgba(255,255,255,0)', {}, true, true, seriesIndex))
     } else {
       result.push(this.drawCoordinate((dataLength), lastData, lastCoordinate, 'rgba(255,255,255,0)', customStyle, false, true, seriesIndex))
     }
-
     return result
   }
 
@@ -326,6 +332,10 @@ class LineChart extends React.Component {
 
   render () {
     let {fadeAnim} = this.state
+    let marginRight = 10
+    if (this.state.showRightLablelCol) {
+      marginRight = 0
+    }
     return (
       this.state.sortedData.length > 0 ? (
         <View style={StyleSheet.flatten([styles.wrapper, {
@@ -339,6 +349,7 @@ class LineChart extends React.Component {
 
           <View style={{
             flex: 1,
+            marginRight: marginRight
           }}>
             <ScrollView horizontal style={{
               flex: 1,
