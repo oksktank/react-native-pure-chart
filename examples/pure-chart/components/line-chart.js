@@ -71,7 +71,6 @@ class LineChart extends React.Component {
     if (lastCoordinate) {
       dx = dx/3
     }
-
     if (start.ratioY > end.ratioY) {
       height = start.ratioY
       top = -1 * size
@@ -241,7 +240,7 @@ class LineChart extends React.Component {
     }
 
     if (dataLength > 0) {
-      result.push(this.drawPoint(0, data[0], seriesColor, isTarget))
+      //result.push(this.drawPoint(0, data[0], seriesColor, isTarget))
       result.push(this.drawValue(0, data[0], seriesColor))
     }
 

@@ -79,7 +79,7 @@ export const initData = (dataProp, height, gap, numberOfPoints = 5,minY,maxY) =>
 
   dataProp = flattenData(dataProp)
 
-  sortedData = refineData(dataProp, max, height, gap,minY,maxY)
+  sortedData = refineData(dataProp, max, height, gap, minY, maxY)
   return {
     sortedData: sortedData,
     max: max,
@@ -127,7 +127,7 @@ export const refineData = (flattenData, max, height, gap, minY, maxY) => {
         dataObject.ratioY = (maxY-minY) != 0 ? (dataProp[i]-minY) / (maxY-minY) * height : 0
         dataObject.y = dataProp[i]
         dataObject = {
-          gap: i * gap,
+          gap: i == 0 ? 0 : ((i * gap) - (gap/3*2)),
           ratioY: dataProp[i] / maxClone * height,
           y: dataProp[i]
         }
@@ -169,7 +169,7 @@ export const refineData = (flattenData, max, height, gap, minY, maxY) => {
         if (typeof dataProp[i].y === 'number' && dataProp[i].x) {
           objectTypeCount++
           dataObject = {
-            gap: i * gap,
+            gap: i == 0 ? 0 : ((i * gap) - (gap/3*2)),
             //ratioY: dataProp[i].y / maxClone * height,
             ratioY: (maxY-minY) != 0 ? (dataProp[i].y-minY) / (maxY-minY) * height : 0,
             x: dataProp[i].x,
@@ -462,32 +462,46 @@ export const drawXAxisLabels = (sortedData, gap, color = '#000000', showEvenNumb
       height: 10,
     }}>
       {sortedData.map((data, i) => {
-        // if (data[3] && i % 2 === 1) {
-        if (data['x'] && i % 2 === 1 || !showEvenNumberXaxisLabel) {
-          return (
-            <View key={'label' + i} style={{
-              position: 'absolute',
-              // left: data[0] - gap / 2,
-              left: data['gap'] - gap / 2,
-              width: gap,
-              alignItems: i == 0 ? 'flex-end' : 'center'
-            }}>
-              <Text 
-                style={{
-                  fontSize: 10, 
-                  color: color,
-                  fontWeight:"600"
-                }}
-              >
-                {
-                  // data[3]
-                  data['x']
-                }
-              </Text>
-            </View>
-          )
+        if (i == 0) {
+          if (data['x'] && i % 2 === 1 || !showEvenNumberXaxisLabel) {
+            return (
+              <View key={'label' + i} style={{
+                position: 'absolute',
+                left: data['gap'] - gap / 2,
+                width: gap/3,
+                alignItems: 'center'
+              }}>
+              </View>
+            )
+          } else {
+            return null
+          }
         } else {
-          return null
+          if (data['x'] && i % 2 === 1 || !showEvenNumberXaxisLabel) {
+            return (
+              <View key={'label' + i} style={{
+                position: 'absolute',
+                // left: data[0] - gap / 2,
+                left: data['gap'] - gap / 2,
+                width: gap,
+                alignItems: 'center'
+              }}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    color: color,
+                    fontWeight:"600"
+                  }}
+                >
+                  {
+                    data['x']
+                  }
+                </Text>
+              </View>
+            )
+          } else {
+            return null
+          }
         }
       })}
     </View>
