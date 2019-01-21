@@ -5,7 +5,7 @@ import {initData, drawYAxis, drawGuideLine, drawXAxisLabels, drawYAxisLabels, nu
 class LineChart extends React.Component {
   constructor (props) {
     super(props)
-    let newState = initData(this.props.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine,this.props.minY,this.props.maxY)
+    let newState = initData(this.props.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine,this.props.minY,this.props.maxY, this.props.lastCompletedGoalDateIndex)
     this.state = {
       loading: false,
       sortedData: newState.sortedData,
@@ -46,7 +46,7 @@ class LineChart extends React.Component {
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
         fadeAnim: new Animated.Value(0)
-      }, initData(nextProps.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine,nextProps.minY,nextProps.maxY)), () => {
+      }, initData(nextProps.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine,nextProps.minY,nextProps.maxY, nextProps.lastCompletedGoalDateIndex)), () => {
         Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
       })
     }
@@ -290,39 +290,49 @@ class LineChart extends React.Component {
 
       return (
         <View style={StyleSheet.flatten([styles.selectedWrapper, {
-          left: left,
-          justifyContent: 'center'
-        }])}>
-          <View style={StyleSheet.flatten([styles.selectedLine, {
-            backgroundColor: this.props.selectedColor,
-            marginLeft: gap
-          }])} />
-
-          <View style={StyleSheet.flatten([styles.selectedBox])}>
-            {this.state.sortedData.map((series) => {
-              let dataObject = series.data[this.state.selectedIndex]
-              return (
-                <View key={series.seriesName}>
-                  {dataObject.x ? (
-                      <Text style={styles.tooltipTitle}>{series.seriesLabel ? series.seriesLabel :dataObject.x}</Text>
-                ) : null}
-                  <View style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
-                    <View style={{
-                      width: 10,
-                      height: 5,
-                      marginRight: 3,
-                      borderRadius: 2,
-                      backgroundColor: !series.seriesColor ? this.props.primaryColor : series.seriesColor
-                    }} />
+            left: left,
+            justifyContent: 'center',
+          }])}>
+        <View style={StyleSheet.flatten([styles.selectedLine, {
+          backgroundColor: this.props.selectedColor,
+          marginLeft: gap
+        }])} />
+      <View style={StyleSheet.flatten([styles.selectedBox])}>
+        {
+          this.props.lastCompletedGoalDateIndex && this.props.lastCompletedGoalDateIndex === index ?
+            (
+            <View>
+              <Text style={styles.tooltipTitle}>よく頑張りました</Text>
+              <Text style={styles.tooltipValue}>{this.props.completedGoalValue}数</Text>
+            </View>
+            ) :
+            (
+            <View>
+              {this.state.sortedData.map((series) => {
+                let dataObject = series.data[this.state.selectedIndex]
+                  return (
+                    <View key={series.seriesName}>
+                    {dataObject.x ? (
+                        <Text style={styles.tooltipTitle}>{series.seriesLabel ? series.seriesLabel :dataObject.x}</Text>
+                    ) : null}
+                <View style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
+                  <View style={{
+                    width: 10,
+                    height: 5,
+                    marginRight: 3,
+                    borderRadius: 2,
+                    backgroundColor: !series.seriesColor ? this.props.primaryColor : series.seriesColor
+                    }}/>
                     <Text style={styles.tooltipValue}>{numberWithCommas(dataObject.y, false)}</Text>
                   </View>
-                </View>
-              )
-            })}
-
-          </View>
-
+                </View>)
+                })
+              }
+            </View>
+          )
+        }
         </View>
+      </View>
       )
     } else {
       return null
