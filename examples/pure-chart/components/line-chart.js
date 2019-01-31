@@ -47,7 +47,8 @@ class LineChart extends React.Component {
       maxY: this.props.maxY,
       fadeAnim: new Animated.Value(0),
       guideArray: newState.guideArray,
-      showRightLablelCol: this.props.showRightLablelCol
+      showRightLablelCol: this.props.showRightLablelCol,
+      showGoalMsg: true,
     }
 
     this.drawCoordinates = this.drawCoordinates.bind(this)
@@ -218,7 +219,8 @@ class LineChart extends React.Component {
 
               this.setState(
                 {
-                  selectedIndex: selectedIndex
+                  selectedIndex: selectedIndex,
+                  showGoalMsg: false
                 },
                 () => {
                   if (typeof this.props.onPress === 'function') {
@@ -257,7 +259,7 @@ class LineChart extends React.Component {
         <TouchableWithoutFeedback
           key={key}
           onPress={() => {
-            this.setState({ selectedIndex: index })
+            this.setState({ selectedIndex: index, showGoalMsg: false })
           }}
         >
           <View
@@ -282,7 +284,7 @@ class LineChart extends React.Component {
         <TouchableWithoutFeedback
           key={key}
           onPress={() => {
-            this.setState({ selectedIndex: index })
+            this.setState({ selectedIndex: index, showGoalMsg: false })
           }}
         >
           <View
@@ -452,7 +454,7 @@ class LineChart extends React.Component {
       if (this.props.maxY && this.props.maxY !== 0) {
         const diff = 1 - realValue / (maxY-1)
         marginTop = diff * this.props.height
-        if (diff !== 0) marginTop = marginTop - 20
+        if (diff !== 0) marginTop = marginTop - 50
       }
       return (
         <View
@@ -478,7 +480,7 @@ class LineChart extends React.Component {
               marginTop ? { marginTop } : null
             ])}
           >
-            {this.props.lastCompletedGoalDateIndex &&
+            {this.state.showGoalMsg === true && this.props.lastCompletedGoalDateIndex &&
             this.props.lastCompletedGoalDateIndex === index ? (
               <View>
                 <Text style={styles.tooltipTitle}>よく頑張りました</Text>
