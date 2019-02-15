@@ -152,6 +152,7 @@ class LineChart extends React.Component {
         style={{
           height: this.props.height + topMargin,
           justifyContent: 'flex-end'
+          opacity: index == 0 ? 0 : 1
         }}
       >
         <View
