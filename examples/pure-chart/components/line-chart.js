@@ -151,7 +151,7 @@ class LineChart extends React.Component {
         key={key}
         style={{
           height: this.props.height + topMargin,
-          justifyContent: 'flex-end'
+          justifyContent: 'flex-end',
           opacity: index == 0 ? 0 : 1
         }}
       >
