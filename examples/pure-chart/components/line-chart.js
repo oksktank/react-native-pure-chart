@@ -305,7 +305,13 @@ class LineChart extends React.Component {
           </View>
 
           <View>
-            <ScrollView horizontal>
+          <ScrollView
+              horizontal
+              ref={ref => this.scrollView = ref}
+              onContentSizeChange={() => {
+                if(this.props.lineChartScrollToEnd) this.scrollView.scrollToEnd({ animated: false });
+              }}
+          >
               <View>
 
                 <View ref='chartView' style={styles.chartViewWrapper}>
