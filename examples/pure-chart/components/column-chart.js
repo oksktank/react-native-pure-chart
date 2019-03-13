@@ -111,7 +111,9 @@ export default class ColumnChart extends Component {
       return (
         <View style={[styles.tooltipWrapper, { left: left }]}>
           <View style={styles.tooltip}>
-            {tooltipRenders}
+            <ScrollView>
+              {tooltipRenders}
+            </ScrollView>
           </View>
         </View>
       )
@@ -168,7 +170,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     margin: 0,
     paddingRight: 10,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    width:'100%'
   },
   chartView: {
     flexDirection: 'row',
