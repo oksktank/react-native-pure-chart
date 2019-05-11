@@ -149,6 +149,7 @@ export const refineData = (flattenData, max, height, gap) => {
             ratioY: dataProp[i].y / maxClone * height,
             x: dataProp[i].x,
             y: dataProp[i].y,
+            color: dataProp[i].color,
             isEmpty: isEmpty
           }
         }
