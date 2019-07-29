@@ -47,24 +47,24 @@ export default class ColumnChart extends Component {
       let dataCount = standardSeries.data.length
       for (let i = 0; i < dataCount; i++) {
         renderColumns.push(
-          <ColumnChartItem key={i} seriesArray={this.state.sortedData}
-            dataIndex={i}
-            defaultWidth={this.props.defaultColumnWidth}
-            defaultHeight={this.props.height + 20}
-            defaultMargin={this.props.defaultColumnMargin}
-            isSelected={this.state.selectedIndex === i}
-            highlightColor={this.props.highlightColor}
-            onClick={(evt) => this.handleClick(evt, i)} />
+            <ColumnChartItem key={i} seriesArray={this.state.sortedData}
+                             dataIndex={i}
+                             defaultWidth={this.props.defaultColumnWidth}
+                             defaultHeight={this.props.height + 20}
+                             defaultMargin={this.props.defaultColumnMargin}
+                             isSelected={this.state.selectedIndex === i}
+                             highlightColor={this.props.highlightColor}
+                             onClick={(evt) => this.handleClick(evt, i)} />
         )
       }
     }
     return (
-      <Animated.View style={[styles.chartView, {
-        transform: [{scaleY: fadeAnim}],
-        marginBottom: this.props.minValue && this.state.guideArray && this.state.guideArray.length > 0 ? -1 * this.state.guideArray[0][2] * this.props.minValue : null
-      }]}>
-        {renderColumns}
-      </Animated.View>
+        <Animated.View style={[styles.chartView, {
+          transform: [{scaleY: fadeAnim}],
+          marginBottom: this.props.minValue && this.state.guideArray && this.state.guideArray.length > 0 ? -1 * this.state.guideArray[0][2] * this.props.minValue : null
+        }]}>
+          {renderColumns}
+        </Animated.View>
     )
   }
 
@@ -92,7 +92,6 @@ export default class ColumnChart extends Component {
       } else if (selectedIndex === standardSeries.data.length - 1) {
         plusGap = -50
       }
-      // 차트 width를 마지막에 늘려야겠음.
 
       let left = standardSeries.data[selectedIndex]['gap'] + plusGap
       let tooltipRenders = []
@@ -102,18 +101,18 @@ export default class ColumnChart extends Component {
           tooltipRenders.push(<Text key={'tooltipTitle-' + i} style={styles.tooltipTitle}>{series.data[selectedIndex]['x']}</Text>)
         }
         tooltipRenders.push(
-          <View key={'tooltipText-' + i} style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
-            <View style={[styles.tooltipColor, {backgroundColor: !series.seriesColor ? this.props.primaryColor : series.seriesColor}]} />
-            <Text style={styles.tooltipValue}>{numberWithCommas(series.data[selectedIndex]['y'], false)}</Text>
-          </View>
+            <View key={'tooltipText-' + i} style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
+              <View style={[styles.tooltipColor, {backgroundColor: !series.seriesColor ? this.props.primaryColor : series.seriesColor}]} />
+              <Text style={styles.tooltipValue}>{numberWithCommas(series.data[selectedIndex]['y'], false)}</Text>
+            </View>
         )
       }
       return (
-        <View style={[styles.tooltipWrapper, { left: left }]}>
-          <View style={styles.tooltip}>
-            {tooltipRenders}
+          <View style={[styles.tooltipWrapper, { left: left }]}>
+            <View style={styles.tooltip}>
+              {tooltipRenders}
+            </View>
           </View>
-        </View>
       )
     } else {
       return null
@@ -125,29 +124,29 @@ export default class ColumnChart extends Component {
     if (this.state.sortedData && this.state.sortedData.length === 0) return null
 
     return (
-      <View style={StyleSheet.flatten([styles.wrapper, {
-        backgroundColor: this.props.backgroundColor
-      }])}>
-        <View style={{paddingRight: 5}}>
-          {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
-        </View>
-        <View style={styles.mainContainer}>
-          <ScrollView horizontal>
-            <View>
-              <View ref='chartView' style={styles.chartContainer}>
-                {drawYAxis(this.props.yAxisColor)}
-                {drawGuideLine(this.state.guideArray, this.props.yAxisGridLineColor)}
-                {this.renderColumns(fadeAnim)}
+        <View style={StyleSheet.flatten([styles.wrapper, {
+          backgroundColor: this.props.backgroundColor
+        }])}>
+          <View style={{paddingRight: 5}}>
+            { this.props.drawYAxisLabels &&  drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
+          </View>
+          <View style={styles.mainContainer}>
+            <ScrollView horizontal>
+              <View>
+                <View ref='chartView' style={styles.chartContainer}>
+                  {drawYAxis(this.props.yAxisColor)}
+                  {drawGuideLine(this.state.guideArray, this.props.yAxisGridLineColor)}
+                  {this.renderColumns(fadeAnim)}
+                </View>
+                {drawXAxis(this.props.xAxisColor)}
+                <View style={{ marginLeft: this.props.defaultColumnWidth / 2 }}>
+                  {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap, this.props.labelColor, this.props.showEvenNumberXaxisLabel)}
+                </View>
               </View>
-              {drawXAxis(this.props.xAxisColor)}
-              <View style={{ marginLeft: this.props.defaultColumnWidth / 2 }}>
-                {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap, this.props.labelColor, this.props.showEvenNumberXaxisLabel)}
-              </View>
-            </View>
-            {this.drawTooltip(this.state.selectedIndex)}
-          </ScrollView>
+              {this.props.drawTooltip && this.drawTooltip(this.state.selectedIndex)}
+            </ScrollView>
+          </View>
         </View>
-      </View>
     )
   }
 }

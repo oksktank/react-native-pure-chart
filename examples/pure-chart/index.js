@@ -21,9 +21,9 @@ export default class PureChart extends React.Component {
   }
   render () {
     return (
-      <View>
-        {this.renderChart()}
-      </View>
+        <View>
+          {this.renderChart()}
+        </View>
     )
   }
 }
@@ -35,11 +35,17 @@ PureChart.propTypes = {
   height: PropTypes.number,
   numberOfYAxisGuideLine: PropTypes.number,
   customValueRenderer: PropTypes.func,
-  backgroundColor: PropTypes.string
+  backgroundColor: PropTypes.string,
+  guideline:PropTypes.boolean,
+  drawYAxisLabels:PropTypes.boolean,
+  drawTooltip:PropTypes.boolean
 }
 PureChart.defaultProps = {
   color: '#297AB1',
   height: 100,
   numberOfYAxisGuideLine: 5,
-  backgroundColor: '#FFFFFF'
+  backgroundColor: '#FFFFFF',
+  guideline:true,
+  drawYAxisLabels:true,
+  drawTooltip:true
 }
