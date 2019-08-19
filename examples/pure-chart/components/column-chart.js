@@ -128,7 +128,7 @@ export default class ColumnChart extends Component {
           backgroundColor: this.props.backgroundColor
         }])}>
           <View style={{paddingRight: 5}}>
-            { this.props.drawYAxisLabels &&  drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
+            {/*{ this.props.drawYAxisLabels &&  drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}*/}
           </View>
           <View style={styles.mainContainer}>
             <ScrollView horizontal>
@@ -140,10 +140,10 @@ export default class ColumnChart extends Component {
                 </View>
                 {drawXAxis(this.props.xAxisColor)}
                 <View style={{ marginLeft: this.props.defaultColumnWidth / 2 }}>
-                  {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap, this.props.labelColor, this.props.showEvenNumberXaxisLabel)}
+                  {drawXAxisLabels(this.state.sortedData[0].data, this.state.gap, this.props.labelColor, false)}
                 </View>
               </View>
-              {this.props.drawTooltip && this.drawTooltip(this.state.selectedIndex)}
+              {/*{this.props.drawTooltip && this.drawTooltip(this.state.selectedIndex)}*/}
             </ScrollView>
           </View>
         </View>
