@@ -228,78 +228,78 @@ export const getGuideArray = (max, height, numberOfPoints = 5) => {
 
 export const drawYAxis = (color = '#e0e0e0') => {
   return (
-    <View style={{
-      borderRightWidth: 1,
-      borderColor: color,
-      width: 1,
-      height: '100%',
-      marginRight: 0
+      <View style={{
+        borderRightWidth: 1,
+        borderColor: color,
+        width: 1,
+        height: '100%',
+        marginRight: 0
 
-    }} />
+      }} />
 
   )
 }
 
 export const drawYAxisLabels = (arr, height, minValue, color = '#000000') => {
   return (
-    <View style={{
-      width: 33,
-      height: height,
-      justifyContent: 'flex-end',
-      alignItems: 'flex-end',
-      marginBottom: minValue && arr && arr.length > 0 ? -1 * arr[0][2] * minValue : null,
-      overflow: 'hidden'
-    }}>
+      <View style={{
+        width: 33,
+        height: height,
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+        marginBottom: minValue && arr && arr.length > 0 ? -1 * arr[0][2] * minValue : null,
+        overflow: 'hidden'
+      }}>
 
-      {arr.length === 0 ? (
-        <View
-          key={'guide0'}
-          style={{
-            bottom: 0,
-            position: 'absolute'
-          }}>
-          <Text style={{fontSize: 11}}>0</Text>
-        </View>
-      ) : arr.map((v, i) => {
-        if (v[1] > height) return null
-        return (
-          <View
-            key={'guide' + i}
-            style={{
-              bottom: v[1] - 5,
-              position: 'absolute'
-            }}>
-            <Text style={{fontSize: 11, color: color}}>{v[0]}</Text>
-          </View>
-        )
-      })}
+        {arr.length === 0 ? (
+            <View
+                key={'guide0'}
+                style={{
+                  bottom: 0,
+                  position: 'absolute'
+                }}>
+              <Text style={{fontSize: 11}}>0</Text>
+            </View>
+        ) : arr.map((v, i) => {
+          if (v[1] > height) return null
+          return (
+              <View
+                  key={'guide' + i}
+                  style={{
+                    bottom: v[1] - 5,
+                    position: 'absolute'
+                  }}>
+                <Text style={{fontSize: 11, color: color}}>{v[0]}</Text>
+              </View>
+          )
+        })}
 
-    </View>
+      </View>
   )
 }
 export const drawGuideLine = (arr, color = '#e0e0e0') => {
   return (
-    <View style={{
-      width: '100%',
-      height: '100%',
-      position: 'absolute'
-    }}>
+      <View style={{
+        width: '100%',
+        height: '100%',
+        position: 'absolute'
+      }}>
 
-      {arr.map((v, i) => {
-        return (
-          <View
-            key={'guide' + i}
-            style={{
-              width: '100%',
-              borderTopWidth: 1,
-              borderTopColor: color,
-              bottom: v[1],
-              position: 'absolute'
-            }} />
-        )
-      })}
+        {arr.map((v, i) => {
+          return (
+              <View
+                  key={'guide' + i}
+                  style={{
+                    width: '100%',
+                    borderTopWidth: 1,
+                    borderTopColor: color,
+                    bottom: v[1],
+                    position: 'absolute'
+                  }} />
+          )
+        })}
 
-    </View>
+      </View>
   )
 }
 
@@ -323,43 +323,43 @@ export const numberWithCommas = (x, summary = true) => {
 
 export const drawXAxis = (color = '#e0e0e0') => {
   return (
-    <View style={{
-      width: '100%',
-      borderTopWidth: 1,
-      borderTopColor: color
-    }} />
+      <View style={{
+        width: '100%',
+        borderTopWidth: 1,
+        borderTopColor: color
+      }} />
   )
 }
 export const drawXAxisLabels = (sortedData, gap, color = '#000000', showEvenNumberXaxisLabel) => {
   return (
-    <View style={{
-      width: '100%',
-      paddingVertical: 10,
-      height: 10
-    }}>
-      {sortedData.map((data, i) => {
-        // if (data[3] && i % 2 === 1) {
-        if (data['x'] && i % 2 === 1 || !showEvenNumberXaxisLabel) {
-          return (
-            <View key={'label' + i} style={{
-              position: 'absolute',
-              // left: data[0] - gap / 2,
-              left: data['gap'] - gap / 2,
-              width: gap,
-              alignItems: 'center'
-            }}>
-              <Text style={{fontSize: 9, color: color}}>
-                {
-                  // data[3]
-                  data['x']
-                }
-              </Text>
-            </View>
-          )
-        } else {
-          return null
-        }
-      })}
-    </View>
+      <View style={{
+        width: '100%',
+        paddingVertical: 10,
+        height: 10
+      }}>
+        {sortedData.map((data, i) => {
+          // if (data[3] && i % 2 === 1) {
+          if ((data['x'] && i % 2 === 1 || !showEvenNumberXaxisLabel) && data['x'] >0 ) {
+            return (
+                <View key={'label' + i} style={{
+                  position: 'absolute',
+                  // left: data[0] - gap / 2,
+                  left: data['gap'] - gap / 2,
+                  width: gap,
+                  alignItems: 'center'
+                }}>
+                  <Text style={{fontSize: 9, color: color}}>
+                    {
+                      // data[3]
+                      data['x']
+                    }
+                  </Text>
+                </View>
+            )
+          } else {
+            return null
+          }
+        })}
+      </View>
   )
 }
