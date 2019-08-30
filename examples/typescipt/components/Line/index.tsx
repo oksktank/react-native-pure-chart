@@ -80,7 +80,6 @@ class LineChart extends React.Component<LineChartProps, LineChartState> {
     this.drawSelected = this.drawSelected.bind(this);
   }
 
-
   static defaultProps = {
     color: "#297AB1",
     height: 100,
@@ -91,7 +90,7 @@ class LineChart extends React.Component<LineChartProps, LineChartState> {
     selectedColor: "#FF0000",
     gap: 60,
     showEvenNumberXaxisLabel: true,
-    onPointClick: point => {},
+    onPointClick: point => {}
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -311,23 +310,35 @@ class LineChart extends React.Component<LineChartProps, LineChartState> {
       </TouchableWithoutFeedback>
     );
   }
-  drawValue(index, point) {
-    let key = "pointvalue" + index;
+  drawValue(
+    index = 0,
+    point: {
+      gap: number;
+      ratioY: number;
+    },
+    color
+  ) {
+    let key = "pointvalue" + point.ratioY;
     let size = 200;
-    return (
-      <View
-        key={key}
-        style={{
-          position: "absolute",
-          left: index === 0 ? point.gap : point.gap - size / 2,
-          bottom: point.ratioY + 10,
-          backgroundColor: "transparent",
-          width: index !== 0 ? 200 : undefined
-        }}
-      >
-        {this.drawCustomValue(index, point)}
-      </View>
-    );
+    try {
+      return (
+        <View
+          key={key}
+          style={{
+            position: "absolute",
+            left: index === 0 ? point.gap : point.gap - size / 2,
+            bottom: point.ratioY + 10,
+            backgroundColor: "transparent",
+            width: index !== 0 ? 200 : null
+          }}
+        >
+          {this.drawCustomValue(index, point)}
+        </View>
+      );
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
   }
 
   drawCustomValue(index, point) {
@@ -362,12 +373,12 @@ class LineChart extends React.Component<LineChartProps, LineChartState> {
 
     if (dataLength > 0) {
       result.push(this.drawPoint(0, data[0], seriesColor));
-      result.push(this.drawValue(data[0], seriesColor));
+      result.push(this.drawValue(0, data[0], seriesColor));
     }
 
     for (let i = 0; i < dataLength - 1; i++) {
       result.push(this.drawPoint(i + 1, data[i + 1], seriesColor));
-      result.push(this.drawValue(data[i + 1], seriesColor));
+      result.push(this.drawValue(i, data[i + 1], seriesColor));
     }
 
     let lastData = Object.assign({}, data[dataLength - 1]);

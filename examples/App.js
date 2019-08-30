@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { Bar, Pie, Line } from "./typescipt";
 import moment from "moment";
+import { registerRootComponent } from "expo";
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -142,3 +143,4 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {}
 });
+registerRootComponent(App);
