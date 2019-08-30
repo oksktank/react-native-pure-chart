@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, ScrollView } from "react-native";
 import { Bar, Pie, Line } from "./typescipt";
 import moment from "moment";
 import { registerRootComponent } from "expo";
@@ -91,7 +91,7 @@ export default class App extends React.Component {
   }
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView>
         <View style={{ padding: 20, marginTop: 100 }}>
           <Line
             type={"line"}
@@ -135,12 +135,9 @@ export default class App extends React.Component {
             <Text>Generate chart data</Text>
           </Button>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {}
-});
 registerRootComponent(App);
