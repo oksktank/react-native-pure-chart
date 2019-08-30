@@ -8,7 +8,9 @@
     "jest-expo": "~34.0.0",
     "react-native-scripts": "2.0.1",
     "react-test-renderer": "16.9.0",
-    "typescript": "^3.6.2"
+    "typescript": "^3.6.2",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
+    "react": "16.8.3"
   },
   "main": "./examples/pure-chart/index.js",
   "scripts": {
