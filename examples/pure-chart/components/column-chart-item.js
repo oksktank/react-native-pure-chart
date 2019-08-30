@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 
+
+
 export default class ColumnChartItem extends Component {
   render () {
     let renders = []
