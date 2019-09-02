@@ -303,7 +303,6 @@ class LineChart extends React.Component {
         }])}>
           <View style={styles.yAxisLabelsWrapper}>
             {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
-
           </View>
 
           <View>
