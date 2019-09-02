@@ -261,7 +261,7 @@ export const drawYAxisLabels = (arr, height, minValue, color = '#000000') => {
           <Text style={{fontSize: 11}}>0</Text>
         </View>
       ) : arr.map((v, i) => {
-        if (v[1] > height) return null
+        if (v[1] > height-5) return null
         return (
           <View
             key={'guide' + i}

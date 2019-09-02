@@ -84,7 +84,7 @@ class LineChart extends React.Component {
           width: dx,
           height: height,
           marginTop: topMargin
-        }, styles.coordinateWrapper])}>
+          }, styles.coordinateWrapper])}>
           <View style={StyleSheet.flatten([{
             top: top,
             width: size,
@@ -92,18 +92,20 @@ class LineChart extends React.Component {
             borderColor: isBlank ? backgroundColor : this.props.primaryColor,
             borderTopWidth: 1,
             transform: this.getTransform(angleRad, size)
-          }, styles.lineBox, lineStyle])} />
+            }, styles.lineBox, lineStyle])} />
           <View style={StyleSheet.flatten([styles.absolute, {
             height: height - Math.abs(dy) - 2,
             backgroundColor: lastCoordinate ? '#FFFFFF00' : backgroundColor,
             marginTop: Math.abs(dy) + 2
-          }])} />
+            }])} />
         </View>
+
         {!lastCoordinate && seriesIndex === 0 ? (
-          <View style={StyleSheet.flatten([styles.guideLine, {
-            width: dx,
-            borderRightColor: this.props.xAxisGridLineColor
-          }])} />
+          null
+          // <View style={StyleSheet.flatten([styles.guideLine, {
+          //   width: dx,
+          //   borderRightColor: this.props.xAxisGridLineColor
+          // }])} />
         ) : null}
         {seriesIndex === this.state.sortedData.length - 1 && (
           <TouchableWithoutFeedback onPress={() => {
@@ -301,7 +303,6 @@ class LineChart extends React.Component {
         }])}>
           <View style={styles.yAxisLabelsWrapper}>
             {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
-
           </View>
 
           <View>
