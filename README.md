@@ -197,6 +197,11 @@ add custom value on the point
 ##### `numberOfYAxisGuideLine`: number
 set number of Y Axis guide line
 
+<!--
+##### `showXAxisLabel/showYAxisLabel`: bool
+option to display X-axis-label/y-axis-label
+-->
+
 ## Contributing
 
 Contributions are welcome. Any kind of contribution, such as writing a documentation, bug fix, or solving issues are helpful.
