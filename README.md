@@ -197,6 +197,10 @@ add custom value on the point
 ##### `numberOfYAxisGuideLine`: number
 set number of Y Axis guide line
 
+<!-- ##### `yAxisSymbol`: string
+set symbol next to y-guide-value
+e.g. 500$, 40% -->
+
 ## Contributing
 
 Contributions are welcome. Any kind of contribution, such as writing a documentation, bug fix, or solving issues are helpful.
