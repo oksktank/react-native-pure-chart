@@ -69,6 +69,7 @@ export default class ColumnChart extends Component {
             defaultWidth={this.props.defaultColumnWidth}
             defaultHeight={this.props.height + 20}
             defaultMargin={this.props.defaultColumnMargin}
+            defaultBorderColor={this.props.defaultBorderColor}
             isSelected={this.state.selectedIndex === i}
             highlightColor={this.props.highlightColor}
             onClick={(evt) => this.handleClick(evt, i)} />
@@ -226,6 +227,7 @@ ColumnChart.defaultProps = {
   height: 100,
   defaultColumnWidth: 40,
   defaultColumnMargin: 20,
+  defaultBorderColor: '#FFFFFF',
   primaryColor: '#297AB1',
   highlightColor: 'red',
   showEvenNumberXaxisLabel: true,

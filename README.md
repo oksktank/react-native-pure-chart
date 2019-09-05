@@ -197,8 +197,10 @@ add custom value on the point
 ##### `numberOfYAxisGuideLine`: number
 set number of Y Axis guide line
 
-<!-- ##### `initialScrollPosition / initialScrollTimeOut`: {x:number, y:number, animated:bool} / number
-set initial scroll position in line&bar chart.  -->
+<!--
+##### `defaultBorderColor`: number
+set default border color in bar chart
+-->
 
 ## Contributing
 
