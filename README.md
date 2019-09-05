@@ -200,6 +200,19 @@ set number of Y Axis guide line
 <!--
 ##### `defaultBorderColor`: number
 set default border color in bar chart
+
+##### `lineThickness`: number (maximum is 10 though getting over 10)
+set line thickness in line chart
+
+##### `yAxisSymbol`: string
+set symbol next to y-guide-value
+e.g. 500$, 40% 
+
+##### `showXAxisLabel/showYAxisLabel`: bool
+option to display X-axis-label/y-axis-label
+
+##### `initialScrollPosition / initialScrollTimeOut`: {x:number, y:number, animated:bool} / number
+set initial scroll position in line&bar chart.  
 -->
 
 ## Contributing
