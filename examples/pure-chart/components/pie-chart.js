@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Alert, AppRegistry, StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
+import { Alert, AppRegistry, StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, Animated, Easing } from 'react-native'
 import { numberWithCommas } from '../common'
 
 class PieChart extends React.Component {
@@ -20,16 +20,25 @@ class PieChart extends React.Component {
       evtY: 0,
       selectedIndex: -1,
       labels: [],
-      colors: []
+      colors: [],
+      fadeAnim: new Animated.Value(0)
     }
   }
   // initData!!
   componentDidMount () {
     this.initData(this.props.data)
+    Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
   }
   componentWillReceiveProps (nextProps) {
+    // if (nextProps.data !== this.props.data) {
+    //   this.initData(nextProps.data)
+    // }
     if (nextProps.data !== this.props.data) {
-      this.initData(nextProps.data)
+      this.setState(Object.assign({
+        fadeAnim: new Animated.Value(0)
+      }, this.initData(nextProps.data)), () => {
+        Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
+      })
     }
   }
   // initialize data
@@ -456,14 +465,23 @@ class PieChart extends React.Component {
           this.handleEventOld(e)
         }}>
 
-          <View ref='test' style={StyleSheet.flatten([styles.container, {
+          {/* <View ref='test' style={StyleSheet.flatten([styles.container, {
             width: size,
             height: size
           }])}>
 
             {this.drawT()}
             {this.drawInfoT(this.state.selectedIndex)}
-          </View>
+          </View> */}
+
+          <Animated.View ref='test' style={StyleSheet.flatten([styles.container, {
+            transform: [{scaleY: this.state.fadeAnim}],
+            width: size,
+            height: size
+          }])}>
+            {this.drawT()}
+            {this.drawInfoT(this.state.selectedIndex)}
+          </Animated.View>
 
         </TouchableWithoutFeedback>
       </View>
