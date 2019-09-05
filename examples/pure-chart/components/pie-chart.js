@@ -30,9 +30,6 @@ class PieChart extends React.Component {
     Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
   }
   componentWillReceiveProps (nextProps) {
-    // if (nextProps.data !== this.props.data) {
-    //   this.initData(nextProps.data)
-    // }
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
         fadeAnim: new Animated.Value(0)
@@ -464,15 +461,6 @@ class PieChart extends React.Component {
           // this.setState({locationX: locationX, locationY: locationY})
           this.handleEventOld(e)
         }}>
-
-          {/* <View ref='test' style={StyleSheet.flatten([styles.container, {
-            width: size,
-            height: size
-          }])}>
-
-            {this.drawT()}
-            {this.drawInfoT(this.state.selectedIndex)}
-          </View> */}
 
           <Animated.View ref='test' style={StyleSheet.flatten([styles.container, {
             transform: [{scaleY: this.state.fadeAnim}],
