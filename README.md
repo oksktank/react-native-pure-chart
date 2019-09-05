@@ -197,6 +197,7 @@ add custom value on the point
 ##### `numberOfYAxisGuideLine`: number
 set number of Y Axis guide line
 
+
 <!--
 ##### `defaultBorderColor`: number
 set default border color in bar chart
