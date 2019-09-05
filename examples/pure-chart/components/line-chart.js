@@ -312,7 +312,7 @@ class LineChart extends React.Component {
           backgroundColor: this.props.backgroundColor
         }])}>
           <View style={styles.yAxisLabelsWrapper}>
-            {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
+            {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor, this.props.yAxisSymbol)}
           </View>
 
           <View>
@@ -367,6 +367,7 @@ LineChart.defaultProps = {
   selectedColor: '#FF0000',
   height: 100,
   gap: 60,
+  yAxisSymbol: '',
   showEvenNumberXaxisLabel: true,
   lineThickness: 1,
   onPointClick: (point) => {
