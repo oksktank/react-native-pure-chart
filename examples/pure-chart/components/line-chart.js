@@ -9,8 +9,7 @@ class LineChart extends React.Component {
       this.props.data, 
       this.props.height, 
       this.props.gap, 
-      this.props.numberOfYAxisGuideLine,
-      this.props.maxValue)
+      this.props.numberOfYAxisGuideLine)
     this.state = {
       loading: false,
       sortedData: newState.sortedData,
@@ -63,7 +62,7 @@ class LineChart extends React.Component {
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
         fadeAnim: new Animated.Value(0)
-      }, initData(nextProps.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine, this.props.maxValue)), () => {
+      }, initData(nextProps.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine)), () => {
         Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
       })
     }
@@ -326,7 +325,8 @@ class LineChart extends React.Component {
           backgroundColor: this.props.backgroundColor
         }])}>
           <View style={styles.yAxisLabelsWrapper}>
-            {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor, this.props.yAxisSymbol)}
+            { this.props.showYAxisLabel && 
+              drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor, this.props.yAxisSymbol)}
           </View>
 
           <View>
@@ -362,7 +362,8 @@ class LineChart extends React.Component {
                 </View>
 
                 {drawXAxis(this.props.xAxisColor)}
-                {drawXAxisLabels(this.state.sortedData[0].data, this.props.gap, this.props.labelColor, this.props.showEvenNumberXaxisLabel)}
+                {this.props.showXAxisLabel && 
+                  drawXAxisLabels(this.state.sortedData[0].data, this.props.gap, this.props.labelColor, this.props.showEvenNumberXaxisLabel)}
               </View>
 
             </ScrollView>
@@ -385,6 +386,8 @@ LineChart.defaultProps = {
   showEvenNumberXaxisLabel: true,
   initialScrollPosition: {x: 0, y: 0, animated: true},
   initialScrollTimeOut: 300,
+  showYAxisLabel: true,
+  showXAxisLabel: true,
   lineThickness: 1,
   onPointClick: (point) => {
 
