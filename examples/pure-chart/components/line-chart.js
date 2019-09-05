@@ -24,6 +24,7 @@ class LineChart extends React.Component {
       fadeAnim: new Animated.Value(0),
       guideArray: newState.guideArray
     }
+    this.scrollView = null
 
     this.drawCoordinates = this.drawCoordinates.bind(this)
     this.drawCoordinate = this.drawCoordinate.bind(this)
@@ -40,8 +41,21 @@ class LineChart extends React.Component {
     }
   }
 
+  componentDidUpdate(nextProps, nextState){
+    if(this.scrollView != null && nextState.max == 0){
+      setTimeout(
+        () => this.scrollView.scrollTo(this.props.initialScrollPosition), this.props.initialScrollTimeOut
+      )
+    }
+  }
+
   componentDidMount () {
     Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
+    if(this.scrollView != null){
+      setTimeout(
+        () => this.scrollView.scrollTo(this.props.initialScrollPosition), this.props.initialScrollTimeOut
+      )
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -370,6 +384,8 @@ LineChart.defaultProps = {
   gap: 60,
   yAxisSymbol: '',
   showEvenNumberXaxisLabel: true,
+  initialScrollPosition: {x: 0, y: 0, animated: true},
+  initialScrollTimeOut: 300,
   showYAxisLabel: true,
   showXAxisLabel: true,
   lineThickness: 1,
