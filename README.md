@@ -198,6 +198,11 @@ add custom value on the point
 set number of Y Axis guide line
 
 
+<!--
+##### `defaultBorderColor`: number
+set default border color in bar chart
+-->
+
 ## Contributing
 
 Contributions are welcome. Any kind of contribution, such as writing a documentation, bug fix, or solving issues are helpful.
