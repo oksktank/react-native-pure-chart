@@ -21,6 +21,7 @@ class LineChart extends React.Component {
       nowX: 0,
       nowY: 0,
       max: newState.max,
+      lineThickness: (this.props.lineThickness > 10)? 10 : this.props.lineThickness,
       fadeAnim: new Animated.Value(0),
       guideArray: newState.guideArray
     }
@@ -54,11 +55,12 @@ class LineChart extends React.Component {
     }
   }
 
-  getTransform (rad, width) {
+  getTransform (rad, width, direction) {
     let x = (0 - width / 2) * Math.cos(rad) - (0 - width / 2) * Math.sin(rad)
     let y = (0 - width / 2) * Math.sin(rad) + (0 - width / 2) * Math.cos(rad)
-
-    return [ {translateX: (-1 * x) - width / 2}, {translateY: (-1 * y) + width / 2}, { rotate: rad + 'rad' } ]
+    let translateX = (-1 * x) - width / 2
+    if(direction === 'lower') translateX = translateX + this.state.lineThickness
+    return [ {translateX: translateX}, {translateY: (-1 * y) + width / 2}, { rotate: rad + 'rad' } ]
   }
 
   drawCoordinate (index, start, end, backgroundColor, lineStyle, isBlank, lastCoordinate, seriesIndex) {
@@ -70,13 +72,16 @@ class LineChart extends React.Component {
     let height
     let top
     let topMargin = 20
+    let direction
 
     if (start.ratioY > end.ratioY) {
+      direction = 'lower'
       height = start.ratioY
-      top = -1 * size
+      top = -1 * size - (this.state.lineThickness-2)
     } else {
+      direction = 'upper'
       height = end.ratioY
-      top = -1 * (size - Math.abs(dy))
+      top = -1 * (size - Math.abs(dy)) - (this.state.lineThickness-1.3)
     }
 
     return (
@@ -88,15 +93,15 @@ class LineChart extends React.Component {
         <View style={StyleSheet.flatten([{
           width: dx,
           height: height,
-          marginTop: topMargin
+          marginTop: topMargin,
           }, styles.coordinateWrapper])}>
           <View style={StyleSheet.flatten([{
             top: top,
             width: size,
             height: size,
             borderColor: isBlank ? backgroundColor : this.props.primaryColor,
-            borderTopWidth: 1,
-            transform: this.getTransform(angleRad, size)
+            borderTopWidth: this.state.lineThickness,
+            transform: this.getTransform(angleRad, size, direction)
             }, styles.lineBox, lineStyle])} />
           <View style={StyleSheet.flatten([styles.absolute, {
             height: height - Math.abs(dy) - 2,
@@ -163,8 +168,8 @@ class LineChart extends React.Component {
       }}>
 
         <View style={StyleSheet.flatten([styles.pointWrapper, {
-          width: size,
-          height: size,
+          width: size + this.state.lineThickness - 2,
+          height: size + this.state.lineThickness - 2,
 
           left: point.gap - size / 2,
           bottom: point.ratioY - size / 2,
@@ -228,7 +233,7 @@ class LineChart extends React.Component {
     let lastData = Object.assign({}, data[dataLength - 1])
     let lastCoordinate = Object.assign({}, data[dataLength - 1])
     lastCoordinate.gap = lastCoordinate.gap + this.props.gap
-    result.push(this.drawCoordinate((dataLength), lastData, lastCoordinate, '#FFFFFF', {}, true, true, seriesIndex))
+    result.push(this.drawCoordinate((dataLength), lastData, lastCoordinate, '#FFFFFF00', {}, true, true, seriesIndex))
 
     return result
   }
@@ -308,7 +313,7 @@ class LineChart extends React.Component {
         }])}>
           <View style={styles.yAxisLabelsWrapper}>
             { this.props.showYAxisLabel && 
-              drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
+              drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor, this.props.yAxisSymbol)}
           </View>
 
           <View>
@@ -364,9 +369,11 @@ LineChart.defaultProps = {
   selectedColor: '#FF0000',
   height: 100,
   gap: 60,
+  yAxisSymbol: '',
   showEvenNumberXaxisLabel: true,
   showYAxisLabel: true,
   showXAxisLabel: true,
+  lineThickness: 1,
   onPointClick: (point) => {
 
   },
@@ -389,7 +396,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   coordinateWrapper: {
-    overflow: 'hidden',
+    overflow: 'visible',
     justifyContent: 'flex-start',
     alignContent: 'flex-start'
   },
