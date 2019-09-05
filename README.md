@@ -197,10 +197,6 @@ add custom value on the point
 ##### `numberOfYAxisGuideLine`: number
 set number of Y Axis guide line
 
-<!--
-##### `lineThickness`: number (maximum is 10 though getting over 10)
-set line thickness in line chart
--->
 
 ## Contributing
 
