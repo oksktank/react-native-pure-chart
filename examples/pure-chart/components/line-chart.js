@@ -312,7 +312,8 @@ class LineChart extends React.Component {
           backgroundColor: this.props.backgroundColor
         }])}>
           <View style={styles.yAxisLabelsWrapper}>
-            {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor, this.props.yAxisSymbol)}
+            { this.props.showYAxisLabel && 
+              drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor, this.props.yAxisSymbol)}
           </View>
 
           <View>
@@ -348,7 +349,8 @@ class LineChart extends React.Component {
                 </View>
 
                 {drawXAxis(this.props.xAxisColor)}
-                {drawXAxisLabels(this.state.sortedData[0].data, this.props.gap, this.props.labelColor, this.props.showEvenNumberXaxisLabel)}
+                {this.props.showXAxisLabel && 
+                  drawXAxisLabels(this.state.sortedData[0].data, this.props.gap, this.props.labelColor, this.props.showEvenNumberXaxisLabel)}
               </View>
 
             </ScrollView>
@@ -369,6 +371,8 @@ LineChart.defaultProps = {
   gap: 60,
   yAxisSymbol: '',
   showEvenNumberXaxisLabel: true,
+  showYAxisLabel: true,
+  showXAxisLabel: true,
   lineThickness: 1,
   onPointClick: (point) => {
 
