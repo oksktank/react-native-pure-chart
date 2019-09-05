@@ -198,8 +198,8 @@ add custom value on the point
 set number of Y Axis guide line
 
 <!--
-##### `showXAxisLabel/showYAxisLabel`: bool
-option to display X-axis-label/y-axis-label
+##### `defaultBorderColor`: number
+set default border color in bar chart
 -->
 
 ## Contributing
