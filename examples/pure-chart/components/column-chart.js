@@ -147,7 +147,7 @@ export default class ColumnChart extends Component {
         backgroundColor: this.props.backgroundColor
       }])}>
         <View style={{paddingRight: 5}}>
-          {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor)}
+          {drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor, this.props.yAxisSymbol)}
         </View>
         <View style={styles.mainContainer}>
           <ScrollView ref={scrollView => this.scrollView = scrollView} horizontal>
@@ -233,4 +233,5 @@ ColumnChart.defaultProps = {
   showEvenNumberXaxisLabel: true,
   initialScrollPosition: {x: 0, y: 0, animated: true},
   initialScrollTimeOut: 300,
+  yAxisSymbol: ''
 }
