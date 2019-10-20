@@ -169,7 +169,7 @@ class LineChart extends React.Component {
     let key = 'point' + index
     let size = 8
     let color = !seriesColor ? this.props.primaryColor : seriesColor
-    if (this.state.selectedIndex === index) {
+    if (this.state.selectedIndex === index && this.props.drawSelected) {
       color = this.props.selectedColor
     }
 
@@ -257,6 +257,7 @@ class LineChart extends React.Component {
 
   drawSelected (index) {
     if (this.state.sortedData.length === 0) return null
+    if (!this.props.drawSelected) return null
     let data = this.state.sortedData[0].data
     let dataObject = data[index]
     if (typeof (this.state.selectedIndex) === 'number' && this.state.selectedIndex >= 0) {
@@ -392,7 +393,8 @@ LineChart.defaultProps = {
   onPointClick: (point) => {
 
   },
-  numberOfYAxisGuideLine: 5
+  numberOfYAxisGuideLine: 5,
+  drawSelected: true,
 }
 
 const styles = StyleSheet.create({
