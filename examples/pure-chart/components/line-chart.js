@@ -141,9 +141,9 @@ class LineChart extends React.Component {
             if (emptyCount === this.state.sortedData.length) {
               return null
             }
-            // console.log('selectedIndex', selectedIndex)
-            // console.log('data', series.data[selectedIndex])
-            // console.log('onPress function', this.props.onPress)
+            console.log('selectedIndex', selectedIndex)
+            console.log('data', series.data[selectedIndex])
+            console.log('onPress function', this.props.onPress)
 
             this.setState({
               selectedIndex: selectedIndex
