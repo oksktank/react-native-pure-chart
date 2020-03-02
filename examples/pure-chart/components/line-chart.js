@@ -133,16 +133,20 @@ class LineChart extends React.Component {
         {seriesIndex === this.state.sortedData.length - 1 && (
           <TouchableWithoutFeedback onPress={() => {
             let selectedIndex = lastCoordinate ? index - 1 : index
+            console.log('selectedIndex', selectedIndex)
 
             let emptyCount = 0
             this.state.sortedData.map((series) => {
-              if (series.data[selectedIndex].isEmpty) emptyCount++
+              if (series.data[selectedIndex].isEmpty) {
+                emptyCount++
+              }
+              else {
+                console.log('data', series.data[selectedIndex])
+              } 
             })
             if (emptyCount === this.state.sortedData.length) {
               return null
             }
-            console.log('selectedIndex', selectedIndex)
-            console.log('data', series.data[selectedIndex])
             console.log('onPress function', this.props.onPress)
 
             this.setState({
