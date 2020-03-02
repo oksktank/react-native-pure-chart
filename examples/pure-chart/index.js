@@ -12,7 +12,6 @@ export default class PureChart extends React.Component {
   }
   renderChart () {
     if (this.props.type === 'line') {
-      console.log('line chart');
       return <LineChart {...this.props} />
     } else if (this.props.type === 'bar') {
       return <ColumnChart {...this.props} />
