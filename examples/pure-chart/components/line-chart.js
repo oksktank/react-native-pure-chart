@@ -141,7 +141,7 @@ class LineChart extends React.Component {
             if (emptyCount === this.state.sortedData.length) {
               return null
             }
-            // console.log('point', selectedIndex, point)
+            console.log('point', selectedIndex, point)
 
             this.setState({
               selectedIndex: selectedIndex
