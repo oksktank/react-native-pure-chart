@@ -15,7 +15,7 @@ function flattenData(data) {
     if (typeof obj === "number") {
       numberCount++;
     } else if (typeof obj === "object") {
-      if (typeof obj.y === "number") {
+      if (typeof obj.y.value === "number") {
         objectWithYCount++;
       } else if (Array.isArray(obj.data)) {
         multiSeriesCount++;
@@ -49,14 +49,14 @@ function getMaxValue(data) {
     if (typeof value === "number") {
       values.push(value);
     } else if (typeof value === "object") {
-      if (typeof value.y === "number") {
-        values.push(value.y);
+      if (typeof value.y.value === "number") {
+        values.push(value.y.value);
       } else if (Array.isArray(value.data)) {
         value.data.map(v => {
           if (typeof v === "number") {
             values.push(v);
-          } else if (typeof v === "object" && typeof v.y === "number") {
-            values.push(v.y);
+          } else if (typeof v === "object" && typeof v.y.value === "number") {
+            values.push(v.y.value);
           }
         });
       }
@@ -81,9 +81,20 @@ export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
   max = Math.max(getMaxValue(dataProp));
   guideArray = getGuideArray(max, height, numberOfPoints);
 
-  dataProp = flattenData(dataProp);
-
-  sortedData = refineData(dataProp, max, height, gap);
+  const flattenedData = flattenData(dataProp);
+  /*flattenData: {
+    seriesName: "",
+    data: [{x:x, y:{value, comment}}]
+  }*/
+  sortedData = refineData(flattenedData, max, height, gap);
+  /*sortedData: [{
+    gap: i * gap,
+    ratioY: (dataProp[i].y.value / maxClone) * height,
+    x: dataProp[i].x,
+    y: dataProp[i].y,
+    isEmpty: isEmpty
+  }]
+  */
   return {
     sortedData: sortedData,
     max: max,
@@ -132,6 +143,7 @@ export const refineData = (flattenData, max, height, gap) => {
         let isEmpty = false;
         if (dataProp[i].y === null) {
           let nullCount = 0;
+          // for each value, if a y value is null i.e. no data for a given x co-ordinate, find all other null neighbours and tally
           for (let j = i; j < dataProp.length; j++) {
             if (dataProp[j].y) {
               break;
@@ -139,20 +151,21 @@ export const refineData = (flattenData, max, height, gap) => {
               nullCount++;
             }
           }
-          dataProp[i].y =
-            dataProp[i - 1].y +
-            (dataProp[i + nullCount].y - dataProp[i - 1].y) / (nullCount + 1);
+          dataProp[i].y.value =
+            dataProp[i - 1].y.value +
+            (dataProp[i + nullCount].y.value - dataProp[i - 1].y.value) /
+              (nullCount + 1);
           isEmpty = true;
           /* if (dataProp[i + 1] && dataProp[i - 1]) {
             dataProp[i].y = (dataProp[i - 1].y + dataProp[i + 1].y) / 2
             isEmpty = true
           } */
         }
-        if (typeof dataProp[i].y === "number" && dataProp[i].x) {
+        if (typeof dataProp[i].y.value === "number" && dataProp[i].x) {
           objectTypeCount++;
           dataObject = {
             gap: i * gap,
-            ratioY: (dataProp[i].y / maxClone) * height,
+            ratioY: (dataProp[i].y.value / maxClone) * height,
             x: dataProp[i].x,
             y: dataProp[i].y,
             isEmpty: isEmpty
