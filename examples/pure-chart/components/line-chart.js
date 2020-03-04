@@ -441,7 +441,8 @@ class LineChart extends React.Component {
                       }}
                     />
                     <Text style={styles.tooltipValue}>
-                      {numberWithCommas(dataObject.y, false)}
+                      {numberWithCommas(dataObject.y.value, false)}
+                      {dataObject.y.comment}
                     </Text>
                   </View>
                 </View>
