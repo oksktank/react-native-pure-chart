@@ -231,6 +231,7 @@ class LineChart extends React.Component {
                 },
                 () => {
                   if (typeof this.props.onPress === "function") {
+                    console.log("selectedIndex", selectedIndex);
                     this.props.onPress(selectedIndex);
                   }
                 }
@@ -243,6 +244,7 @@ class LineChart extends React.Component {
                 const selectedData = this.state.sortedData.map(series => {
                   return series.data[selectedIndex];
                 });
+                console.log(selectedIndex);
                 this.props.onLongPress(selectedData);
               }
             }}
