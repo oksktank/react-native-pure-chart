@@ -211,14 +211,14 @@ class LineChart extends React.Component {
           <TouchableWithoutFeedback
             onPress={() => {
               let selectedIndex = lastCoordinate ? index - 1 : index;
-              console.log("selectedIndex", selectedIndex);
+              // console.log("selectedIndex", selectedIndex);
 
               let emptyCount = 0;
               this.state.sortedData.map(series => {
                 if (series.data[selectedIndex].isEmpty) {
                   emptyCount++;
                 } else {
-                  console.log("data", series.data[selectedIndex]);
+                  // console.log("data", series.data[selectedIndex]);
                 }
               });
               if (emptyCount === this.state.sortedData.length) {
@@ -237,8 +237,13 @@ class LineChart extends React.Component {
               );
             }}
             onLongPress={() => {
+              let selectedIndex = lastCoordinate ? index - 1 : index;
+
               if (typeof this.props.onLongPress === "function") {
-                this.props.onPress(series.data[selectedIndex]);
+                const selectedData = this.state.sortedData.map(series => {
+                  return series.data[selectedIndex];
+                });
+                this.props.onLongPress(selectedData);
               }
             }}
           >
