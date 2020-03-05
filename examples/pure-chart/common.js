@@ -84,7 +84,7 @@ export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
   const flattenedData = flattenData(dataProp);
   /*flattenData: {
     seriesName: "",
-    data: [{time:time, x:x, y:{value, comment}}]
+    data: [{symptom:symptom, time:time, x:x, y:{value, comment}}]
   }*/
   sortedData = refineData(flattenedData, max, height, gap);
   /*sortedData: [{
@@ -167,6 +167,7 @@ export const refineData = (flattenData, max, height, gap) => {
           dataObject = {
             gap: i * gap,
             ratioY: (dataProp[i].y.value / maxClone) * height,
+            symptom: dataProp[i].symptom,
             time: dataProp[i].time,
             x: dataProp[i].x,
             y: dataProp[i].y,
