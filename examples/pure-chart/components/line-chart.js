@@ -211,20 +211,19 @@ class LineChart extends React.Component {
           <TouchableWithoutFeedback
             onPress={() => {
               let selectedIndex = lastCoordinate ? index - 1 : index;
-              console.log("selectedIndex", selectedIndex);
+              // console.log("selectedIndex", selectedIndex);
 
               let emptyCount = 0;
               this.state.sortedData.map(series => {
                 if (series.data[selectedIndex].isEmpty) {
                   emptyCount++;
                 } else {
-                  console.log("data", series.data[selectedIndex]);
+                  // console.log("data", series.data[selectedIndex]);
                 }
               });
               if (emptyCount === this.state.sortedData.length) {
                 return null;
               }
-              console.log("onPress function", this.props.onPress);
 
               this.setState(
                 {
@@ -232,10 +231,22 @@ class LineChart extends React.Component {
                 },
                 () => {
                   if (typeof this.props.onPress === "function") {
+                    console.log("selectedIndex", selectedIndex);
                     this.props.onPress(selectedIndex);
                   }
                 }
               );
+            }}
+            onLongPress={() => {
+              let selectedIndex = lastCoordinate ? index - 1 : index;
+
+              if (typeof this.props.onLongPress === "function") {
+                const selectedData = this.state.sortedData.map(series => {
+                  return series.data[selectedIndex];
+                });
+                console.log(selectedIndex);
+                this.props.onLongPress(selectedData);
+              }
             }}
           >
             <View
@@ -441,7 +452,7 @@ class LineChart extends React.Component {
                       }}
                     />
                     <Text style={styles.tooltipValue}>
-                      {numberWithCommas(dataObject.y.value, false)}
+                      {numberWithCommas(dataObject.y.value, false)}{" "}
                       {dataObject.y.comment}
                     </Text>
                   </View>
@@ -553,6 +564,8 @@ LineChart.defaultProps = {
   showXAxisLabel: true,
   lineThickness: 1,
   onPointClick: point => {},
+  onPress: () => {},
+  onLongPress: () => {},
   numberOfYAxisGuideLine: 5,
 };
 
