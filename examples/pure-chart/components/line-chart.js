@@ -224,7 +224,6 @@ class LineChart extends React.Component {
               if (emptyCount === this.state.sortedData.length) {
                 return null;
               }
-              console.log("onPress function", this.props.onPress);
 
               this.setState(
                 {
@@ -236,6 +235,11 @@ class LineChart extends React.Component {
                   }
                 }
               );
+            }}
+            onLongPress={() => {
+              if (typeof this.props.onLongPress === "function") {
+                this.props.onPress(series.data[selectedIndex]);
+              }
             }}
           >
             <View
@@ -441,7 +445,7 @@ class LineChart extends React.Component {
                       }}
                     />
                     <Text style={styles.tooltipValue}>
-                      {numberWithCommas(dataObject.y.value, false)}
+                      {numberWithCommas(dataObject.y.value, false)}{" "}
                       {dataObject.y.comment}
                     </Text>
                   </View>
@@ -553,6 +557,8 @@ LineChart.defaultProps = {
   showXAxisLabel: true,
   lineThickness: 1,
   onPointClick: point => {},
+  onPress: () => {},
+  onLongPress: () => {},
   numberOfYAxisGuideLine: 5,
 };
 
