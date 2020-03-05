@@ -6,7 +6,7 @@ import {
   Animated,
   Easing,
   ScrollView,
-  StyleSheet
+  StyleSheet,
 } from "react-native";
 import {
   initData,
@@ -15,7 +15,7 @@ import {
   drawYAxisLabels,
   numberWithCommas,
   drawXAxis,
-  drawXAxisLabels
+  drawXAxisLabels,
 } from "../common";
 
 class LineChart extends React.Component {
@@ -40,7 +40,7 @@ class LineChart extends React.Component {
       lineThickness:
         this.props.lineThickness > 10 ? 10 : this.props.lineThickness,
       fadeAnim: new Animated.Value(0),
-      guideArray: newState.guideArray
+      guideArray: newState.guideArray,
     };
     this.scrollView = null;
 
@@ -75,7 +75,7 @@ class LineChart extends React.Component {
       toValue: 1,
       easing: Easing.bounce,
       duration: 1000,
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start();
     if (this.scrollView != null) {
       setTimeout(
@@ -90,7 +90,7 @@ class LineChart extends React.Component {
       this.setState(
         Object.assign(
           {
-            fadeAnim: new Animated.Value(0)
+            fadeAnim: new Animated.Value(0),
           },
           initData(
             nextProps.data,
@@ -104,7 +104,7 @@ class LineChart extends React.Component {
             toValue: 1,
             easing: Easing.bounce,
             duration: 1000,
-            useNativeDriver: true
+            useNativeDriver: true,
           }).start();
         }
       );
@@ -120,7 +120,7 @@ class LineChart extends React.Component {
     return [
       { translateX: translateX },
       { translateY: -1 * y + width / 2 },
-      { rotate: rad + "rad" }
+      { rotate: rad + "rad" },
     ];
   }
 
@@ -159,7 +159,7 @@ class LineChart extends React.Component {
         key={key}
         style={{
           height: this.props.height + topMargin,
-          justifyContent: "flex-end"
+          justifyContent: "flex-end",
         }}
       >
         <View
@@ -167,9 +167,9 @@ class LineChart extends React.Component {
             {
               width: dx,
               height: height,
-              marginTop: topMargin
+              marginTop: topMargin,
             },
-            styles.coordinateWrapper
+            styles.coordinateWrapper,
           ])}
         >
           <View
@@ -182,10 +182,10 @@ class LineChart extends React.Component {
                   ? backgroundColor
                   : this.props.primaryColor,
                 borderTopWidth: this.state.lineThickness,
-                transform: this.getTransform(angleRad, size, direction)
+                transform: this.getTransform(angleRad, size, direction),
               },
               styles.lineBox,
-              lineStyle
+              lineStyle,
             ])}
           />
           <View
@@ -194,8 +194,8 @@ class LineChart extends React.Component {
               {
                 height: height - Math.abs(dy) - 2,
                 backgroundColor: lastCoordinate ? "#FFFFFF00" : backgroundColor,
-                marginTop: Math.abs(dy) + 2
-              }
+                marginTop: Math.abs(dy) + 2,
+              },
             ])}
           />
         </View>
@@ -228,7 +228,7 @@ class LineChart extends React.Component {
 
               this.setState(
                 {
-                  selectedIndex: selectedIndex
+                  selectedIndex: selectedIndex,
                 },
                 () => {
                   if (typeof this.props.onPress === "function") {
@@ -244,7 +244,7 @@ class LineChart extends React.Component {
                 height: "100%",
                 position: "absolute",
                 marginLeft: (-1 * dx) / 2,
-                backgroundColor: "#FFFFFF01"
+                backgroundColor: "#FFFFFF01",
               }}
             />
           </TouchableWithoutFeedback>
@@ -281,8 +281,8 @@ class LineChart extends React.Component {
               bottom: point.ratioY - size / 2,
 
               borderColor: color,
-              backgroundColor: color
-            }
+              backgroundColor: color,
+            },
           ])}
         />
       </TouchableWithoutFeedback>
@@ -299,7 +299,7 @@ class LineChart extends React.Component {
           left: index === 0 ? point.gap : point.gap - size / 2,
           bottom: point.ratioY + 10,
           backgroundColor: "transparent",
-          width: index !== 0 ? 200 : undefined
+          width: index !== 0 ? 200 : undefined,
         }}
       >
         {this.drawCustomValue(index, point)}
@@ -318,7 +318,7 @@ class LineChart extends React.Component {
   drawCoordinates(data, seriesColor, seriesIndex) {
     let result = [];
     let lineStyle = {
-      borderColor: !seriesColor ? this.props.primaryColor : seriesColor
+      borderColor: !seriesColor ? this.props.primaryColor : seriesColor,
     };
     let dataLength = data.length;
 
@@ -400,8 +400,8 @@ class LineChart extends React.Component {
             styles.selectedWrapper,
             {
               left: left,
-              justifyContent: "center"
-            }
+              justifyContent: "center",
+            },
           ])}
         >
           <View
@@ -409,8 +409,8 @@ class LineChart extends React.Component {
               styles.selectedLine,
               {
                 backgroundColor: this.props.selectedColor,
-                marginLeft: gap
-              }
+                marginLeft: gap,
+              },
             ])}
           />
 
@@ -426,7 +426,7 @@ class LineChart extends React.Component {
                     style={{
                       flexDirection: "row",
                       paddingLeft: 5,
-                      alignItems: "center"
+                      alignItems: "center",
                     }}
                   >
                     <View
@@ -437,7 +437,7 @@ class LineChart extends React.Component {
                         borderRadius: 2,
                         backgroundColor: !series.seriesColor
                           ? this.props.primaryColor
-                          : series.seriesColor
+                          : series.seriesColor,
                       }}
                     />
                     <Text style={styles.tooltipValue}>
@@ -463,8 +463,8 @@ class LineChart extends React.Component {
         style={StyleSheet.flatten([
           styles.wrapper,
           {
-            backgroundColor: this.props.backgroundColor
-          }
+            backgroundColor: this.props.backgroundColor,
+          },
         ])}
       >
         <View style={styles.yAxisLabelsWrapper}>
@@ -512,7 +512,7 @@ class LineChart extends React.Component {
                             ? -1 *
                               this.state.guideArray[0][2] *
                               this.props.minValue
-                            : null
+                            : null,
                       }}
                     >
                       {/* [<touchable>something</touchable,...,<somethingelse>] */}
@@ -553,57 +553,57 @@ LineChart.defaultProps = {
   showXAxisLabel: true,
   lineThickness: 1,
   onPointClick: point => {},
-  numberOfYAxisGuideLine: 5
+  numberOfYAxisGuideLine: 5,
 };
 
 const styles = StyleSheet.create({
   wrapper: {
     flexDirection: "row",
-    overflow: "hidden"
+    overflow: "hidden",
   },
   yAxisLabelsWrapper: {
-    paddingRight: 5
+    paddingRight: 5,
   },
   chartViewWrapper: {
     flexDirection: "row",
     alignItems: "flex-end",
     margin: 0,
     paddingRight: 0,
-    overflow: "hidden"
+    overflow: "hidden",
   },
   coordinateWrapper: {
     overflow: "visible",
     justifyContent: "flex-start",
-    alignContent: "flex-start"
+    alignContent: "flex-start",
   },
   lineBox: {
     overflow: "hidden",
-    justifyContent: "flex-start"
+    justifyContent: "flex-start",
   },
   guideLine: {
     position: "absolute",
     height: "100%",
     borderRightColor: "#e0e0e050",
-    borderRightWidth: 1
+    borderRightWidth: 1,
   },
   absolute: {
     position: "absolute",
-    width: "100%"
+    width: "100%",
   },
   pointWrapper: {
     position: "absolute",
     borderRadius: 10,
-    borderWidth: 1
+    borderWidth: 1,
   },
   selectedWrapper: {
     position: "absolute",
     height: "100%",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
   },
   selectedLine: {
     position: "absolute",
     width: 1,
-    height: "100%"
+    height: "100%",
   },
   selectedBox: {
     backgroundColor: "#FFFFFF",
@@ -614,10 +614,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     padding: 3,
     marginLeft: 5,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   tooltipTitle: { fontSize: 10 },
-  tooltipValue: { fontWeight: "bold", fontSize: 15 }
+  tooltipValue: { fontWeight: "bold", fontSize: 15 },
 });
 
 export default LineChart;
