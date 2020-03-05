@@ -27,8 +27,8 @@ function flattenData(data) {
     return [
       {
         seriesName: "",
-        data: data
-      }
+        data: data,
+      },
     ];
   } else if (multiSeriesCount === length) {
     return data;
@@ -36,8 +36,8 @@ function flattenData(data) {
     return [
       {
         seriesName: "",
-        data: []
-      }
+        data: [],
+      },
     ];
   }
 }
@@ -74,7 +74,7 @@ export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
     return {
       sortedData: [],
       max: 0,
-      guideArray: []
+      guideArray: [],
     };
   }
 
@@ -84,12 +84,13 @@ export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
   const flattenedData = flattenData(dataProp);
   /*flattenData: {
     seriesName: "",
-    data: [{x:x, y:{value, comment}}]
+    data: [{time:time, x:x, y:{value, comment}}]
   }*/
   sortedData = refineData(flattenedData, max, height, gap);
   /*sortedData: [{
     gap: i * gap,
     ratioY: (dataProp[i].y.value / maxClone) * height,
+    time: dataprop[i].time,
     x: dataProp[i].x,
     y: dataProp[i].y,
     isEmpty: isEmpty
@@ -104,7 +105,7 @@ export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
     scrollPosition: 0,
     nowX: 0,
     nowY: 0,
-    guideArray: guideArray
+    guideArray: guideArray,
   };
 };
 
@@ -115,7 +116,7 @@ export const refineData = (flattenData, max, height, gap) => {
     let dataProp = series.data;
     let object = {
       seriesName: series.seriesName,
-      seriesColor: series.color
+      seriesColor: series.color,
     };
     let data = [];
     let length = dataProp.length;
@@ -137,7 +138,7 @@ export const refineData = (flattenData, max, height, gap) => {
         dataObject = {
           gap: i * gap,
           ratioY: (dataProp[i] / maxClone) * height,
-          y: dataProp[i]
+          y: dataProp[i],
         };
       } else if (typeof dataProp[i] === "object") {
         let isEmpty = false;
@@ -166,9 +167,10 @@ export const refineData = (flattenData, max, height, gap) => {
           dataObject = {
             gap: i * gap,
             ratioY: (dataProp[i].y.value / maxClone) * height,
+            time: dataProp[i].time,
             x: dataProp[i].x,
             y: dataProp[i].y,
-            isEmpty: isEmpty
+            isEmpty: isEmpty,
           };
         }
       }
@@ -244,7 +246,7 @@ export const getGuideArray = (max, height, numberOfPoints = 5) => {
     arr.push([
       v + postfix,
       ((v * temp) / max) * height,
-      ((1 * temp) / max) * height
+      ((1 * temp) / max) * height,
     ]);
   }
 
@@ -259,7 +261,7 @@ export const drawYAxis = (color = "#e0e0e0") => {
         borderColor: color,
         width: 1,
         height: "100%",
-        marginRight: 0
+        marginRight: 0,
       }}
     />
   );
@@ -281,7 +283,7 @@ export const drawYAxisLabels = (
         alignItems: "flex-end",
         marginBottom:
           minValue && arr && arr.length > 0 ? -1 * arr[0][2] * minValue : null,
-        overflow: "hidden"
+        overflow: "hidden",
       }}
     >
       {arr.length === 0 ? (
@@ -289,7 +291,7 @@ export const drawYAxisLabels = (
           key={"guide0"}
           style={{
             bottom: 0,
-            position: "absolute"
+            position: "absolute",
           }}
         >
           <Text style={{ fontSize: 11 }}>0</Text>
@@ -302,7 +304,7 @@ export const drawYAxisLabels = (
               key={"guide" + i}
               style={{
                 bottom: v[1] - 5,
-                position: "absolute"
+                position: "absolute",
               }}
             >
               <Text style={{ fontSize: 11, color: color }}>
@@ -321,7 +323,7 @@ export const drawGuideLine = (arr, color = "#e0e0e0") => {
       style={{
         width: "100%",
         height: "100%",
-        position: "absolute"
+        position: "absolute",
       }}
     >
       {arr.map((v, i) => {
@@ -333,7 +335,7 @@ export const drawGuideLine = (arr, color = "#e0e0e0") => {
               borderTopWidth: 1,
               borderTopColor: color,
               bottom: v[1],
-              position: "absolute"
+              position: "absolute",
             }}
           />
         );
@@ -366,7 +368,7 @@ export const drawXAxis = (color = "#e0e0e0") => {
       style={{
         width: "100%",
         borderTopWidth: 1,
-        borderTopColor: color
+        borderTopColor: color,
       }}
     />
   );
@@ -382,7 +384,7 @@ export const drawXAxisLabels = (
       style={{
         width: "100%",
         paddingVertical: 10,
-        height: 10
+        height: 10,
       }}
     >
       {sortedData.map((data, i) => {
@@ -396,7 +398,7 @@ export const drawXAxisLabels = (
                 // left: data[0] - gap / 2,
                 left: data["gap"] - gap / 2,
                 width: gap,
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               <Text style={{ fontSize: 9, color: color }}>
