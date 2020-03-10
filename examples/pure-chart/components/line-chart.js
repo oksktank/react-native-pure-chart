@@ -268,6 +268,10 @@ class LineChart extends React.Component {
     let key = "point" + index;
     let size = 8;
     let color = !seriesColor ? this.props.primaryColor : seriesColor;
+    if (point.y.comment) {
+      console.log("in here");
+      color = "#00FF00";
+    }
     if (this.state.selectedIndex === index) {
       color = this.props.selectedColor;
     }
