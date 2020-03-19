@@ -429,7 +429,7 @@ class LineChart extends React.Component {
             ])}
           />
 
-          <View style={StyleSheet.flatten([styles.selectedBox])}>
+          <View style={styles.selectedBox}>
             {this.state.sortedData.map(series => {
               let dataObject = series.data[this.state.selectedIndex];
               return (
