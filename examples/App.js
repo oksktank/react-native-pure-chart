@@ -24,7 +24,7 @@ export default class App extends React.Component {
   generateData() {
     const NUMENTRIES = 10;
     const MAXVALUE = 10;
-    const MAXCOMMENTLENGTH = 30;
+    const MAXCOMMENTLENGTH = 10;
 
     let data = [];
     for (let i = 0; i < NUMENTRIES; i++) {
@@ -33,7 +33,7 @@ export default class App extends React.Component {
         y: {
           value: Math.round(Math.random() * MAXVALUE),
           comment: Math.random()
-            .toString(36)
+            .toString(2)
             .slice(-MAXCOMMENTLENGTH),
         },
       };

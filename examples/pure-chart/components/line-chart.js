@@ -403,7 +403,6 @@ class LineChart extends React.Component {
       let left = dataObject.gap;
       let gap = 0;
       let right = undefined;
-      console.log(left, Dimensions.get("window").width);
       if (index === data.length - 1 && index !== 0) {
         left = data[index - 1].gap;
         // right = 1;
