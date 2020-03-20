@@ -39,7 +39,7 @@ export default class App extends React.Component {
       };
       data.push(entry);
     }
-    console.log(data);
+    // console.log(data);
 
     this.setState({
       data: data,

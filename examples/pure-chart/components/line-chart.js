@@ -7,6 +7,7 @@ import {
   Easing,
   ScrollView,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 import {
   initData,
@@ -401,8 +402,11 @@ class LineChart extends React.Component {
 
       let left = dataObject.gap;
       let gap = 0;
+      let right = undefined;
+      console.log(left, Dimensions.get("window").width);
       if (index === data.length - 1 && index !== 0) {
         left = data[index - 1].gap;
+        // right = 1;
         gap = dataObject.gap - left;
       }
       if (bottom > (this.props.height * 2) / 3) {
@@ -429,7 +433,7 @@ class LineChart extends React.Component {
             ])}
           />
 
-          <View style={styles.selectedBox}>
+          <View style={{ ...styles.selectedBox, right }}>
             {this.state.sortedData.map(series => {
               let dataObject = series.data[this.state.selectedIndex];
               return (
@@ -437,29 +441,31 @@ class LineChart extends React.Component {
                   {dataObject.x ? (
                     <Text style={styles.tooltipTitle}>{dataObject.x}</Text>
                   ) : null}
-                  <View
+                  {/* <View
                     style={{
                       flexDirection: "row",
                       paddingLeft: 5,
                       alignItems: "center",
                     }}
-                  >
-                    <View
-                      style={{
-                        width: 10,
-                        height: 5,
-                        marginRight: 3,
-                        borderRadius: 2,
-                        backgroundColor: !series.seriesColor
-                          ? this.props.primaryColor
-                          : series.seriesColor,
-                      }}
-                    />
-                    <Text style={styles.tooltipValue}>
-                      {numberWithCommas(dataObject.y.value, false)}{" "}
-                      {dataObject.y.comment}
-                    </Text>
-                  </View>
+                  > */}
+                  {/* series colour */}
+                  <View
+                    style={{
+                      width: 10,
+                      height: 5,
+                      marginRight: 3,
+                      borderRadius: 2,
+                      backgroundColor: !series.seriesColor
+                        ? this.props.primaryColor
+                        : series.seriesColor,
+                    }}
+                  />
+                  {/* tooltip value */}
+                  <Text style={styles.tooltipValue}>
+                    {numberWithCommas(dataObject.y.value, false)}{" "}
+                    {dataObject.y.comment}
+                  </Text>
+                  {/* </View> */}
                 </View>
               );
             })}
@@ -493,7 +499,7 @@ class LineChart extends React.Component {
             )}
         </View>
 
-        <View>
+        <View style={{ flex: 1 }}>
           <ScrollView
             horizontal
             ref={ref => (this.scrollView = ref)}
@@ -501,6 +507,7 @@ class LineChart extends React.Component {
               if (this.props.lineChartScrollToEnd)
                 this.scrollView.scrollToEnd({ animated: false });
             }}
+            // style={{ overflow: "visible" }}
           >
             <View>
               <View ref="chartView" style={styles.chartViewWrapper}>
@@ -577,6 +584,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: "row",
     overflow: "hidden",
+    // flex: 1,
   },
   yAxisLabelsWrapper: {
     paddingRight: 5,
@@ -594,7 +602,7 @@ const styles = StyleSheet.create({
     alignContent: "flex-start",
   },
   lineBox: {
-    overflow: "hidden",
+    overflow: "visible",
     justifyContent: "flex-start",
   },
   guideLine: {
@@ -630,11 +638,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     position: "absolute",
     padding: 3,
-    marginLeft: 5,
-    justifyContent: "center",
+    // marginLeft: 5,
+    // marginRight: 30,
+    justifyContent: "flex-end",
   },
   tooltipTitle: { fontSize: 10 },
-  tooltipValue: { fontWeight: "bold", fontSize: 15 },
+  tooltipValue: {
+    fontWeight: "bold",
+    fontSize: 15,
+  },
 });
 
 export default LineChart;
