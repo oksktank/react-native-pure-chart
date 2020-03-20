@@ -267,6 +267,7 @@ class LineChart extends React.Component {
     let key = "point" + index;
     let size = 8;
     let color = !seriesColor ? this.props.primaryColor : seriesColor;
+    //colour if comment
     if (point.y.comment) {
       color = "#00FF00";
     }
@@ -282,6 +283,7 @@ class LineChart extends React.Component {
         onPress={() => {
           this.setState({ selectedIndex: index });
         }}
+        hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
       >
         <View
           style={StyleSheet.flatten([
