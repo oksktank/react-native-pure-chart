@@ -211,14 +211,11 @@ class LineChart extends React.Component {
           <TouchableWithoutFeedback
             onPress={() => {
               let selectedIndex = lastCoordinate ? index - 1 : index;
-              // console.log("selectedIndex", selectedIndex);
 
               let emptyCount = 0;
               this.state.sortedData.map(series => {
                 if (series.data[selectedIndex].isEmpty) {
                   emptyCount++;
-                } else {
-                  // console.log("data", series.data[selectedIndex]);
                 }
               });
               if (emptyCount === this.state.sortedData.length) {
@@ -244,7 +241,6 @@ class LineChart extends React.Component {
                 const selectedData = this.state.sortedData.map(series => {
                   return series.data[selectedIndex];
                 });
-                console.log(selectedIndex);
                 this.props.onLongPress(selectedData);
               }
             }}
@@ -268,8 +264,8 @@ class LineChart extends React.Component {
     let key = "point" + index;
     let size = 8;
     let color = !seriesColor ? this.props.primaryColor : seriesColor;
+    //colour if comment
     if (point.y.comment) {
-      console.log("in here");
       color = "#00FF00";
     }
     if (this.state.selectedIndex === index) {
@@ -284,6 +280,7 @@ class LineChart extends React.Component {
         onPress={() => {
           this.setState({ selectedIndex: index });
         }}
+        hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
       >
         <View
           style={StyleSheet.flatten([
@@ -429,37 +426,31 @@ class LineChart extends React.Component {
             ])}
           />
 
-          <View style={StyleSheet.flatten([styles.selectedBox])}>
+          <View style={styles.selectedBox}>
             {this.state.sortedData.map(series => {
               let dataObject = series.data[this.state.selectedIndex];
               return (
-                <View key={series.seriesName}>
+                <View key={series.seriesName} style={{ flex: 1 }}>
                   {dataObject.x ? (
                     <Text style={styles.tooltipTitle}>{dataObject.x}</Text>
                   ) : null}
+                  {/* series colour */}
                   <View
                     style={{
-                      flexDirection: "row",
-                      paddingLeft: 5,
-                      alignItems: "center",
+                      width: 10,
+                      height: 5,
+                      marginRight: 3,
+                      borderRadius: 2,
+                      backgroundColor: !series.seriesColor
+                        ? this.props.primaryColor
+                        : series.seriesColor,
                     }}
-                  >
-                    <View
-                      style={{
-                        width: 10,
-                        height: 5,
-                        marginRight: 3,
-                        borderRadius: 2,
-                        backgroundColor: !series.seriesColor
-                          ? this.props.primaryColor
-                          : series.seriesColor,
-                      }}
-                    />
-                    <Text style={styles.tooltipValue}>
-                      {numberWithCommas(dataObject.y.value, false)}{" "}
-                      {dataObject.y.comment}
-                    </Text>
-                  </View>
+                  />
+                  {/* tooltip value */}
+                  <Text style={styles.tooltipValue} numberOfLines={10}>
+                    {numberWithCommas(dataObject.y.value, false)}{" "}
+                    {dataObject.y.comment}
+                  </Text>
                 </View>
               );
             })}
@@ -493,7 +484,7 @@ class LineChart extends React.Component {
             )}
         </View>
 
-        <View>
+        <View style={{ flex: 1 }}>
           <ScrollView
             horizontal
             ref={ref => (this.scrollView = ref)}
@@ -530,7 +521,6 @@ class LineChart extends React.Component {
                             : null,
                       }}
                     >
-                      {/* [<touchable>something</touchable,...,<somethingelse>] */}
                       {this.drawCoordinates(obj.data, obj.seriesColor, index)}
                     </Animated.View>
                   );
@@ -583,10 +573,6 @@ const styles = StyleSheet.create({
   },
   chartViewWrapper: {
     flexDirection: "row",
-    alignItems: "flex-end",
-    margin: 0,
-    paddingRight: 0,
-    overflow: "hidden",
   },
   coordinateWrapper: {
     overflow: "visible",
@@ -594,7 +580,6 @@ const styles = StyleSheet.create({
     alignContent: "flex-start",
   },
   lineBox: {
-    overflow: "hidden",
     justifyContent: "flex-start",
   },
   guideLine: {
@@ -615,7 +600,7 @@ const styles = StyleSheet.create({
   selectedWrapper: {
     position: "absolute",
     height: "100%",
-    alignItems: "flex-start",
+    width: "20%",
   },
   selectedLine: {
     position: "absolute",
@@ -631,10 +616,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     padding: 3,
     marginLeft: 5,
-    justifyContent: "center",
   },
   tooltipTitle: { fontSize: 10 },
-  tooltipValue: { fontWeight: "bold", fontSize: 15 },
+  tooltipValue: {
+    fontWeight: "bold",
+    fontSize: 15,
+  },
 });
 
 export default LineChart;
