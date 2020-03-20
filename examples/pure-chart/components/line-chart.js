@@ -244,7 +244,6 @@ class LineChart extends React.Component {
                 const selectedData = this.state.sortedData.map(series => {
                   return series.data[selectedIndex];
                 });
-                console.log(selectedIndex);
                 this.props.onLongPress(selectedData);
               }
             }}
@@ -269,7 +268,6 @@ class LineChart extends React.Component {
     let size = 8;
     let color = !seriesColor ? this.props.primaryColor : seriesColor;
     if (point.y.comment) {
-      console.log("in here");
       color = "#00FF00";
     }
     if (this.state.selectedIndex === index) {
