@@ -24,7 +24,7 @@ export default class App extends React.Component {
   generateData() {
     const NUMENTRIES = 10;
     const MAXVALUE = 10;
-    const MAXCOMMENTLENGTH = 10;
+    const MAXCOMMENTLENGTH = 100;
 
     let data = [];
     for (let i = 0; i < NUMENTRIES; i++) {

@@ -436,7 +436,7 @@ class LineChart extends React.Component {
             {this.state.sortedData.map(series => {
               let dataObject = series.data[this.state.selectedIndex];
               return (
-                <View key={series.seriesName}>
+                <View key={series.seriesName} style={{ flex: 1 }}>
                   {dataObject.x ? (
                     <Text style={styles.tooltipTitle}>{dataObject.x}</Text>
                   ) : null}
@@ -460,7 +460,7 @@ class LineChart extends React.Component {
                     }}
                   />
                   {/* tooltip value */}
-                  <Text style={styles.tooltipValue}>
+                  <Text style={styles.tooltipValue} numberOfLines={10}>
                     {numberWithCommas(dataObject.y.value, false)}{" "}
                     {dataObject.y.comment}
                   </Text>
@@ -506,6 +506,7 @@ class LineChart extends React.Component {
               if (this.props.lineChartScrollToEnd)
                 this.scrollView.scrollToEnd({ animated: false });
             }}
+            // contentContainerStyle={{ paddingVertical: 20 }}
             // style={{ overflow: "visible" }}
           >
             <View>
@@ -590,10 +591,10 @@ const styles = StyleSheet.create({
   },
   chartViewWrapper: {
     flexDirection: "row",
-    alignItems: "flex-end",
-    margin: 0,
-    paddingRight: 0,
-    overflow: "hidden",
+    // alignItems: "flex-end",
+    // margin: 0,
+    // paddingRight: 0,
+    // overflow: "hidden",
   },
   coordinateWrapper: {
     overflow: "visible",
@@ -601,7 +602,7 @@ const styles = StyleSheet.create({
     alignContent: "flex-start",
   },
   lineBox: {
-    overflow: "visible",
+    // overflow: "visible",
     justifyContent: "flex-start",
   },
   guideLine: {
@@ -622,7 +623,9 @@ const styles = StyleSheet.create({
   selectedWrapper: {
     position: "absolute",
     height: "100%",
-    alignItems: "flex-start",
+    width: "20%",
+    // flex: 1,
+    // alignItems: "flex-end",
   },
   selectedLine: {
     position: "absolute",
