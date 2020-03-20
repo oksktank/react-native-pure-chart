@@ -212,14 +212,11 @@ class LineChart extends React.Component {
           <TouchableWithoutFeedback
             onPress={() => {
               let selectedIndex = lastCoordinate ? index - 1 : index;
-              // console.log("selectedIndex", selectedIndex);
 
               let emptyCount = 0;
               this.state.sortedData.map(series => {
                 if (series.data[selectedIndex].isEmpty) {
                   emptyCount++;
-                } else {
-                  // console.log("data", series.data[selectedIndex]);
                 }
               });
               if (emptyCount === this.state.sortedData.length) {
@@ -402,10 +399,8 @@ class LineChart extends React.Component {
 
       let left = dataObject.gap;
       let gap = 0;
-      let right = undefined;
       if (index === data.length - 1 && index !== 0) {
         left = data[index - 1].gap;
-        // right = 1;
         gap = dataObject.gap - left;
       }
       if (bottom > (this.props.height * 2) / 3) {
@@ -432,7 +427,7 @@ class LineChart extends React.Component {
             ])}
           />
 
-          <View style={{ ...styles.selectedBox, right }}>
+          <View style={styles.selectedBox}>
             {this.state.sortedData.map(series => {
               let dataObject = series.data[this.state.selectedIndex];
               return (
@@ -440,13 +435,6 @@ class LineChart extends React.Component {
                   {dataObject.x ? (
                     <Text style={styles.tooltipTitle}>{dataObject.x}</Text>
                   ) : null}
-                  {/* <View
-                    style={{
-                      flexDirection: "row",
-                      paddingLeft: 5,
-                      alignItems: "center",
-                    }}
-                  > */}
                   {/* series colour */}
                   <View
                     style={{
@@ -464,7 +452,6 @@ class LineChart extends React.Component {
                     {numberWithCommas(dataObject.y.value, false)}{" "}
                     {dataObject.y.comment}
                   </Text>
-                  {/* </View> */}
                 </View>
               );
             })}
@@ -506,8 +493,6 @@ class LineChart extends React.Component {
               if (this.props.lineChartScrollToEnd)
                 this.scrollView.scrollToEnd({ animated: false });
             }}
-            // contentContainerStyle={{ paddingVertical: 20 }}
-            // style={{ overflow: "visible" }}
           >
             <View>
               <View ref="chartView" style={styles.chartViewWrapper}>
@@ -537,7 +522,6 @@ class LineChart extends React.Component {
                             : null,
                       }}
                     >
-                      {/* [<touchable>something</touchable,...,<somethingelse>] */}
                       {this.drawCoordinates(obj.data, obj.seriesColor, index)}
                     </Animated.View>
                   );
@@ -584,17 +568,12 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: "row",
     overflow: "hidden",
-    // flex: 1,
   },
   yAxisLabelsWrapper: {
     paddingRight: 5,
   },
   chartViewWrapper: {
     flexDirection: "row",
-    // alignItems: "flex-end",
-    // margin: 0,
-    // paddingRight: 0,
-    // overflow: "hidden",
   },
   coordinateWrapper: {
     overflow: "visible",
@@ -602,7 +581,6 @@ const styles = StyleSheet.create({
     alignContent: "flex-start",
   },
   lineBox: {
-    // overflow: "visible",
     justifyContent: "flex-start",
   },
   guideLine: {
@@ -624,8 +602,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: "100%",
     width: "20%",
-    // flex: 1,
-    // alignItems: "flex-end",
   },
   selectedLine: {
     position: "absolute",
@@ -640,9 +616,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     position: "absolute",
     padding: 3,
-    // marginLeft: 5,
-    // marginRight: 30,
-    justifyContent: "flex-end",
+    marginLeft: 5,
   },
   tooltipTitle: { fontSize: 10 },
   tooltipValue: {
