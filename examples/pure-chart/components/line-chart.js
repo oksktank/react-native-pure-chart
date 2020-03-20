@@ -7,7 +7,6 @@ import {
   Easing,
   ScrollView,
   StyleSheet,
-  Dimensions,
 } from "react-native";
 import {
   initData,
