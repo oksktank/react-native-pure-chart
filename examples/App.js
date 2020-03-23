@@ -7,6 +7,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.generateData = this.generateData.bind(this);
+    //state which contains data for line chart (as well as data for other charts, but these are redundant in our case)
     this.state = {
       data: [],
       pieData: [
@@ -21,12 +22,15 @@ export default class App extends React.Component {
     };
   }
 
+  //function to generate data
   generateData() {
-    const NUMENTRIES = 10;
-    const MAXVALUE = 10;
+    //constants
+    const NUMENTRIES = 3;
+    const MAXVALUE = 12;
     const MAXCOMMENTLENGTH = 100;
 
     let data = [];
+    //populate a data array with objects with random comments and values, as determined by the constants
     for (let i = 0; i < NUMENTRIES; i++) {
       let entry = {
         x: moment().format("YYYY-MM-DD"),
@@ -39,14 +43,17 @@ export default class App extends React.Component {
       };
       data.push(entry);
     }
+    //update the data to the current data (should do this in componentDidMount?)
     this.setState({
       data: data,
     });
   }
+
   render() {
     return (
       <View style={styles.container}>
         <View style={{ padding: 20, marginTop: 100 }}>
+          {/* pass props into PureChart */}
           <PureChart
             type={"line"}
             data={this.state.data}
@@ -54,8 +61,11 @@ export default class App extends React.Component {
             onPress={a => {
               console.log("onPress", a);
             }}
+            onLongPress={data => {
+              console.log(data);
+            }}
           />
-          <PureChart type={"bar"} data={this.state.data} />
+          {/* <PureChart type={"bar"} data={this.state.data} /> */}
           <Button
             style={{ marginTop: 20 }}
             title="Generate chart data"
