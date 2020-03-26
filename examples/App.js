@@ -26,8 +26,8 @@ export default class App extends React.Component {
   generateData() {
     //constants
     const NUMENTRIES = 3;
-    const MAXVALUE = 12;
-    const MAXCOMMENTLENGTH = 100;
+    const MAXVALUE = 5;
+    const MAXCOMMENTLENGTH = 10;
 
     let data = [];
     //populate a data array with objects with random comments and values, as determined by the constants

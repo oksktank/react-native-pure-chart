@@ -247,6 +247,7 @@ class LineChart extends React.Component {
                 () => {
                   if (typeof this.props.onPress === "function") {
                     console.log("selectedIndex", selectedIndex);
+                    //pass the selectedIndex into the onPress function
                     this.props.onPress(selectedIndex);
                   }
                 }
@@ -260,10 +261,12 @@ class LineChart extends React.Component {
                   return series.data[selectedIndex];
                 });
                 //making this print the data
+                //pass the selectedIndex's data into the onLongPress function
                 this.props.onLongPress(selectedData);
               }
             }}
           >
+            {/* styling */}
             <View
               style={{
                 width: dx,
@@ -279,7 +282,9 @@ class LineChart extends React.Component {
     );
   }
 
+  //generates
   drawPoint(index, point, seriesColor) {
+    //unique key
     let key = "point" + index;
     let size = 8;
     let color = !seriesColor ? this.props.primaryColor : seriesColor;
@@ -287,12 +292,15 @@ class LineChart extends React.Component {
     if (point.y.comment) {
       color = "#00FF00";
     }
+
+    //when clicked on, change colour
     if (this.state.selectedIndex === index) {
       color = this.props.selectedColor;
     }
 
     if (point.isEmpty || this.props.hidePoints) return null;
 
+    //return touchable styled component (co-ordinate marker)
     return (
       <TouchableWithoutFeedback
         key={key}
@@ -319,6 +327,8 @@ class LineChart extends React.Component {
       </TouchableWithoutFeedback>
     );
   }
+
+  //function which currently does nothing unless we pass in a customValueRenderer prop
   drawValue(index, point) {
     let key = "pointvalue" + index;
     let size = 200;
@@ -356,7 +366,7 @@ class LineChart extends React.Component {
 
     for (let i = 0; i < dataLength - 1; i++) {
       result.push(
-        //into results array, push return of drawCoordinate, which takes each pair of neighbouring data points and creates the LINE and onPress
+        //into results array, push return of drawCoordinate, which takes each pair of neighbouring data points and creates the LINE and onPress - this component is added to the results array
         this.drawCoordinate(
           i,
           data[i],
@@ -369,8 +379,12 @@ class LineChart extends React.Component {
         )
       );
     }
+    //at this stage, result is size N-1, each element being a touchable component, the last
+    //not being done yet
 
+    //all points and values then drawn
     if (dataLength > 0) {
+      //drawpoint takes an index, item and colour and creates the co-ordinate visually which changes colour on press
       result.push(this.drawPoint(0, data[0], seriesColor));
       result.push(this.drawValue(0, data[0], seriesColor));
     }
@@ -380,6 +394,9 @@ class LineChart extends React.Component {
       result.push(this.drawValue(i + 1, data[i + 1], seriesColor));
     }
 
+    //at this stage, the array is 2N-1, with N-1 dedicated to lines, and N dedicated to co-ordinates
+
+    //this code is now concerned with the last LINE
     let lastData = Object.assign({}, data[dataLength - 1]);
     let lastCoordinate = Object.assign({}, data[dataLength - 1]);
     lastCoordinate.gap = lastCoordinate.gap + this.props.gap;
@@ -395,7 +412,7 @@ class LineChart extends React.Component {
         seriesIndex
       )
     );
-
+    //result array is now 2N, with N-1 dedicated to lines, N to co-ordinates, and 1 to the final line
     return result;
   }
 
@@ -554,6 +571,7 @@ class LineChart extends React.Component {
                     </Animated.View>
                   );
                 })}
+                {/* depending on the selectedIndex value, show information regarding it */}
                 {this.drawSelected(this.state.selectedIndex)}
               </View>
 
