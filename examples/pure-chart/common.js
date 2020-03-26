@@ -11,7 +11,9 @@ function flattenData(data) {
   let objectWithYCount = 0;
   let multiSeriesCount = 0;
   let length = data.length;
+  //take each element of data (array of objects in single series case)
   data.map(obj => {
+    //increment either numberCount, objectWithYCount or multiSeriesCount
     if (typeof obj === "number") {
       numberCount++;
     } else if (typeof obj === "object") {
@@ -68,8 +70,10 @@ function getMaxValue(data) {
   return Math.max.apply(null, values);
 }
 
+//function which initialises state using data array, height, gap and number of Y axis lines (defaulting to 5))
 export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
   let guideArray, max, sortedData;
+  //if no data is passsed in (i.e. default) return blank data
   if (!dataProp || !Array.isArray(dataProp) || dataProp.length === 0) {
     return {
       sortedData: [],
@@ -78,23 +82,28 @@ export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
     };
   }
 
+  //calculate the max value of the data array
   max = Math.max(getMaxValue(dataProp));
+
+  //using the max, height and no. of lines, generate the guide array i.e. y axis intervals
   guideArray = getGuideArray(max, height, numberOfPoints);
 
-  const flattenedData = flattenData(dataProp);
-  /*flattenData: {
+  //flatten data in case there are multiple series
+  /*output => [{
     seriesName: "",
     data: [{symptom:symptom, time:time, x:x, y:{value, comment}}]
-  }*/
+  }]*/
+  const flattenedData = flattenData(dataProp);
   sortedData = refineData(flattenedData, max, height, gap);
-  /*sortedData: [{
+  /*sortedData: {seriesName: "", seriesColor: "", data: [ for each series item {
     gap: i * gap,
     ratioY: (dataProp[i].y.value / maxClone) * height,
     time: dataprop[i].time,
+    symptom: dataprop[i].symptom,
     x: dataProp[i].x,
-    y: dataProp[i].y,
+    y: dataProp[i].y (contains value, comment),
     isEmpty: isEmpty
-  }]
+  }]}
   */
   return {
     sortedData: sortedData,
@@ -119,13 +128,14 @@ export const refineData = (flattenData, max, height, gap) => {
       seriesColor: series.color,
     };
     let data = [];
+    //get length i.e. amount of data points in series
     let length = dataProp.length;
     let simpleTypeCount = 0;
     let objectTypeCount = 0;
 
     for (let i = 0; i < length; i++) {
       let maxClone = max;
-
+      //initialise maxClone to at least 1
       if (maxClone === 0) {
         maxClone = 1;
       }
@@ -162,6 +172,7 @@ export const refineData = (flattenData, max, height, gap) => {
             isEmpty = true
           } */
         }
+        //if y's value is a number, and x exists (always the case in current implementation) increase the objectCount and make a dataObject, which is then added to the data array
         if (typeof dataProp[i].y.value === "number" && dataProp[i].x) {
           objectTypeCount++;
           dataObject = {
@@ -199,6 +210,7 @@ export const refineData = (flattenData, max, height, gap) => {
   return result;
 };
 
+//function to generate a guide array from the largest data point (y axis), number of lines and height
 export const getGuideArray = (max, height, numberOfPoints = 5) => {
   let x = parseInt(max);
 
@@ -207,10 +219,12 @@ export const getGuideArray = (max, height, numberOfPoints = 5) => {
   let temp;
   let postfix = "";
 
+  //if the largest value is 0, return an empty array
   if (x === 0) {
     return [];
   }
 
+  //this will set the postfix nothing, K, M or B to the scale depending on if it's in single/thousand,million,billions
   if (x > -1 && x < 1000) {
     x = Math.round(x * 10);
     temp = 1;
@@ -250,7 +264,7 @@ export const getGuideArray = (max, height, numberOfPoints = 5) => {
       ((1 * temp) / max) * height,
     ]);
   }
-
+  //return is of form [[?,val1-x-cord,val1-x-cord], [?,val2-x-cord,val1-x-cord]]
   return arr;
 };
 

@@ -21,12 +21,19 @@ import {
 class LineChart extends React.Component {
   constructor(props) {
     super(props);
+    //new state generated from initData function in common.js
+    //data => array of objects (symmptom: symptom, time: time, x: date, y: comment,value)
+    //height => 350 in our test, default 100
+    //gap => default 60
+    //numberOfYAxisGuideLine => default 5
     let newState = initData(
       this.props.data,
       this.props.height,
       this.props.gap,
       this.props.numberOfYAxisGuideLine
     );
+    //newState => sortedData array, max data point, nowWidth (200), nowHeight (200), scrollPosition/nowX/nowY (0), guideArray
+    // program state containing sortedData, max value, guideArray, and other info
     this.state = {
       loading: false,
       sortedData: newState.sortedData,
@@ -70,6 +77,7 @@ class LineChart extends React.Component {
     }
   }
 
+  //runs after comonent mounts
   componentDidMount() {
     Animated.timing(this.state.fadeAnim, {
       toValue: 1,
@@ -124,6 +132,8 @@ class LineChart extends React.Component {
     ];
   }
 
+  //function which takes two neighbouring co-ordinates and draws a line between them
+  //this function is ONLY concerned with the line
   drawCoordinate(
     index,
     start,
@@ -137,13 +147,16 @@ class LineChart extends React.Component {
     let key = "line" + index;
     let dx = end.gap - start.gap;
     let dy = end.ratioY - start.ratioY;
+    //caculate line size (pythagoras)
     let size = Math.sqrt(dx * dx + dy * dy);
+    //calculate angle for line
     let angleRad = -1 * Math.atan2(dy, dx);
     let height;
     let top;
     let topMargin = 20;
     let direction;
 
+    //figure out height and direction of line
     if (start.ratioY > end.ratioY) {
       direction = "lower";
       height = start.ratioY;
@@ -155,6 +168,7 @@ class LineChart extends React.Component {
     }
 
     return (
+      // main container
       <View
         key={key}
         style={{
@@ -162,6 +176,7 @@ class LineChart extends React.Component {
           justifyContent: "flex-end",
         }}
       >
+        {/* styling */}
         <View
           style={StyleSheet.flatten([
             {
@@ -199,7 +214,7 @@ class LineChart extends React.Component {
             ])}
           />
         </View>
-
+        {/* this does nothing */}
         {!lastCoordinate && seriesIndex === 0
           ? null
           : // <View style={StyleSheet.flatten([styles.guideLine, {
@@ -207,7 +222,10 @@ class LineChart extends React.Component {
             //   borderRightColor: this.props.xAxisGridLineColor
             // }])} />
             null}
+
+        {/* if it's the final index */}
         {seriesIndex === this.state.sortedData.length - 1 && (
+          //touchable component for the LINE between components
           <TouchableWithoutFeedback
             onPress={() => {
               let selectedIndex = lastCoordinate ? index - 1 : index;
@@ -229,6 +247,7 @@ class LineChart extends React.Component {
                 () => {
                   if (typeof this.props.onPress === "function") {
                     console.log("selectedIndex", selectedIndex);
+                    //pass the selectedIndex into the onPress function
                     this.props.onPress(selectedIndex);
                   }
                 }
@@ -241,10 +260,13 @@ class LineChart extends React.Component {
                 const selectedData = this.state.sortedData.map(series => {
                   return series.data[selectedIndex];
                 });
+                //making this print the data
+                //pass the selectedIndex's data into the onLongPress function
                 this.props.onLongPress(selectedData);
               }
             }}
           >
+            {/* styling */}
             <View
               style={{
                 width: dx,
@@ -260,7 +282,9 @@ class LineChart extends React.Component {
     );
   }
 
+  //generates
   drawPoint(index, point, seriesColor) {
+    //unique key
     let key = "point" + index;
     let size = 8;
     let color = !seriesColor ? this.props.primaryColor : seriesColor;
@@ -268,12 +292,15 @@ class LineChart extends React.Component {
     if (point.y.comment) {
       color = "#00FF00";
     }
+
+    //when clicked on, change colour
     if (this.state.selectedIndex === index) {
       color = this.props.selectedColor;
     }
 
     if (point.isEmpty || this.props.hidePoints) return null;
 
+    //return touchable styled component (co-ordinate marker)
     return (
       <TouchableWithoutFeedback
         key={key}
@@ -300,6 +327,8 @@ class LineChart extends React.Component {
       </TouchableWithoutFeedback>
     );
   }
+
+  //function which currently does nothing unless we pass in a customValueRenderer prop
   drawValue(index, point) {
     let key = "pointvalue" + index;
     let size = 200;
@@ -327,6 +356,7 @@ class LineChart extends React.Component {
     }
   }
 
+  //function which takes all data as input e.g. {gap, ratioY, time, symptom, x, y (value/comment), isEmpty}
   drawCoordinates(data, seriesColor, seriesIndex) {
     let result = [];
     let lineStyle = {
@@ -336,6 +366,7 @@ class LineChart extends React.Component {
 
     for (let i = 0; i < dataLength - 1; i++) {
       result.push(
+        //into results array, push return of drawCoordinate, which takes each pair of neighbouring data points and creates the LINE and onPress - this component is added to the results array
         this.drawCoordinate(
           i,
           data[i],
@@ -348,8 +379,12 @@ class LineChart extends React.Component {
         )
       );
     }
+    //at this stage, result is size N-1, each element being a touchable component, the last
+    //not being done yet
 
+    //all points and values then drawn
     if (dataLength > 0) {
+      //drawpoint takes an index, item and colour and creates the co-ordinate visually which changes colour on press
       result.push(this.drawPoint(0, data[0], seriesColor));
       result.push(this.drawValue(0, data[0], seriesColor));
     }
@@ -359,6 +394,9 @@ class LineChart extends React.Component {
       result.push(this.drawValue(i + 1, data[i + 1], seriesColor));
     }
 
+    //at this stage, the array is 2N-1, with N-1 dedicated to lines, and N dedicated to co-ordinates
+
+    //this code is now concerned with the last LINE
     let lastData = Object.assign({}, data[dataLength - 1]);
     let lastCoordinate = Object.assign({}, data[dataLength - 1]);
     lastCoordinate.gap = lastCoordinate.gap + this.props.gap;
@@ -374,7 +412,7 @@ class LineChart extends React.Component {
         seriesIndex
       )
     );
-
+    //result array is now 2N, with N-1 dedicated to lines, N to co-ordinates, and 1 to the final line
     return result;
   }
 
@@ -464,7 +502,9 @@ class LineChart extends React.Component {
 
   render() {
     let { fadeAnim } = this.state;
+    //only show graph if sortedData contains data
     return this.state.sortedData.length > 0 ? (
+      //view which encompasses entire chart, applying wrapper style and background colour
       <View
         style={StyleSheet.flatten([
           styles.wrapper,
@@ -473,6 +513,7 @@ class LineChart extends React.Component {
           },
         ])}
       >
+        {/* view for drawing Y axis labels */}
         <View style={styles.yAxisLabelsWrapper}>
           {this.props.showYAxisLabel &&
             drawYAxisLabels(
@@ -483,8 +524,9 @@ class LineChart extends React.Component {
               this.props.yAxisSymbol
             )}
         </View>
-
+        {/* main container for showing graph */}
         <View style={{ flex: 1 }}>
+          {/* horizontal scrollview for looking at a range of data, containing the graph */}
           <ScrollView
             horizontal
             ref={ref => (this.scrollView = ref)}
@@ -493,13 +535,16 @@ class LineChart extends React.Component {
                 this.scrollView.scrollToEnd({ animated: false });
             }}
           >
+            {/* graph container */}
             <View>
               <View ref="chartView" style={styles.chartViewWrapper}>
                 {drawYAxis(this.props.yAxisColor)}
+                {/* generate guide lines */}
                 {drawGuideLine(
                   this.state.guideArray,
                   this.props.yAxisGridLineColor
                 )}
+                {/* map over each series (just one in our case) */}
                 {this.state.sortedData.map((obj, index) => {
                   return (
                     <Animated.View
@@ -521,10 +566,12 @@ class LineChart extends React.Component {
                             : null,
                       }}
                     >
+                      {/* draw the coordinates using the data (i.e. each point), series colour and index */}
                       {this.drawCoordinates(obj.data, obj.seriesColor, index)}
                     </Animated.View>
                   );
                 })}
+                {/* depending on the selectedIndex value, show information regarding it */}
                 {this.drawSelected(this.state.selectedIndex)}
               </View>
 
@@ -544,6 +591,7 @@ class LineChart extends React.Component {
   }
 }
 
+//default props of line chart (assuming none passed in)
 LineChart.defaultProps = {
   data: [],
   primaryColor: "#297AB1",
