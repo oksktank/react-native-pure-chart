@@ -262,7 +262,7 @@ class LineChart extends React.Component {
                 });
                 //making this print the data
                 //pass the selectedIndex's data into the onLongPress function
-                this.props.onLongPress(selectedData);
+                // this.props.onLongPress(selectedData);
               }
             }}
           >
@@ -306,6 +306,12 @@ class LineChart extends React.Component {
         key={key}
         onPress={() => {
           this.setState({ selectedIndex: index });
+        }}
+        onLongPress={() => {
+          const selectedData = this.state.sortedData.map(series => {
+            return series.data[index];
+          });
+          this.props.onLongPress(selectedData);
         }}
         hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
       >
