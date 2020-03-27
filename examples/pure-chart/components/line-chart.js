@@ -474,28 +474,32 @@ class LineChart extends React.Component {
             {this.state.sortedData.map(series => {
               let dataObject = series.data[this.state.selectedIndex];
               return (
-                <View key={series.seriesName} style={{ flex: 1 }}>
-                  {dataObject.x ? (
-                    <Text style={styles.tooltipTitle}>{dataObject.x}</Text>
-                  ) : null}
-                  {/* series colour */}
-                  <View
-                    style={{
-                      width: 10,
-                      height: 5,
-                      marginRight: 3,
-                      borderRadius: 2,
-                      backgroundColor: !series.seriesColor
-                        ? this.props.primaryColor
-                        : series.seriesColor,
-                    }}
-                  />
-                  {/* tooltip value */}
-                  <Text style={styles.tooltipValue} numberOfLines={10}>
-                    {numberWithCommas(dataObject.y.value, false)}{" "}
-                    {dataObject.y.comment}
-                  </Text>
-                </View>
+                <TouchableWithoutFeedback
+                  onLongPress={this.props.onSelectedLongPress}
+                >
+                  <View key={series.seriesName} style={{ flex: 1 }}>
+                    {dataObject.x ? (
+                      <Text style={styles.tooltipTitle}>{dataObject.x}</Text>
+                    ) : null}
+                    {/* series colour */}
+                    <View
+                      style={{
+                        width: 10,
+                        height: 5,
+                        marginRight: 3,
+                        borderRadius: 2,
+                        backgroundColor: !series.seriesColor
+                          ? this.props.primaryColor
+                          : series.seriesColor,
+                      }}
+                    />
+                    {/* tooltip value */}
+                    <Text style={styles.tooltipValue} numberOfLines={10}>
+                      {numberWithCommas(dataObject.y.value, false)}{" "}
+                      {dataObject.y.comment}
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback>
               );
             })}
           </View>
