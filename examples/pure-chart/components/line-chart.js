@@ -48,6 +48,8 @@ class LineChart extends React.Component {
         this.props.lineThickness > 10 ? 10 : this.props.lineThickness,
       fadeAnim: new Animated.Value(0),
       guideArray: newState.guideArray,
+      startMarker: {},
+      endMarker: {},
     };
     this.scrollView = null;
 
@@ -254,16 +256,14 @@ class LineChart extends React.Component {
               );
             }}
             onLongPress={() => {
-              let selectedIndex = lastCoordinate ? index - 1 : index;
-
-              if (typeof this.props.onLongPress === "function") {
-                const selectedData = this.state.sortedData.map(series => {
-                  return series.data[selectedIndex];
-                });
-                //making this print the data
-                //pass the selectedIndex's data into the onLongPress function
-                this.props.onLongPress(selectedData);
-              }
+              // let selectedIndex = lastCoordinate ? index - 1 : index;
+              // if (typeof this.props.onLongPressSelected === "function") {
+              //   const selectedData = this.state.sortedData.map(series => {
+              //     return series.data[selectedIndex];
+              //   });
+              //making this print the data
+              //pass the selectedIndex's data into the onLongPress function
+              // this.props.onLongPress(selectedData);
             }}
           >
             {/* styling */}
@@ -307,7 +307,13 @@ class LineChart extends React.Component {
         onPress={() => {
           this.setState({ selectedIndex: index });
         }}
-        hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+        onLongPress={() => {
+          const selectedData = this.state.sortedData.map(series => {
+            return series.data[index];
+          });
+          this.props.onLongPress(selectedData);
+        }}
+        hitSlop={{ top: 50, bottom: 50, left: 50, right: 50 }}
       >
         <View
           style={StyleSheet.flatten([
@@ -399,7 +405,7 @@ class LineChart extends React.Component {
     //this code is now concerned with the last LINE
     let lastData = Object.assign({}, data[dataLength - 1]);
     let lastCoordinate = Object.assign({}, data[dataLength - 1]);
-    lastCoordinate.gap = lastCoordinate.gap + this.props.gap;
+    lastCoordinate.gap = lastCoordinate.gap + 5;
     result.push(
       this.drawCoordinate(
         dataLength,
