@@ -48,6 +48,8 @@ class LineChart extends React.Component {
         this.props.lineThickness > 10 ? 10 : this.props.lineThickness,
       fadeAnim: new Animated.Value(0),
       guideArray: newState.guideArray,
+      startMarker: {},
+      endMarker: {},
     };
     this.scrollView = null;
 
@@ -254,16 +256,14 @@ class LineChart extends React.Component {
               );
             }}
             onLongPress={() => {
-              let selectedIndex = lastCoordinate ? index - 1 : index;
-
-              if (typeof this.props.onLongPress === "function") {
-                const selectedData = this.state.sortedData.map(series => {
-                  return series.data[selectedIndex];
-                });
-                //making this print the data
-                //pass the selectedIndex's data into the onLongPress function
-                // this.props.onLongPress(selectedData);
-              }
+              // let selectedIndex = lastCoordinate ? index - 1 : index;
+              // if (typeof this.props.onLongPressSelected === "function") {
+              //   const selectedData = this.state.sortedData.map(series => {
+              //     return series.data[selectedIndex];
+              //   });
+              //making this print the data
+              //pass the selectedIndex's data into the onLongPress function
+              // this.props.onLongPress(selectedData);
             }}
           >
             {/* styling */}
