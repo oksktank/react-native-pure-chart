@@ -313,7 +313,7 @@ class LineChart extends React.Component {
           });
           this.props.onLongPress(selectedData);
         }}
-        hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+        // hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
       >
         <View
           style={StyleSheet.flatten([
