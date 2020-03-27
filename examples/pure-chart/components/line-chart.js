@@ -248,9 +248,8 @@ class LineChart extends React.Component {
                 },
                 () => {
                   if (typeof this.props.onPress === "function") {
-                    console.log("selectedIndex", selectedIndex);
                     //pass the selectedIndex into the onPress function
-                    this.props.onPress(selectedIndex);
+                    // this.props.onPress(selectedIndex);
                   }
                 }
               );
@@ -311,7 +310,11 @@ class LineChart extends React.Component {
           const selectedData = this.state.sortedData.map(series => {
             return series.data[index];
           });
-          this.props.onLongPress(selectedData);
+          if (this.state.selectedIndex === index) {
+            this.props.onSelectedPointLongPress(selectedData);
+          } else {
+            this.updateMarkers(selectedData);
+          }
         }}
         hitSlop={{ top: 50, bottom: 50, left: 50, right: 50 }}
       >
@@ -325,13 +328,47 @@ class LineChart extends React.Component {
               left: point.gap - size / 2,
               bottom: point.ratioY - size / 2,
 
-              borderColor: color,
+              borderColor: this.shouldShowMarker(index) ? "black" : color,
               backgroundColor: color,
             },
           ])}
         />
       </TouchableWithoutFeedback>
     );
+  }
+
+  updateMarkers(data) {
+    if (Object.entries(this.state.startMarker).length === 0) {
+      this.setState({
+        startMarker: data[0],
+      });
+    } else if (data[0].time < this.state.startMarker.time) {
+      const newEndMarker = { ...this.state.startMarker };
+      this.setState({
+        startMarker: data[0],
+        endMarker: newEndMarker,
+      });
+    } else {
+      this.setState({
+        endMarker: data[0],
+      });
+    }
+    this.props.onPointLongPress(data[0]);
+  }
+
+  shouldShowMarker(index) {
+    console.log("in here");
+    const selectedData = this.state.sortedData.map(series => {
+      return series.data[index];
+    });
+    if (
+      selectedData[0].time === this.state.startMarker.time ||
+      selectedData[0].time === this.state.endMarker.time
+    ) {
+      console.log("it is true!");
+      return true;
+    }
+    return false;
   }
 
   //function which currently does nothing unless we pass in a customValueRenderer prop
@@ -474,32 +511,28 @@ class LineChart extends React.Component {
             {this.state.sortedData.map(series => {
               let dataObject = series.data[this.state.selectedIndex];
               return (
-                <TouchableWithoutFeedback
-                  onLongPress={this.props.onSelectedLongPress}
-                >
-                  <View key={series.seriesName} style={{ flex: 1 }}>
-                    {dataObject.x ? (
-                      <Text style={styles.tooltipTitle}>{dataObject.x}</Text>
-                    ) : null}
-                    {/* series colour */}
-                    <View
-                      style={{
-                        width: 10,
-                        height: 5,
-                        marginRight: 3,
-                        borderRadius: 2,
-                        backgroundColor: !series.seriesColor
-                          ? this.props.primaryColor
-                          : series.seriesColor,
-                      }}
-                    />
-                    {/* tooltip value */}
-                    <Text style={styles.tooltipValue} numberOfLines={10}>
-                      {numberWithCommas(dataObject.y.value, false)}{" "}
-                      {dataObject.y.comment}
-                    </Text>
-                  </View>
-                </TouchableWithoutFeedback>
+                <View key={series.seriesName} style={{ flex: 1 }}>
+                  {dataObject.x ? (
+                    <Text style={styles.tooltipTitle}>{dataObject.x}</Text>
+                  ) : null}
+                  {/* series colour */}
+                  <View
+                    style={{
+                      width: 10,
+                      height: 5,
+                      marginRight: 3,
+                      borderRadius: 2,
+                      backgroundColor: !series.seriesColor
+                        ? this.props.primaryColor
+                        : series.seriesColor,
+                    }}
+                  />
+                  {/* tooltip value */}
+                  <Text style={styles.tooltipValue} numberOfLines={10}>
+                    {numberWithCommas(dataObject.y.value, false)}{" "}
+                    {dataObject.y.comment}
+                  </Text>
+                </View>
               );
             })}
           </View>
