@@ -405,7 +405,7 @@ class LineChart extends React.Component {
     //this code is now concerned with the last LINE
     let lastData = Object.assign({}, data[dataLength - 1]);
     let lastCoordinate = Object.assign({}, data[dataLength - 1]);
-    lastCoordinate.gap = lastCoordinate.gap + this.props.gap;
+    lastCoordinate.gap = lastCoordinate.gap + 5;
     result.push(
       this.drawCoordinate(
         dataLength,
