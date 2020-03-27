@@ -62,7 +62,9 @@ class LineChart extends React.Component {
     if (
       nextState.sortedData !== this.state.sortedData ||
       nextState.selectedIndex !== this.state.selectedIndex ||
-      nextState.scrollPosition !== this.state.scrollPosition
+      nextState.scrollPosition !== this.state.scrollPosition ||
+      nextState.startMarker !== this.state.startMarker ||
+      nextState.endMarker !== this.state.endMarker
     ) {
       return true;
     } else {
@@ -310,10 +312,10 @@ class LineChart extends React.Component {
           const selectedData = this.state.sortedData.map(series => {
             return series.data[index];
           });
+          this.updateMarkers(selectedData);
           if (this.state.selectedIndex === index) {
-            this.props.onSelectedPointLongPress(selectedData);
           } else {
-            this.updateMarkers(selectedData);
+            // this.props.onSelectedPointLongPress(selectedData);
           }
         }}
         hitSlop={{ top: 50, bottom: 50, left: 50, right: 50 }}
@@ -332,7 +334,21 @@ class LineChart extends React.Component {
               backgroundColor: color,
             },
           ])}
-        />
+        >
+          {this.shouldShowMarker(index) ? (
+            <View style={{ flex: 1 }}>
+              {/* series colour */}
+              <View
+                style={{
+                  width: 10,
+                  height: 5,
+                  marginRight: 3,
+                  borderRadius: 2,
+                }}
+              />
+            </View>
+          ) : null}
+        </View>
       </TouchableWithoutFeedback>
     );
   }
@@ -347,6 +363,14 @@ class LineChart extends React.Component {
       this.setState({
         startMarker: data[0],
         endMarker: newEndMarker,
+      });
+    } else if (data[0].time === this.state.startMarker.time) {
+      this.setState({
+        startMarker: {},
+      });
+    } else if (data[0].time === this.state.endMarker.time) {
+      this.setState({
+        endMarker: {},
       });
     } else {
       this.setState({
@@ -543,6 +567,59 @@ class LineChart extends React.Component {
     }
   }
 
+  drawMarker(marker) {
+    if (this.state.sortedData.length === 0) return null;
+    if (!Object.keys(marker).length === 0 && obj.constructor === Object) {
+      return null;
+    }
+    console.log("marker", marker);
+
+    let left = marker.gap;
+
+    return (
+      <View
+        style={StyleSheet.flatten([
+          styles.selectedWrapper,
+          {
+            left: left,
+            justifyContent: "center",
+          },
+        ])}
+      >
+        <View
+          style={StyleSheet.flatten([
+            styles.selectedLine,
+            {
+              backgroundColor: "yellow",
+              marginLeft: 1,
+            },
+          ])}
+        />
+
+        <View style={styles.selectedBox}>
+          <View style={{ flex: 1 }}>
+            {marker.x ? (
+              <Text style={styles.tooltipTitle}>{marker.x}</Text>
+            ) : null}
+            {/* series colour */}
+            <View
+              style={{
+                width: 10,
+                height: 5,
+                marginRight: 3,
+                borderRadius: 2,
+              }}
+            />
+            {/* tooltip value */}
+            <Text style={styles.tooltipValue} numberOfLines={10}>
+              MARKED
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   render() {
     let { fadeAnim } = this.state;
     //only show graph if sortedData contains data
@@ -616,6 +693,8 @@ class LineChart extends React.Component {
                 })}
                 {/* depending on the selectedIndex value, show information regarding it */}
                 {this.drawSelected(this.state.selectedIndex)}
+                {this.drawMarker(this.state.startMarker)}
+                {this.drawMarker(this.state.endMarker)}
               </View>
 
               {drawXAxis(this.props.xAxisColor)}
