@@ -358,6 +358,7 @@ class LineChart extends React.Component {
       this.setState({
         startMarker: data[0],
       });
+      //
     } else if (data[0].time < this.state.startMarker.time) {
       const newEndMarker = { ...this.state.startMarker };
       this.setState({
