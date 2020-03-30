@@ -314,6 +314,7 @@ class LineChart extends React.Component {
           });
           this.updateMarkers(selectedData);
           if (this.state.selectedIndex === index) {
+            this.props.onSeectedPointLongPress(selectedData);
           } else {
             // this.props.onSelectedPointLongPress(selectedData);
           }
