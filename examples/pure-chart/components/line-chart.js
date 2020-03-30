@@ -62,7 +62,9 @@ class LineChart extends React.Component {
     if (
       nextState.sortedData !== this.state.sortedData ||
       nextState.selectedIndex !== this.state.selectedIndex ||
-      nextState.scrollPosition !== this.state.scrollPosition
+      nextState.scrollPosition !== this.state.scrollPosition ||
+      nextState.startMarker !== this.state.startMarker ||
+      nextState.endMarker !== this.state.endMarker
     ) {
       return true;
     } else {
@@ -216,14 +218,6 @@ class LineChart extends React.Component {
             ])}
           />
         </View>
-        {/* this does nothing */}
-        {!lastCoordinate && seriesIndex === 0
-          ? null
-          : // <View style={StyleSheet.flatten([styles.guideLine, {
-            //   width: dx,
-            //   borderRightColor: this.props.xAxisGridLineColor
-            // }])} />
-            null}
 
         {/* if it's the final index */}
         {seriesIndex === this.state.sortedData.length - 1 && (
@@ -242,28 +236,9 @@ class LineChart extends React.Component {
                 return null;
               }
 
-              this.setState(
-                {
-                  selectedIndex: selectedIndex,
-                },
-                () => {
-                  if (typeof this.props.onPress === "function") {
-                    console.log("selectedIndex", selectedIndex);
-                    //pass the selectedIndex into the onPress function
-                    this.props.onPress(selectedIndex);
-                  }
-                }
-              );
-            }}
-            onLongPress={() => {
-              // let selectedIndex = lastCoordinate ? index - 1 : index;
-              // if (typeof this.props.onLongPressSelected === "function") {
-              //   const selectedData = this.state.sortedData.map(series => {
-              //     return series.data[selectedIndex];
-              //   });
-              //making this print the data
-              //pass the selectedIndex's data into the onLongPress function
-              // this.props.onLongPress(selectedData);
+              this.setState({
+                selectedIndex: selectedIndex,
+              });
             }}
           >
             {/* styling */}
@@ -311,7 +286,11 @@ class LineChart extends React.Component {
           const selectedData = this.state.sortedData.map(series => {
             return series.data[index];
           });
-          this.props.onLongPress(selectedData);
+          if (this.state.selectedIndex === index) {
+            this.props.onSelectedPointLongPress(selectedData);
+          } else {
+            this.updateMarkers(selectedData);
+          }
         }}
         hitSlop={{ top: 50, bottom: 50, left: 50, right: 50 }}
       >
@@ -325,13 +304,63 @@ class LineChart extends React.Component {
               left: point.gap - size / 2,
               bottom: point.ratioY - size / 2,
 
-              borderColor: color,
+              borderColor: this.shouldShowMarker(index) ? "black" : color,
               backgroundColor: color,
             },
           ])}
-        />
+        >
+          {this.shouldShowMarker(index) ? (
+            <View style={{ flex: 1 }}>
+              {/* series colour */}
+              <View
+                style={{
+                  width: 10,
+                  height: 5,
+                  marginRight: 3,
+                  borderRadius: 2,
+                }}
+              />
+            </View>
+          ) : null}
+        </View>
       </TouchableWithoutFeedback>
     );
+  }
+
+  updateMarkers(data) {
+    if (data[0].time === this.state.endMarker.time) {
+      this.setState({
+        endMarker: {},
+      });
+    } else if (data[0].time === this.state.startMarker.time) {
+      this.setState({
+        startMarker: {},
+      });
+    } else if (Object.entries(this.state.startMarker).length === 0) {
+      this.setState({
+        startMarker: data[0],
+      });
+    } else if (Object.entries(this.state.endMarker).length === 0) {
+      this.setState({
+        endMarker: data[0],
+      });
+    }
+    this.props.onPointLongPress(data[0]);
+  }
+
+  shouldShowMarker(index) {
+    console.log("in here");
+    const selectedData = this.state.sortedData.map(series => {
+      return series.data[index];
+    });
+    if (
+      selectedData[0].time === this.state.startMarker.time ||
+      selectedData[0].time === this.state.endMarker.time
+    ) {
+      console.log("it is true!");
+      return true;
+    }
+    return false;
   }
 
   //function which currently does nothing unless we pass in a customValueRenderer prop
@@ -506,6 +535,59 @@ class LineChart extends React.Component {
     }
   }
 
+  drawMarker(marker) {
+    if (this.state.sortedData.length === 0) return null;
+    if (Object.keys(marker).length === 0 && marker.constructor === Object) {
+      return null;
+    }
+    console.log("marker", marker);
+
+    let left = marker.gap;
+
+    return (
+      <View
+        style={StyleSheet.flatten([
+          styles.selectedWrapper,
+          {
+            left: left,
+            justifyContent: "center",
+          },
+        ])}
+      >
+        <View
+          style={StyleSheet.flatten([
+            styles.selectedLine,
+            {
+              backgroundColor: "yellow",
+              marginLeft: 1,
+            },
+          ])}
+        />
+
+        <View style={styles.selectedBox}>
+          <View style={{ flex: 1 }}>
+            {marker.x ? (
+              <Text style={styles.tooltipTitle}>{marker.x}</Text>
+            ) : null}
+            {/* series colour */}
+            <View
+              style={{
+                width: 10,
+                height: 5,
+                marginRight: 3,
+                borderRadius: 2,
+              }}
+            />
+            {/* tooltip value */}
+            <Text style={styles.tooltipValue} numberOfLines={10}>
+              MARKED
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   render() {
     let { fadeAnim } = this.state;
     //only show graph if sortedData contains data
@@ -579,6 +661,8 @@ class LineChart extends React.Component {
                 })}
                 {/* depending on the selectedIndex value, show information regarding it */}
                 {this.drawSelected(this.state.selectedIndex)}
+                {this.drawMarker(this.state.startMarker)}
+                {this.drawMarker(this.state.endMarker)}
               </View>
 
               {drawXAxis(this.props.xAxisColor)}
