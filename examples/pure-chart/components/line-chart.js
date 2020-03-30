@@ -218,14 +218,6 @@ class LineChart extends React.Component {
             ])}
           />
         </View>
-        {/* this does nothing */}
-        {!lastCoordinate && seriesIndex === 0
-          ? null
-          : // <View style={StyleSheet.flatten([styles.guideLine, {
-            //   width: dx,
-            //   borderRightColor: this.props.xAxisGridLineColor
-            // }])} />
-            null}
 
         {/* if it's the final index */}
         {seriesIndex === this.state.sortedData.length - 1 && (
@@ -244,27 +236,9 @@ class LineChart extends React.Component {
                 return null;
               }
 
-              this.setState(
-                {
-                  selectedIndex: selectedIndex,
-                },
-                () => {
-                  if (typeof this.props.onPress === "function") {
-                    //pass the selectedIndex into the onPress function
-                    // this.props.onPress(selectedIndex);
-                  }
-                }
-              );
-            }}
-            onLongPress={() => {
-              // let selectedIndex = lastCoordinate ? index - 1 : index;
-              // if (typeof this.props.onLongPressSelected === "function") {
-              //   const selectedData = this.state.sortedData.map(series => {
-              //     return series.data[selectedIndex];
-              //   });
-              //making this print the data
-              //pass the selectedIndex's data into the onLongPress function
-              // this.props.onLongPress(selectedData);
+              this.setState({
+                selectedIndex: selectedIndex,
+              });
             }}
           >
             {/* styling */}
@@ -371,15 +345,6 @@ class LineChart extends React.Component {
         endMarker: data[0],
       });
     }
-    // else {
-    //   const startDiff = abs(data[0].time - this.state.startMarker.time);
-    //   const endDiff = abs(data[0].time - this.state.endMarker.time);
-
-    //   this.setState({
-    //     startMarker: data[0],
-    //     endMarker: newEndMarker,
-    //   });
-    // }
     this.props.onPointLongPress(data[0]);
   }
 
