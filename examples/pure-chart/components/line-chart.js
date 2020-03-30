@@ -358,25 +358,28 @@ class LineChart extends React.Component {
       this.setState({
         startMarker: data[0],
       });
-    } else if (data[0].time < this.state.startMarker.time) {
-      const newEndMarker = { ...this.state.startMarker };
-      this.setState({
-        startMarker: data[0],
-        endMarker: newEndMarker,
-      });
     } else if (data[0].time === this.state.startMarker.time) {
       this.setState({
         startMarker: {},
+      });
+    } else if (Object.entries(this.state.endMarker).length === 0) {
+      this.setState({
+        endMarker: data[0],
       });
     } else if (data[0].time === this.state.endMarker.time) {
       this.setState({
         endMarker: {},
       });
-    } else {
-      this.setState({
-        endMarker: data[0],
-      });
     }
+    // else {
+    //   const startDiff = abs(data[0].time - this.state.startMarker.time);
+    //   const endDiff = abs(data[0].time - this.state.endMarker.time);
+
+    //   this.setState({
+    //     startMarker: data[0],
+    //     endMarker: newEndMarker,
+    //   });
+    // }
     this.props.onPointLongPress(data[0]);
   }
 
