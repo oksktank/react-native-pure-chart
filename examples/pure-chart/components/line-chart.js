@@ -354,21 +354,21 @@ class LineChart extends React.Component {
   }
 
   updateMarkers(data) {
-    if (Object.entries(this.state.startMarker).length === 0) {
+    if (data[0].time === this.state.endMarker.time) {
       this.setState({
-        startMarker: data[0],
+        endMarker: {},
       });
     } else if (data[0].time === this.state.startMarker.time) {
       this.setState({
         startMarker: {},
       });
+    } else if (Object.entries(this.state.startMarker).length === 0) {
+      this.setState({
+        startMarker: data[0],
+      });
     } else if (Object.entries(this.state.endMarker).length === 0) {
       this.setState({
         endMarker: data[0],
-      });
-    } else if (data[0].time === this.state.endMarker.time) {
-      this.setState({
-        endMarker: {},
       });
     }
     // else {
