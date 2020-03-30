@@ -312,10 +312,10 @@ class LineChart extends React.Component {
           const selectedData = this.state.sortedData.map(series => {
             return series.data[index];
           });
-          this.updateMarkers(selectedData);
           if (this.state.selectedIndex === index) {
             this.props.onSelectedPointLongPress(selectedData);
           } else {
+            this.updateMarkers(selectedData);
             // this.props.onSelectedPointLongPress(selectedData);
           }
         }}
