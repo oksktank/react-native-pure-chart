@@ -569,7 +569,7 @@ class LineChart extends React.Component {
 
   drawMarker(marker) {
     if (this.state.sortedData.length === 0) return null;
-    if (!Object.keys(marker).length === 0 && obj.constructor === Object) {
+    if (Object.keys(marker).length === 0 && marker.constructor === Object) {
       return null;
     }
     console.log("marker", marker);

@@ -25,8 +25,8 @@ export default class App extends React.Component {
   //function to generate data
   generateData() {
     //constants
-    const NUMENTRIES = 3;
-    const MAXVALUE = 5;
+    const NUMENTRIES = 20;
+    const MAXVALUE = 10;
     const MAXCOMMENTLENGTH = 10;
 
     let data = [];
@@ -63,6 +63,12 @@ export default class App extends React.Component {
             }}
             onLongPress={data => {
               console.log(data);
+            }}
+            onPointLongPress={data => {
+              console.log("onpointlongpres", data);
+            }}
+            onSelectedPointLongPress={data => {
+              console.log("onselectedpointlongpres", data);
             }}
           />
           {/* <PureChart type={"bar"} data={this.state.data} /> */}
