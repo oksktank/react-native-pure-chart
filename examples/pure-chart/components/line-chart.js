@@ -1,14 +1,14 @@
 import React from 'react'
-import { View, TouchableWithoutFeedback, Text, Animated, Easing, ScrollView, StyleSheet } from 'react-native'
+import {View, TouchableWithoutFeedback, Text, Animated, Easing, ScrollView, StyleSheet} from 'react-native'
 import {initData, drawYAxis, drawGuideLine, drawYAxisLabels, numberWithCommas, drawXAxis, drawXAxisLabels} from '../common'
 
 class LineChart extends React.Component {
   constructor (props) {
     super(props)
     let newState = initData(
-      this.props.data, 
-      this.props.height, 
-      this.props.gap, 
+      this.props.data,
+      this.props.height,
+      this.props.gap,
       this.props.numberOfYAxisGuideLine)
     this.state = {
       loading: false,
@@ -20,7 +20,7 @@ class LineChart extends React.Component {
       nowX: 0,
       nowY: 0,
       max: newState.max,
-      lineThickness: (this.props.lineThickness > 10)? 10 : this.props.lineThickness,
+      lineThickness: (this.props.lineThickness > 10) ? 10 : this.props.lineThickness,
       fadeAnim: new Animated.Value(0),
       guideArray: newState.guideArray
     }
@@ -41,8 +41,8 @@ class LineChart extends React.Component {
     }
   }
 
-  componentDidUpdate(nextProps, nextState){
-    if(this.scrollView != null && nextState.max == 0){
+  componentDidUpdate (nextProps, nextState) {
+    if (this.scrollView != null && nextState.max == 0) {
       setTimeout(
         () => this.scrollView.scrollTo(this.props.initialScrollPosition), this.props.initialScrollTimeOut
       )
@@ -50,8 +50,8 @@ class LineChart extends React.Component {
   }
 
   componentDidMount () {
-    Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
-    if(this.scrollView != null){
+    this.renderAnimation();
+    if (this.scrollView != null) {
       setTimeout(
         () => this.scrollView.scrollTo(this.props.initialScrollPosition), this.props.initialScrollTimeOut
       )
@@ -61,9 +61,9 @@ class LineChart extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
-        fadeAnim: new Animated.Value(0)
+        fadeAnim: nextProps.animated ? new Animated.Value(0) : new Animated.Value(1)
       }, initData(nextProps.data, this.props.height, this.props.gap, this.props.numberOfYAxisGuideLine)), () => {
-        Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
+        this.renderAnimation();
       })
     }
   }
@@ -72,8 +72,8 @@ class LineChart extends React.Component {
     let x = (0 - width / 2) * Math.cos(rad) - (0 - width / 2) * Math.sin(rad)
     let y = (0 - width / 2) * Math.sin(rad) + (0 - width / 2) * Math.cos(rad)
     let translateX = (-1 * x) - width / 2
-    if(direction === 'lower') translateX = translateX + this.state.lineThickness
-    return [ {translateX: translateX}, {translateY: (-1 * y) + width / 2}, { rotate: rad + 'rad' } ]
+    if (direction === 'lower') translateX = translateX + this.state.lineThickness
+    return [{translateX: translateX}, {translateY: (-1 * y) + width / 2}, {rotate: rad + 'rad'}]
   }
 
   drawCoordinate (index, start, end, backgroundColor, lineStyle, isBlank, lastCoordinate, seriesIndex) {
@@ -90,11 +90,11 @@ class LineChart extends React.Component {
     if (start.ratioY > end.ratioY) {
       direction = 'lower'
       height = start.ratioY
-      top = -1 * size - (this.state.lineThickness-2)
+      top = -1 * size - (this.state.lineThickness - 2)
     } else {
       direction = 'upper'
       height = end.ratioY
-      top = -1 * (size - Math.abs(dy)) - (this.state.lineThickness-1.3)
+      top = -1 * (size - Math.abs(dy)) - (this.state.lineThickness - 1.3)
     }
 
     return (
@@ -107,7 +107,7 @@ class LineChart extends React.Component {
           width: dx,
           height: height,
           marginTop: topMargin,
-          }, styles.coordinateWrapper])}>
+        }, styles.coordinateWrapper])}>
           <View style={StyleSheet.flatten([{
             top: top,
             width: size,
@@ -115,12 +115,12 @@ class LineChart extends React.Component {
             borderColor: isBlank ? backgroundColor : this.props.primaryColor,
             borderTopWidth: this.state.lineThickness,
             transform: this.getTransform(angleRad, size, direction)
-            }, styles.lineBox, lineStyle])} />
+          }, styles.lineBox, lineStyle])} />
           <View style={StyleSheet.flatten([styles.absolute, {
             height: height - Math.abs(dy) - 2,
             backgroundColor: lastCoordinate ? '#FFFFFF00' : backgroundColor,
             marginTop: Math.abs(dy) + 2
-            }])} />
+          }])} />
         </View>
 
         {!lastCoordinate && seriesIndex === 0 ? (
@@ -293,7 +293,7 @@ class LineChart extends React.Component {
                 <View key={series.seriesName}>
                   {dataObject.x ? (
                     <Text style={styles.tooltipTitle}>{dataObject.x}</Text>
-                ) : null}
+                  ) : null}
                   <View style={{flexDirection: 'row', paddingLeft: 5, alignItems: 'center'}}>
                     <View style={{
                       width: 10,
@@ -317,6 +317,13 @@ class LineChart extends React.Component {
     }
   }
 
+  renderAnimation () {
+    const {animated} = this.props;
+    if (animated) {
+      Animated.timing(this.state.fadeAnim, {toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true}).start()
+    }
+  }
+
   render () {
     let {fadeAnim} = this.state
     return (
@@ -325,7 +332,7 @@ class LineChart extends React.Component {
           backgroundColor: this.props.backgroundColor
         }])}>
           <View style={styles.yAxisLabelsWrapper}>
-            { this.props.showYAxisLabel && 
+            {this.props.showYAxisLabel &&
               drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor, this.props.yAxisSymbol)}
           </View>
 
@@ -334,7 +341,7 @@ class LineChart extends React.Component {
               horizontal
               ref={ref => this.scrollView = ref}
               onContentSizeChange={() => {
-                if(this.props.lineChartScrollToEnd) this.scrollView.scrollToEnd({ animated: false });
+                if (this.props.lineChartScrollToEnd) this.scrollView.scrollToEnd({animated: false});
               }}>
               <View>
 
@@ -362,7 +369,7 @@ class LineChart extends React.Component {
                 </View>
 
                 {drawXAxis(this.props.xAxisColor)}
-                {this.props.showXAxisLabel && 
+                {this.props.showXAxisLabel &&
                   drawXAxisLabels(this.state.sortedData[0].data, this.props.gap, this.props.labelColor, this.props.showEvenNumberXaxisLabel)}
               </View>
 

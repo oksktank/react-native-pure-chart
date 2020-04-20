@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet, Animated, ScrollView, Easing, Text } from 'react-native'
+import {View, StyleSheet, Animated, ScrollView, Easing, Text} from 'react-native'
 import ColumnChartItem from './column-chart-item'
 import {initData, drawYAxis, drawYAxisLabels, drawGuideLine, numberWithCommas, drawXAxis, drawXAxisLabels} from '../common'
 
@@ -28,15 +28,15 @@ export default class ColumnChart extends Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
-        fadeAnim: new Animated.Value(0)
+        fadeAnim: nextProps.animated ? new Animated.Value(0) : new Animated.Value(1)
       }, initData(nextProps.data, this.props.height, this.state.gap, this.props.numberOfYAxisGuideLine)), () => {
-        Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
+        this.renderAnimation();
       })
     }
   }
 
-  componentDidUpdate(nextProps, nextState){
-    if(this.scrollView != null && nextState.max == 0){
+  componentDidUpdate (nextProps, nextState) {
+    if (this.scrollView != null && nextState.max == 0) {
       setTimeout(
         () => this.scrollView.scrollTo(this.props.initialScrollPosition), this.props.initialScrollTimeOut
       )
@@ -44,15 +44,20 @@ export default class ColumnChart extends Component {
   }
 
   componentDidMount () {
-    Animated.timing(this.state.fadeAnim, {
-      toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true
-    }).start()
-    if(this.scrollView != null){
+    this.renderAnimation();
+    if (this.scrollView != null) {
       setTimeout(
         () => this.scrollView.scrollTo(this.props.initialScrollPosition), this.props.initialScrollTimeOut
       )
     }
-    
+
+  }
+
+  renderAnimation () {
+    const {animated} = this.props;
+    if (animated) {
+      Animated.timing(this.state.fadeAnim, {toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true}).start()
+    }
   }
 
   renderColumns (fadeAnim) {
@@ -99,7 +104,6 @@ export default class ColumnChart extends Component {
     if (typeof (selectedIndex) === 'number' && selectedIndex >= 0) {
       let standardSeries = this.state.sortedData[0]
       if (!standardSeries) {
-        console.warn('standardSeries is null')
         return null
       }
 
@@ -127,7 +131,7 @@ export default class ColumnChart extends Component {
         )
       }
       return (
-        <View style={[styles.tooltipWrapper, { left: left }]}>
+        <View style={[styles.tooltipWrapper, {left: left}]}>
           <View style={styles.tooltip}>
             {tooltipRenders}
           </View>
@@ -141,7 +145,6 @@ export default class ColumnChart extends Component {
   render () {
     let {fadeAnim} = this.state
     if (this.state.sortedData && this.state.sortedData.length === 0) return null
-
     return (
       <View style={StyleSheet.flatten([styles.wrapper, {
         backgroundColor: this.props.backgroundColor
@@ -159,7 +162,7 @@ export default class ColumnChart extends Component {
                 {this.renderColumns(fadeAnim)}
               </View>
               {drawXAxis(this.props.xAxisColor)}
-              <View style={{ marginLeft: this.props.defaultColumnWidth / 2 }}>
+              <View style={{marginLeft: this.props.defaultColumnWidth / 2}}>
                 {this.props.showXAxisLabel &&
                   drawXAxisLabels(this.state.sortedData[0].data, this.state.gap, this.props.labelColor, this.props.showEvenNumberXaxisLabel)}
               </View>
@@ -226,7 +229,7 @@ ColumnChart.propTypes = {
 }
 ColumnChart.defaultProps = {
   data: [],
-  height: 100,
+  height: 80,
   defaultColumnWidth: 40,
   defaultColumnMargin: 20,
   defaultBorderColor: '#FFFFFF',

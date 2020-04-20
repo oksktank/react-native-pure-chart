@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import { Alert, AppRegistry, StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, Animated, Easing } from 'react-native'
-import { numberWithCommas } from '../common'
+import React, {Component} from 'react'
+import {Alert, AppRegistry, StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, Animated, Easing} from 'react-native'
+import {numberWithCommas} from '../common'
 
 class PieChart extends React.Component {
   constructor (props) {
@@ -27,14 +27,14 @@ class PieChart extends React.Component {
   // initData!!
   componentDidMount () {
     this.initData(this.props.data)
-    Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
+    this.renderAnimation();
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
-        fadeAnim: new Animated.Value(0)
+        fadeAnim: nextProps.animated ? new Animated.Value(0) : new Animated.Value(1)
       }, this.initData(nextProps.data)), () => {
-        Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
+        this.renderAnimation();
       })
     }
   }
@@ -180,7 +180,7 @@ class PieChart extends React.Component {
   }
 
   handleEvent (idx) {
- //   console.log(idx)
+    //   console.log(idx)
     this.setState({
       currentPieIdx: this.state.pieIndex[idx]
     })
@@ -331,7 +331,7 @@ class PieChart extends React.Component {
     let x = (0 - width / 2) * Math.cos(rad) - (0 - width / 2) * Math.sin(rad)
     let y = (0 - width / 2) * Math.sin(rad) + (0 - width / 2) * Math.cos(rad)
 
-    return [ {translateX: (-1 * x) - width / 2 + add}, { translateY: (-1 * y) - width / 2 }, { rotate: rad + 'rad' } ]
+    return [{translateX: (-1 * x) - width / 2 + add}, {translateY: (-1 * y) - width / 2}, {rotate: rad + 'rad'}]
   }
   drawPie (angle, color, big, idx) {
     const {size} = this.props
@@ -340,91 +340,91 @@ class PieChart extends React.Component {
         {angle === 0 ? (
           <View />
         ) : (
-          angle > (1 / 2 * Math.PI) ? (
-            <View>
-              <View style={{width: size, height: size / 2}} />
-              <View style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
-
-                <View style={{
-
-                  width: size / 2,
-                  height: size / 2,
-
-                  transform: this.getTransform(Math.PI / 2, size / 2, size / 2)
-                }}>
+            angle > (1 / 2 * Math.PI) ? (
+              <View>
+                <View style={{width: size, height: size / 2}} />
+                <View style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
 
                   <View style={{
+
+                    width: size / 2,
+                    height: size / 2,
+
+                    transform: this.getTransform(Math.PI / 2, size / 2, size / 2)
                   }}>
-                    {this.drawPie(angle - 1 / 2 * Math.PI, color, false, idx)}
+
+                    <View style={{
+                    }}>
+                      {this.drawPie(angle - 1 / 2 * Math.PI, color, false, idx)}
+                    </View>
+
+                  </View>
+
+                  <View style={{
+                    opacity: 1,
+
+                    width: size / 2,
+                    height: size / 2
+                  }}>
+                    {this.drawPie(1 / 2 * Math.PI, color, false, idx)}
                   </View>
 
                 </View>
-
-                <View style={{
-                  opacity: 1,
-
-                  width: size / 2,
-                  height: size / 2
-                }}>
-                  {this.drawPie(1 / 2 * Math.PI, color, false, idx)}
-                </View>
-
               </View>
-            </View>
 
-        ) : (
-          // big 사용이유
-          big ? (
-            <View style={{
-              width: size,
-              height: size
-            }}>
-              <View style={{width: size, height: size / 2}} />
-              <View style={{flexDirection: 'row'}}>
-                <View style={{width: size / 2, height: size / 2}} />
-                <View style={{
-                  width: size / 2,
-                  height: size / 2
-                }}>
-
+            ) : (
+                // big 사용이유
+                big ? (
                   <View style={{
-                    width: size / 2,
-                    height: size / 2,
-                    borderBottomRightRadius: size / 2,
-                    backgroundColor: color,
-                    transform: this.getTransform(angle - Math.PI / 2, size / 2)
-                  }} />
+                    width: size,
+                    height: size
+                  }}>
+                    <View style={{width: size, height: size / 2}} />
+                    <View style={{flexDirection: 'row'}}>
+                      <View style={{width: size / 2, height: size / 2}} />
+                      <View style={{
+                        width: size / 2,
+                        height: size / 2
+                      }}>
 
-                </View>
+                        <View style={{
+                          width: size / 2,
+                          height: size / 2,
+                          borderBottomRightRadius: size / 2,
+                          backgroundColor: color,
+                          transform: this.getTransform(angle - Math.PI / 2, size / 2)
+                        }} />
 
-              </View>
-            </View>
-          ) : (
-            <View style={{
-              width: size / 2,
-              height: size / 2
-            }}>
+                      </View>
 
-              <View style={{
-                width: size / 2,
-                height: size / 2
-              }}>
+                    </View>
+                  </View>
+                ) : (
+                    <View style={{
+                      width: size / 2,
+                      height: size / 2
+                    }}>
 
-                <View style={{
-                  width: size / 2,
-                  height: size / 2,
-                  borderBottomRightRadius: size / 2,
-                  backgroundColor: color,
-                  borderWidth: 0,
-                  borderColor: color,
-                  transform: this.getTransform(angle - Math.PI / 2, size / 2)
-                }} />
+                      <View style={{
+                        width: size / 2,
+                        height: size / 2
+                      }}>
 
-              </View>
+                        <View style={{
+                          width: size / 2,
+                          height: size / 2,
+                          borderBottomRightRadius: size / 2,
+                          backgroundColor: color,
+                          borderWidth: 0,
+                          borderColor: color,
+                          transform: this.getTransform(angle - Math.PI / 2, size / 2)
+                        }} />
 
-            </View>
-          )
-        ))}
+                      </View>
+
+                    </View>
+                  )
+              ))}
       </View>
     )
   }
@@ -442,12 +442,20 @@ class PieChart extends React.Component {
             this.drawPie(this.state.pieSize[i], this.state.colors[this.state.pieIndex[i]], true, i)
           }
         </View>
-        )
+      )
     }
     return (
       pies
     )
   }
+
+  renderAnimation () {
+    const {animated} = this.props;
+    if (animated) {
+      Animated.timing(this.state.fadeAnim, {toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true}).start()
+    }
+  }
+
   render () {
     const {selectedIndex, locationX, locationY, evtX, evtY, inPie, selectedAngle,
       pieSize, angles} = this.state

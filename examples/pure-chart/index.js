@@ -5,6 +5,8 @@ import {View} from 'react-native'
 import LineChart from './components/line-chart'
 import ColumnChart from './components/column-chart'
 import PieChart from './components/pie-chart'
+import HBarChart from './components/hbar-chart'
+import ColumnHorizontalChart from './components/column-horizontal-chart'
 export default class PureChart extends React.Component {
   constructor (props) {
     super(props)
@@ -15,8 +17,12 @@ export default class PureChart extends React.Component {
       return <LineChart {...this.props} />
     } else if (this.props.type === 'bar') {
       return <ColumnChart {...this.props} />
+    } else if (this.props.type === 'bar-horizontal') {
+      return <ColumnHorizontalChart {...this.props} />
     } else if (this.props.type === 'pie') {
-      return <PieChart {...this.props} />
+      return <PieChart data={this.props.data} primaryColor={this.props.color} />
+    } else if (this.props.type === 'hbar') {
+      return <HBarChart data={this.props.data} />
     }
   }
   render () {
@@ -35,11 +41,14 @@ PureChart.propTypes = {
   height: PropTypes.number,
   numberOfYAxisGuideLine: PropTypes.number,
   customValueRenderer: PropTypes.func,
-  backgroundColor: PropTypes.string
+  backgroundColor: PropTypes.string,
+  highlightColor: PropTypes.string,
+  animated: PropTypes.bool
 }
 PureChart.defaultProps = {
   color: '#297AB1',
   height: 100,
   numberOfYAxisGuideLine: 5,
-  backgroundColor: '#FFFFFF'
+  backgroundColor: '#FFFFFF',
+  animated: true
 }
