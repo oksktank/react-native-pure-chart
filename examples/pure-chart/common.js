@@ -70,7 +70,7 @@ export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
     }
   }
 
-  max = getMaxValue(dataProp)
+  max = Math.max(getMaxValue(dataProp))
   guideArray = getGuideArray(max, height, numberOfPoints)
 
   dataProp = flattenData(dataProp)
@@ -236,10 +236,10 @@ export const drawYAxis = (color = '#e0e0e0') => {
   )
 }
 
-export const drawYAxisLabels = (arr, height, minValue, color = '#000000') => {
+export const drawYAxisLabels = (arr, height, minValue, color = '#000000', symbol='') => {
   return (
     <View style={{
-      width: 33,
+      width: 33 + 5*symbol.length,
       height: height,
       justifyContent: 'flex-end',
       alignItems: 'flex-end',
@@ -257,7 +257,7 @@ export const drawYAxisLabels = (arr, height, minValue, color = '#000000') => {
           <Text style={{fontSize: 11}}>0</Text>
         </View>
       ) : arr.map((v, i) => {
-        if (v[1] > height) return null
+        if (v[1] > height-5) return null
         return (
           <View
             key={'guide' + i}
@@ -265,7 +265,7 @@ export const drawYAxisLabels = (arr, height, minValue, color = '#000000') => {
               bottom: v[1] - 5,
               position: 'absolute'
             }}>
-            <Text style={{fontSize: 11, color: color}}>{v[0]}</Text>
+            <Text style={{fontSize: 11, color: color}}>{v[0] + ' ' + symbol}</Text>
           </View>
         )
       })}
