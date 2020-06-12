@@ -13,11 +13,12 @@ export default class ColumnChartItem extends Component {
       }
       renders.push(
         <View key={seriesIndex} style={[styles.bar, {
-          width: this.props.defaultWidth / seriesCount,
+          width: this.props.defaultWidth / seriesCount/1.3,
           height: this.props.seriesArray[seriesIndex].data[this.props.dataIndex]['ratioY'],
           marginRight: lastElementMarginRight,
           backgroundColor: this.props.seriesArray[seriesIndex].seriesColor,
-          borderColor: this.props.isSelected ? this.props.highlightColor : this.props.defaultBorderColor
+          borderColor: this.props.isSelected ? this.props.highlightColor : this.props.defaultBorderColor,
+          borderRadius:1000,
         }]} />
       )
     }
