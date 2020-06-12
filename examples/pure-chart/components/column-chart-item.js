@@ -13,7 +13,7 @@ export default class ColumnChartItem extends Component {
       }
       renders.push(
         <View key={seriesIndex} style={[styles.bar, {
-          width: this.props.defaultWidth / seriesCount/1.3,
+          width: this.props.defaultWidth / seriesCount/1.2,
           height: this.props.seriesArray[seriesIndex].data[this.props.dataIndex]['ratioY'],
           marginRight: lastElementMarginRight,
           backgroundColor: this.props.seriesArray[seriesIndex].seriesColor,
