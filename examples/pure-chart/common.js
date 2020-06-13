@@ -219,10 +219,9 @@ export const getGuideArray = (max, height, numberOfPoints = 5) => {
   }
 
   for (let i = 1; i < numberOfPoints + 1; i++) {
-    let v = x / numberOfPoints * i
+    let v = (x / numberOfPoints * (i/2.5 ))
     arr.push([v + postfix, v * temp / max * height, 1 * temp / max * height])
   }
-
   return arr
 }
 
