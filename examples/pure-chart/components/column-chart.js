@@ -7,7 +7,7 @@ import { initData, drawYAxis, drawYAxisLabels, drawGuideLine, numberWithCommas, 
 export default class ColumnChart extends Component {
   constructor(props) {
     super(props)
-    let defaultGap = this.props.defaultColumnWidth + this.props.defaultColumnMargin
+    let defaultGap =  this.props.defaultColumnMargin
     let newState = initData(this.props.data, this.props.height, defaultGap, this.props.numberOfYAxisGuideLine)
     this.state = {
       sortedData: newState.sortedData,
@@ -159,9 +159,9 @@ export default class ColumnChart extends Component {
                 {this.renderColumns(fadeAnim)}
               </View>
               {drawXAxis(this.props.xAxisColor)}
-              <View style={{ marginLeft: this.props.defaultColumnWidth / 2 }}>
+              <View>
                 {this.props.showXAxisLabel &&
-                  drawXAxisLabels(this.state.sortedData[0].data, this.state.gap, this.props.labelColor, this.props.showEvenNumberXaxisLabel)}
+                  drawXAxisLabels(this.state.sortedData[0].data, this.state.gap, this.props.labelColor, this.props.showEvenNumberXaxisLabel, this.props.defaultColumnWidth / 2 / 1.2)}
               </View>
             </View>
             {this.drawTooltip(this.state.selectedIndex)}

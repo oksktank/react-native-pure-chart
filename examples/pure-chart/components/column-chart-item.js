@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { View, StyleSheet, TouchableWithoutFeedback, Text } from 'react-native'
 
 export default class ColumnChartItem extends Component {
   render () {
@@ -8,14 +8,21 @@ export default class ColumnChartItem extends Component {
     let seriesCount = this.props.seriesArray.length
     for (let seriesIndex = 0; seriesIndex < seriesCount; seriesIndex++) {
       let lastElementMarginRight = 0
+      let lastElementMarginLeft = 0  
+      let width = this.props.defaultWidth / seriesCount/1.2
       if (seriesIndex === (seriesCount - 1)) {
         lastElementMarginRight = this.props.defaultMargin
+      } else {
+        if(this.props.dataIndex === 0) {
+          lastElementMarginLeft = this.props.defaultMargin
+        }
       }
       renders.push(
         <View key={seriesIndex} style={[styles.bar, {
-          width: this.props.defaultWidth / seriesCount/1.2,
+          width: width,
           height: this.props.seriesArray[seriesIndex].data[this.props.dataIndex]['ratioY'],
           marginRight: lastElementMarginRight,
+          marginLeft: lastElementMarginLeft,
           backgroundColor: this.props.seriesArray[seriesIndex].seriesColor,
           borderColor: this.props.isSelected ? this.props.highlightColor : this.props.defaultBorderColor,
           borderRadius:1000,
