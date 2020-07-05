@@ -337,7 +337,7 @@ export const drawXAxisLabels = (sortedData, gap, color = '#000000', showEvenNumb
       height: 10,
     }}>
       {sortedData.map((data, i) => {
-        let marginLeft = i === 0 ? sortedData[1]['gap'] : sortedData[1]['gap']*(i+1) + defautColumnWidth*((i)*2)
+        let marginLeft = i === 0 ? gap : sortedData[1]['gap']*(i+1) + defautColumnWidth*((i)*2)
         if (data['x']  || !showEvenNumberXaxisLabel) {
           return (
             <View key={'label' + i} style={{

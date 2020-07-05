@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { View, StyleSheet, Animated, ScrollView, Easing, Text } from 'react-native'
+import { View, StyleSheet, Animated, ScrollView, Easing, Text, Dimensions } from 'react-native'
 import ColumnChartItem from './column-chart-item'
 import { initData, drawYAxis, drawYAxisLabels, drawGuideLine, numberWithCommas, drawXAxis, drawXAxisLabels } from '../common'
-
+const deviceWidth = Dimensions.get('screen').width
 export default class ColumnChart extends Component {
   constructor(props) {
     super(props)
@@ -113,6 +113,11 @@ export default class ColumnChart extends Component {
       // 차트 width를 마지막에 늘려야겠음.
 
       let left = standardSeries.data[selectedIndex]['gap'] + plusGap
+      console.log('====================================');
+      console.log('standardSeries', standardSeries, selectedIndex, this.props.defaultColumnWidth);
+      console.log('====================================');
+      let marginLeft = selectedIndex === 0 ? this.props.defaultColumnMargin : standardSeries.data[1]['gap']*(selectedIndex+1)
+
       let tooltipRenders = []
       for (let i = 0; i < this.state.sortedData.length; i++) {
         let series = this.state.sortedData[i]
@@ -127,7 +132,7 @@ export default class ColumnChart extends Component {
         )
       }
       return (
-        <View style={[styles.tooltipWrapper, { left: left }]}>
+        <View style={[styles.tooltipWrapper, { left: marginLeft }]}>
           <View style={styles.tooltip}>
             {tooltipRenders}
           </View>
@@ -144,14 +149,15 @@ export default class ColumnChart extends Component {
 
     return (
       <View style={StyleSheet.flatten([styles.wrapper, {
-        backgroundColor: 'rgba(0,0,0,0)'
+        backgroundColor: 'rgba(0,0,0,0)',
+        
       }])}>
         <View style={{ paddingRight: 5 }}>
           {this.props.showYAxisLabel &&
             drawYAxisLabels(this.state.guideArray, this.props.height + 20, this.props.minValue, this.props.labelColor, this.props.yAxisSymbol)}
         </View>
         <View style={styles.mainContainer}>
-          <ScrollView ref={scrollView => this.scrollView = scrollView} horizontal>
+          <ScrollView showsHorizontalScrollIndicator={false} ref={scrollView => this.scrollView = scrollView} horizontal>
             <View>
               <View ref='chartView' style={styles.chartContainer}>
                 {drawYAxis(this.props.yAxisColor)}
@@ -182,14 +188,16 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
     paddingRight: 0,
     height: '100%',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    width: deviceWidth /1.2
   },
   chartContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
     margin: 0,
     paddingRight: 10,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    width: deviceWidth
   },
   chartView: {
     flexDirection: 'row',
@@ -198,9 +206,10 @@ const styles = StyleSheet.create({
   },
   tooltipWrapper: {
     position: 'absolute',
-    height: '100%',
+    height: '50%',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    top: 0
   },
   tooltip: {
     backgroundColor: '#FFFFFF',
