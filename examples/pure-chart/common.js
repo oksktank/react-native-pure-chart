@@ -219,10 +219,9 @@ export const getGuideArray = (max, height, numberOfPoints = 5) => {
   }
 
   for (let i = 1; i < numberOfPoints + 1; i++) {
-    let v = x / numberOfPoints * i
+    let v = (x / numberOfPoints * (i/2.5 ))
     arr.push([v + postfix, v * temp / max * height, 1 * temp / max * height])
   }
-
   return arr
 }
 
@@ -243,10 +242,10 @@ export const drawYAxis = (color = '#e0e0e0') => {
 export const drawYAxisLabels = (arr, height, minValue, color = '#000000', symbol='') => {
   return (
     <View style={{
-      width: 33 + 5*symbol.length,
+      width: 50 + 5*symbol.length,
       height: height,
       justifyContent: 'flex-end',
-      alignItems: 'flex-end',
+      alignItems: 'center',
       marginBottom: minValue && arr && arr.length > 0 ? -1 * arr[0][2] * minValue : null,
       overflow: 'hidden'
     }}>
@@ -258,7 +257,7 @@ export const drawYAxisLabels = (arr, height, minValue, color = '#000000', symbol
             bottom: 0,
             position: 'absolute'
           }}>
-          <Text style={{fontSize: 11}}>0</Text>
+          <Text style={{fontSize: 11}}></Text>
         </View>
       ) : arr.map((v, i) => {
         if (v[1] > height-5) return null
@@ -330,23 +329,21 @@ export const drawXAxis = (color = '#e0e0e0') => {
     }} />
   )
 }
-export const drawXAxisLabels = (sortedData, gap, color = '#000000', showEvenNumberXaxisLabel) => {
+export const drawXAxisLabels = (sortedData, gap, color = '#000000', showEvenNumberXaxisLabel, defautColumnWidth) => {
   return (
     <View style={{
       width: '100%',
       paddingVertical: 10,
-      height: 10
+      height: 10,
     }}>
       {sortedData.map((data, i) => {
-        // if (data[3] && i % 2 === 1) {
-        if (data['x'] && i % 2 === 1 || !showEvenNumberXaxisLabel) {
+        let marginLeft = i === 0 ? gap : sortedData[1]['gap']*(i+1) + defautColumnWidth*((i)*2)
+        if (data['x']  || !showEvenNumberXaxisLabel) {
           return (
             <View key={'label' + i} style={{
               position: 'absolute',
-              // left: data[0] - gap / 2,
-              left: data['gap'] - gap / 2,
-              width: gap,
-              alignItems: 'center'
+              left: marginLeft,
+              top: 5,
             }}>
               <Text style={{fontSize: 9, color: color}}>
                 {
