@@ -25,7 +25,7 @@ export default class ColumnChart extends Component {
     this.drawTooltip = this.drawTooltip.bind(this)
   }
 
-  componentWillReceiveProps (nextProps) {
+   componentDidUpdate (nextProps) {
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
         fadeAnim: new Animated.Value(0)
