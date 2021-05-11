@@ -29,7 +29,7 @@ class PieChart extends React.Component {
     this.initData(this.props.data)
     Animated.timing(this.state.fadeAnim, { toValue: 1, easing: Easing.bounce, duration: 1000, useNativeDriver: true }).start()
   }
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (nextProps) {
     if (nextProps.data !== this.props.data) {
       this.setState(Object.assign({
         fadeAnim: new Animated.Value(0)
