@@ -9,6 +9,7 @@ describe('public API', () => {
       'DEFAULT_PALETTE',
       'LineChart',
       'PieChart',
+      'formatCompact',
     ]);
   });
 
@@ -17,5 +18,9 @@ describe('public API', () => {
     expect(typeof api.LineChart).toBe('function');
     expect(typeof api.PieChart).toBe('function');
     expect(api.DEFAULT_PALETTE.length).toBeGreaterThan(0);
+  });
+
+  it('re-exports the default axis formatter', () => {
+    expect(api.formatCompact(1234)).toBe('1.2K');
   });
 });

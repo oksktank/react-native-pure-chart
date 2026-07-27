@@ -98,8 +98,9 @@ export function ChartContainer({
     ? yDomain.ticks.map((tick, i) => yAxis.formatLabel(tick, i))
     : [];
 
+  const yOnRight = yAxis.position === 'right';
   const yLabelColumn = yAxis.show ? (
-    <View style={{ height, marginRight: 8 }}>
+    <View style={{ height, ...(yOnRight ? { marginLeft: 8 } : { marginRight: 8 }) }}>
       {/* Invisible copies establish the column width; height 0 so only the
           widest label matters. */}
       {yLabelTexts.map((text, i) => (
@@ -119,7 +120,7 @@ export function ChartContainer({
             yAxis.labelStyle,
             {
               position: 'absolute',
-              right: 0,
+              [yOnRight ? 'left' : 'right']: 0,
               top: yScale(tick) - AXIS_LABEL_LINE_HEIGHT / 2,
             },
           ]}
@@ -238,7 +239,7 @@ export function ChartContainer({
       accessibilityLabel={accessibilityLabel}
     >
       <View style={{ flexDirection: 'row' }}>
-        {yLabelColumn}
+        {yOnRight ? null : yLabelColumn}
         <View
           style={{ flex: 1 }}
           testID={testID ? `${testID}-viewport` : undefined}
@@ -268,6 +269,7 @@ export function ChartContainer({
             plotAndXLabels
           )}
         </View>
+        {yOnRight ? yLabelColumn : null}
       </View>
     </View>
   );

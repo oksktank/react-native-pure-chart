@@ -133,7 +133,7 @@ export interface YAxisOptions {
   /** Default false. */
   showAxisLine?: boolean;
   labelStyle?: StyleProp<TextStyle>;
-  /** Default 'left'. */
+  /** Which side the value labels sit on. Default 'left'. Ignored by horizontal bars. */
   position?: 'left' | 'right';
 }
 
@@ -196,7 +196,11 @@ export interface LineChartProps extends BaseChartProps {
   scrollable?: boolean;
   /** Default 'start'. */
   initialScroll?: 'start' | 'end';
-  /** Minimum px between points. Defaults to even distribution across the width. */
+  /**
+   * Exact px between points. Omit to distribute evenly across the width —
+   * auto mode never squeezes points closer than 40px, growing and scrolling
+   * instead.
+   */
   spacing?: number;
   onPointPress?: (e: PressEvent) => void;
   /** Controlled selection; `null` clears. Omit for uncontrolled behavior. */
@@ -227,7 +231,9 @@ export interface BarChartProps extends BaseChartProps {
   xAxis?: XAxisOptions;
   yAxis?: YAxisOptions;
   legend?: boolean | LegendOptions;
+  /** Vertical bars only — horizontal bars always fit their height. */
   scrollable?: boolean;
+  /** Vertical bars only. */
   initialScroll?: 'start' | 'end';
   onPointPress?: (e: PressEvent) => void;
   selectedIndex?: number | null;

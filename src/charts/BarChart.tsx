@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, type ReactElement } from 'react';
 import { Animated, Pressable, View } from 'react-native';
 import type { BarChartProps, DataPoint, PressEvent } from '../types';
 import {
@@ -122,6 +122,9 @@ export function BarChart(props: BarChartProps) {
       groupGap,
     });
 
+  const legendPosition =
+    (typeof props.legend === 'object' ? props.legend.position : undefined) ??
+    'bottom';
   const legendNode = legendVisible ? (
     <Legend
       items={series.map((s, i) => ({
@@ -132,8 +135,24 @@ export function BarChart(props: BarChartProps) {
       labelStyle={
         typeof props.legend === 'object' ? props.legend.labelStyle : undefined
       }
+      position={legendPosition}
     />
   ) : null;
+  /** Chart + legend, ordered by `legend.position`. */
+  const withLegend = (chartNode: ReactElement) =>
+    !legendNode ? (
+      chartNode
+    ) : legendPosition === 'top' ? (
+      <>
+        {legendNode}
+        {chartNode}
+      </>
+    ) : (
+      <>
+        {chartNode}
+        {legendNode}
+      </>
+    );
 
   if (props.horizontal) {
     const chartH = (
@@ -416,15 +435,7 @@ export function BarChart(props: BarChartProps) {
         }}
       </HorizontalFrame>
     );
-    if (!legendNode) {
-      return chartH;
-    }
-    return (
-      <>
-        {chartH}
-        {legendNode}
-      </>
-    );
+    return withLegend(chartH);
   }
 
   const chart = (
@@ -777,13 +788,5 @@ export function BarChart(props: BarChartProps) {
     </ChartContainer>
   );
 
-  if (!legendNode) {
-    return chart;
-  }
-  return (
-    <>
-      {chart}
-      {legendNode}
-    </>
-  );
+  return withLegend(chart);
 }

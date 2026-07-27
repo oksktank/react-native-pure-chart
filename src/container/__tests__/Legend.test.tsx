@@ -30,6 +30,18 @@ describe('Legend', () => {
     }
   });
 
+  it('spaces itself below the chart by default and above it when on top', async () => {
+    const items = [{ color: 'red', label: 'Sales' }];
+    const { toJSON: bottom } = await render(
+      <Legend items={items} labelColor="#333" />
+    );
+    const { toJSON: top } = await render(
+      <Legend items={items} labelColor="#333" position="top" />
+    );
+    expect(flatStyle(bottom()!)).toMatchObject({ marginTop: 10 });
+    expect(flatStyle(top()!)).toMatchObject({ marginBottom: 10 });
+  });
+
   it('applies labelColor and merges labelStyle on top', async () => {
     const { getByText } = await render(
       <Legend

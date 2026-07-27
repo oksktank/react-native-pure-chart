@@ -11,9 +11,16 @@ export interface LegendProps {
   items: readonly LegendItem[];
   labelColor: string;
   labelStyle?: StyleProp<TextStyle>;
+  /** Which side of the chart the legend sits on — only flips the margin. */
+  position?: 'top' | 'bottom';
 }
 
-export function Legend({ items, labelColor, labelStyle }: LegendProps) {
+export function Legend({
+  items,
+  labelColor,
+  labelStyle,
+  position = 'bottom',
+}: LegendProps) {
   if (items.length === 0) {
     return null;
   }
@@ -25,7 +32,7 @@ export function Legend({ items, labelColor, labelStyle }: LegendProps) {
         justifyContent: 'center',
         columnGap: 14,
         rowGap: 4,
-        marginTop: 10,
+        ...(position === 'top' ? { marginBottom: 10 } : { marginTop: 10 }),
       }}
     >
       {items.map((item, i) => (

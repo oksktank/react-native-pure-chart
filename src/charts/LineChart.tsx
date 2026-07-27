@@ -574,19 +574,31 @@ export function LineChart(props: LineChartProps) {
   if (!legendVisible) {
     return chart;
   }
-  return (
+  const legendPosition =
+    (typeof props.legend === 'object' ? props.legend.position : undefined) ??
+    'bottom';
+  const legendNode = (
+    <Legend
+      items={series.map((s, i) => ({
+        color: colorAt(palette, i, s.color),
+        label: s.name ?? `Series ${i + 1}`,
+      }))}
+      labelColor={theme.labelColor}
+      labelStyle={
+        typeof props.legend === 'object' ? props.legend.labelStyle : undefined
+      }
+      position={legendPosition}
+    />
+  );
+  return legendPosition === 'top' ? (
+    <>
+      {legendNode}
+      {chart}
+    </>
+  ) : (
     <>
       {chart}
-      <Legend
-        items={series.map((s, i) => ({
-          color: colorAt(palette, i, s.color),
-          label: s.name ?? `Series ${i + 1}`,
-        }))}
-        labelColor={theme.labelColor}
-        labelStyle={
-          typeof props.legend === 'object' ? props.legend.labelStyle : undefined
-        }
-      />
+      {legendNode}
     </>
   );
 }

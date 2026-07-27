@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native';
+// This screen stress-tests library INTERNALS (not part of the public npm
+// API), so it imports the local source directly instead of the package.
 import {
   polylineSegments,
   stepSegments,
   type Point,
-} from 'react-native-pure-chart/core/geometry';
-import { LineSegment } from 'react-native-pure-chart/primitives/LineSegment';
-import { Dot } from 'react-native-pure-chart/primitives/Dot';
+} from '../../src/core/geometry';
+import { LineSegment } from '../../src/primitives/LineSegment';
+import { Dot } from '../../src/primitives/Dot';
 
 const POINTS: Point[] = [
   { x: 10, y: 150 },

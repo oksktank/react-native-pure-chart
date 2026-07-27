@@ -307,6 +307,23 @@ describe('PieChart legend', () => {
     ).toBe(1);
   });
 
+  it('legend.position "top" renders the legend before the pie', async () => {
+    const { toJSON } = await render(
+      <PieChart
+        data={[{ value: 1, label: 'Named' }]}
+        testID="pc"
+        animate={false}
+        size={100}
+        legend={{ position: 'top' }}
+      />
+    );
+    const root = toJSON() as JsonNode;
+    const children = (root.children ?? []) as JsonNode[];
+    // First child is the legend row, second the size×size pie box.
+    expect(flatStyle(children[0]!)).toMatchObject({ marginBottom: 10 });
+    expect(flatStyle(children[1]!)).toMatchObject({ width: 100, height: 100 });
+  });
+
   it('legend: false hides it', async () => {
     const { queryByText } = await render(
       <PieChart

@@ -23,7 +23,9 @@ jobs:
         run: npm run typecheck
 
       - name: Test with coverage
-        run: npm run test:coverage
+        # Hosted runners are small; the default worker count thrashes and
+        # inflates per-test wall clock.
+        run: npm run test:coverage -- --ci --maxWorkers=2
 
       - name: Build
         run: npx bob build

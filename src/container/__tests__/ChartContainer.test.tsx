@@ -3,12 +3,14 @@ import { render } from '@testing-library/react-native';
 import { ChartContainer, type ChartContainerProps } from '../ChartContainer';
 import {
   countNodes,
+  findNodes,
   flatStyle,
   layout,
   paddingOf,
   themeOf,
   xAxisOf,
   yAxisOf,
+  type JsonNode,
 } from '../../__tests__/helpers';
 
 function props(
@@ -63,6 +65,24 @@ describe('ChartContainer', () => {
     for (const text of ['y0', 'y50', 'y100']) {
       expect(getAllByText(text)).toHaveLength(2);
     }
+  });
+
+  it('yAxis.position "right" moves the label column after the plot', async () => {
+    const { getByTestId, toJSON } = await render(
+      <ChartContainer {...props({ yAxis: yAxisOf({ position: 'right' }) })}>
+        {() => null}
+      </ChartContainer>
+    );
+    await layout(getByTestId('cc-viewport'), 300, 200);
+    // The axis row: [plot viewport, label column] — reversed from the default.
+    const row = findNodes(
+      toJSON(),
+      (n) => flatStyle(n).flexDirection === 'row'
+    )[0]!;
+    const columns = (row.children ?? []) as JsonNode[];
+    expect(columns).toHaveLength(2);
+    expect(flatStyle(columns[0]!)).toMatchObject({ flex: 1 });
+    expect(flatStyle(columns[1]!)).toMatchObject({ marginLeft: 8 });
   });
 
   it('renders no y labels when yAxis.show is false', async () => {

@@ -30,6 +30,11 @@ const components = {
   // Every chart starts an Animated.timing on mount; fake timers keep those
   // from leaking past test end. Opt out per-test with jest.useRealTimers().
   fakeTimers: { enableGlobally: true },
+  // The first render in a file lazily requires (and babel-transforms) the
+  // react-native internals it touches. On a cold CI cache that alone can
+  // outrun the 5s default, so the first test of a suite fails while every
+  // later one passes. Give it room; nothing here legitimately runs long.
+  testTimeout: 30000,
 };
 
 module.exports = {

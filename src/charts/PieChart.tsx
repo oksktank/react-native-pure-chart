@@ -147,6 +147,18 @@ export function PieChart(props: PieChartProps) {
     );
   };
 
+  const legendPosition =
+    (typeof legend === 'object' ? legend.position : undefined) ?? 'bottom';
+  const legendNode =
+    legend !== false ? (
+      <Legend
+        items={legendItems}
+        labelColor={theme.labelColor}
+        labelStyle={typeof legend === 'object' ? legend.labelStyle : undefined}
+        position={legendPosition}
+      />
+    ) : null;
+
   return (
     <View
       style={[{ alignItems: 'center' }, style]}
@@ -157,6 +169,7 @@ export function PieChart(props: PieChartProps) {
         props.accessibilityLabel ?? `Pie chart, ${data.length} slices`
       }
     >
+      {legendPosition === 'top' ? legendNode : null}
       <View style={{ width: size, height: size }}>
         <Animated.View
           style={{
@@ -310,15 +323,7 @@ export function PieChart(props: PieChartProps) {
           />
         ) : null}
       </View>
-      {legend !== false ? (
-        <Legend
-          items={legendItems}
-          labelColor={theme.labelColor}
-          labelStyle={
-            typeof legend === 'object' ? legend.labelStyle : undefined
-          }
-        />
-      ) : null}
+      {legendPosition === 'bottom' ? legendNode : null}
     </View>
   );
 }

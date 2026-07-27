@@ -11,7 +11,14 @@ import { PolylineScreen } from './screens/PolylineScreen';
 import { BarScreen } from './screens/BarScreen';
 import { LineScreen } from './screens/LineScreen';
 import { PieScreen } from './screens/PieScreen';
+import { ShotScreen } from './screens/ShotScreen';
 import { TouchScreen } from './screens/TouchScreen';
+
+/**
+ * Renders `ShotScreen` full-bleed instead of the gallery — the capture mode
+ * behind the README images in `docs/`. See ShotScreen for the workflow.
+ */
+const SHOT_MODE = false;
 
 const SCREENS = {
   Touch: TouchScreen,
@@ -26,6 +33,9 @@ type ScreenName = keyof typeof SCREENS;
 export default function App() {
   const [screen, setScreen] = useState<ScreenName>('Touch');
   const Screen = SCREENS[screen];
+  if (SHOT_MODE) {
+    return <ShotScreen />;
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.title}>pure-chart gallery</Text>
