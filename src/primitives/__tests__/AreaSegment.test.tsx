@@ -1,6 +1,7 @@
 import { Animated } from 'react-native';
 import { render } from '@testing-library/react-native';
 import { AreaSegment } from '../AreaSegment';
+import { AREA_SEAM_EPSILON } from '../../constants';
 import { flatStyle, findNodes, type JsonNode } from '../../__tests__/helpers';
 
 // A rightward segment from (0, 40) to (50, 40) above a baseline at 100.
@@ -13,7 +14,6 @@ describe('AreaSegment', () => {
         layout={{ x: 50, y: 40, length: 50, angleRad: Math.PI }}
         baselineY={100}
         color="blue"
-        opacity={0.2}
       />
     );
     expect(leftward.toJSON()).toBeNull();
@@ -23,7 +23,6 @@ describe('AreaSegment', () => {
         layout={{ x: 50, y: 40, length: 0, angleRad: Math.PI / 2 }}
         baselineY={100}
         color="blue"
-        opacity={0.2}
       />
     );
     expect(zeroLength.toJSON()).toBeNull();
@@ -35,7 +34,6 @@ describe('AreaSegment', () => {
         layout={{ x: 0, y: 120, length: 50, angleRad: 0 }}
         baselineY={100}
         color="blue"
-        opacity={0.2}
       />
     );
     expect(toJSON()).toBeNull();
@@ -43,23 +41,24 @@ describe('AreaSegment', () => {
 
   it('the clipping wrapper spans [x, x+dx] × [top, baselineY] with overflow hidden', async () => {
     const { toJSON } = await render(
-      <AreaSegment layout={flat} baselineY={100} color="blue" opacity={0.15} />
+      <AreaSegment layout={flat} baselineY={100} color="blue" />
     );
     const style = flatStyle(toJSON() as JsonNode);
     expect(style).toMatchObject({
       position: 'absolute',
       left: 0,
       top: 40,
-      width: 50,
+      width: 50 + AREA_SEAM_EPSILON, // overlaps the next band to hide the seam
       height: 60,
       overflow: 'hidden',
-      opacity: 0.15,
     });
+    // Bands are opaque; the caller owns the shared opacity layer.
+    expect(style.opacity).toBeUndefined();
   });
 
   it('the inner rect overhangs by pad and rotates around the segment start', async () => {
     const { toJSON } = await render(
-      <AreaSegment layout={flat} baselineY={100} color="blue" opacity={0.15} />
+      <AreaSegment layout={flat} baselineY={100} color="blue" />
     );
     const inner = findNodes(
       toJSON() as JsonNode,
@@ -88,7 +87,7 @@ describe('AreaSegment', () => {
         layout={flat}
         baselineY={100}
         color="blue"
-        opacity={0.15}
+       
         grow={grow}
       />
     );

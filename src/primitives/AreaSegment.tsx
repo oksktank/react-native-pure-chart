@@ -1,4 +1,5 @@
 import { Animated, View } from 'react-native';
+import { AREA_SEAM_EPSILON } from '../constants';
 import type { SegmentLayout } from '../core/geometry';
 
 export interface AreaSegmentProps {
@@ -6,7 +7,6 @@ export interface AreaSegmentProps {
   /** Pixel y of the fill baseline (usually the zero line). */
   baselineY: number;
   color: string;
-  opacity: number;
   /** 0→1 reveals the fill left to right, in sync with the line. */
   grow?: Animated.AnimatedInterpolation<number>;
 }
@@ -18,12 +18,15 @@ export interface AreaSegmentProps {
  * wrapper clips it back), so the band always covers the full region between
  * the line and the baseline — a snugly-sized rect would only cover a
  * diagonal sliver.
+ *
+ * Bands render fully opaque and overlap by AREA_SEAM_EPSILON; the caller is
+ * responsible for wrapping a run's bands in a single opacity layer. Fading
+ * each band individually would make the overlaps darker than the fill.
  */
 export function AreaSegment({
   layout,
   baselineY,
   color,
-  opacity,
   grow,
 }: AreaSegmentProps) {
   const dx = Math.cos(layout.angleRad) * layout.length;
@@ -47,10 +50,11 @@ export function AreaSegment({
         position: 'absolute',
         left: layout.x,
         top,
-        width: dx,
+        // Overlap the next band so their abutting anti-aliased edges can't
+        // show a hairline seam through the fill.
+        width: dx + AREA_SEAM_EPSILON,
         height,
         overflow: 'hidden',
-        opacity,
         ...(grow
           ? {
               transformOrigin: '0% 50%',

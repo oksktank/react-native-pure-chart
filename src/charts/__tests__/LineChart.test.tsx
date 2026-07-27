@@ -19,9 +19,11 @@ const isDot = (n: JsonNode) => {
   const s = flatStyle(n);
   return s.borderRadius === 3 && s.backgroundColor === '#5B8FF9';
 };
+// Segments are round-capped bars: height === strokeWidth, and a pixel-array
+// transformOrigin (the area fill's wrapper uses the '0% 50%' string form).
 const isSegment = (n: JsonNode) => {
   const s = flatStyle(n);
-  return s.height === 2 && s.transformOrigin === '0% 50%';
+  return s.height === 2 && Array.isArray(s.transformOrigin);
 };
 const isTooltip = (n: JsonNode) => {
   const s = flatStyle(n);
@@ -312,20 +314,21 @@ describe('LineChart curves', () => {
 });
 
 describe('LineChart area fill', () => {
-  const isArea = (n: JsonNode) => {
-    const s = flatStyle(n);
-    return s.overflow === 'hidden' && typeof s.opacity === 'number';
-  };
+  const isBand = (n: JsonNode) => flatStyle(n).overflow === 'hidden';
+  // Bands are opaque and overlap slightly; the run's opacity lives on the one
+  // layer wrapping them, so the overlaps can't darken into a seam.
+  const isFillLayer = (n: JsonNode, opacity: number) =>
+    flatStyle(n).opacity === opacity && countNodes(n, isBand) > 0;
 
   it('renders fills at opacity 0.15 by default', async () => {
     const { toJSON } = await renderLine(
       <LineChart data={[10, 20, 30]} testID="lc" animate={false} area />
     );
-    const areas = countNodes(
-      toJSON(),
-      (n) => isArea(n) && flatStyle(n).opacity === 0.15
-    );
-    expect(areas).toBe(2);
+    expect(countNodes(toJSON(), (n) => isFillLayer(n, 0.15))).toBe(1);
+    expect(countNodes(toJSON(), isBand)).toBe(2);
+    expect(
+      countNodes(toJSON(), (n) => isBand(n) && 'opacity' in flatStyle(n))
+    ).toBe(0);
   });
 
   it('honors area.opacity', async () => {
@@ -337,9 +340,8 @@ describe('LineChart area fill', () => {
         area={{ opacity: 0.4 }}
       />
     );
-    expect(
-      countNodes(toJSON(), (n) => isArea(n) && flatStyle(n).opacity === 0.4)
-    ).toBe(2);
+    expect(countNodes(toJSON(), (n) => isFillLayer(n, 0.4))).toBe(1);
+    expect(countNodes(toJSON(), isBand)).toBe(2);
   });
 });
 

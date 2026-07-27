@@ -43,6 +43,13 @@ export const DEFAULT_ANIMATION_DURATION = 500;
 /** Sliver of overlap between pie slices that hides sub-pixel seams. */
 export const PIE_SEAM_EPSILON_RAD = (0.25 * Math.PI) / 180;
 
+/**
+ * Sliver of overlap between area-fill bands, same purpose. Safe only because
+ * the bands render opaque inside one shared opacity layer — overlapping them
+ * at partial alpha would darken the seam instead of hiding it.
+ */
+export const AREA_SEAM_EPSILON = 0.5;
+
 /** Below these, charts grow horizontally and scroll instead of cramming. */
 export const MIN_POINT_SPACING = 40;
 export const MIN_BAR_BAND_WIDTH = 36;

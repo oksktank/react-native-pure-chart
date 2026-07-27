@@ -117,6 +117,85 @@ describe('sampleMonotone', () => {
     expect(intervalCounts.reduce((s, c) => s + c, 0)).toBe(points.length - 1);
   });
 
+  // Pixel geometry of docs/line-value-labels.png: traffic [30,200,170,250,90,
+  // 210] at height 200 over a 0..250 domain, six points 67pt apart.
+  const docsGeometry = [30, 200, 170, 250, 90, 210].map((v, i) => ({
+    x: i * 67,
+    y: 200 - v * 0.8,
+  }));
+
+  /** Direction change at each joint of the polyline, in degrees. */
+  const jointTurns = (points: { x: number; y: number }[]) => {
+    const out: number[] = [];
+    for (let i = 1; i < points.length - 1; i++) {
+      const before = Math.atan2(
+        points[i]!.y - points[i - 1]!.y,
+        points[i]!.x - points[i - 1]!.x
+      );
+      const after = Math.atan2(
+        points[i + 1]!.y - points[i]!.y,
+        points[i + 1]!.x - points[i]!.x
+      );
+      out.push((Math.abs(after - before) * 180) / Math.PI);
+    }
+    return out;
+  };
+
+  // The guard that matters: what makes a polyline read as angular is the
+  // direction change at its joints, not the area between it and the curve.
+  // Deviation alone permits ~24° joints at a tight bend, which is what the
+  // faceting in the pre-fix screenshots was.
+  it('no joint turns more than 8 degrees, even at a tight bend', () => {
+    const turns = jointTurns(sampleMonotone(docsGeometry).points);
+    expect(Math.max(...turns)).toBeLessThan(8);
+  });
+
+  it('a wide curved interval gets far more chords than a fixed pixel step did', () => {
+    const { intervalCounts } = sampleMonotone(docsGeometry);
+    // A 67pt interval used to be cut into round(67 / 14) = 5 chords flat.
+    for (const count of intervalCounts) {
+      expect(count).toBeGreaterThanOrEqual(12);
+    }
+  });
+
+  it('spends nothing on intervals that are already straight', () => {
+    const { intervalCounts } = sampleMonotone([
+      { x: 0, y: 0 },
+      { x: 100, y: 50 },
+      { x: 200, y: 100 },
+      { x: 300, y: 150 },
+    ]);
+    expect(intervalCounts).toEqual([1, 1, 1]);
+  });
+
+  it('a dense series stays well inside the segment budget', () => {
+    const original = Array.from({ length: 200 }, (_, i) => ({
+      x: i * 5,
+      y: 100 + 40 * Math.sin(i / 6),
+    }));
+    const { intervalCounts } = sampleMonotone(original);
+    const total = intervalCounts.reduce((sum, c) => sum + c, 0);
+    expect(total).toBeLessThanOrEqual(400);
+    // Close-packed points barely bend between neighbours, so most intervals
+    // should still cost a single chord.
+    expect(total / intervalCounts.length).toBeLessThan(2);
+  });
+
+  it('the first interval leaves the endpoint curving, not dead straight', () => {
+    const original = [
+      { x: 0, y: 0 },
+      { x: 100, y: 60 },
+      { x: 200, y: 80 },
+    ];
+    const { points, intervalCounts } = sampleMonotone(original);
+    // A straight first interval would put every sample on the chord.
+    const chordY = (x: number) => (x / 100) * 60;
+    const offCount = points
+      .slice(0, intervalCounts[0]! + 1)
+      .filter((p) => Math.abs(p.y - chordY(p.x)) > 0.5).length;
+    expect(offCount).toBeGreaterThan(0);
+  });
+
   it('a flat series stays exactly flat', () => {
     const { points } = sampleMonotone([
       { x: 0, y: 42 },

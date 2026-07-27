@@ -240,24 +240,44 @@ export function LineChart(props: LineChartProps) {
               cumBefore.push(cumBefore[j]! + counts[j]!);
             }
             const firstSegment = segmentCursor;
+            // The bands overlap slightly to hide seams, so they must be opaque
+            // and share one opacity layer — per-band opacity would darken every
+            // overlap into the seam it is meant to remove.
             const areaFills = areaOpacity
-              ? segments.map((segment, i) => (
-                  <AreaSegment
-                    key={`a${seriesIndex}-${runIndex}-${i}`}
-                    layout={segment}
-                    baselineY={baselineY}
-                    color={color}
-                    opacity={areaOpacity}
-                    grow={
-                      grow
-                        ? windowOf(
-                            progress,
-                            windows[segmentCursor + i] ?? { start: 0, end: 1 }
-                          )
-                        : undefined
-                    }
-                  />
-                ))
+              ? [
+                  <View
+                    key={`a${seriesIndex}-${runIndex}`}
+                    pointerEvents="none"
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                      opacity: areaOpacity,
+                    }}
+                  >
+                    {segments.map((segment, i) => (
+                      <AreaSegment
+                        key={i}
+                        layout={segment}
+                        baselineY={baselineY}
+                        color={color}
+                        grow={
+                          grow
+                            ? windowOf(
+                                progress,
+                                windows[segmentCursor + i] ?? {
+                                  start: 0,
+                                  end: 1,
+                                }
+                              )
+                            : undefined
+                        }
+                      />
+                    ))}
+                  </View>,
+                ]
               : [];
             const rendered = areaFills
               .concat(
