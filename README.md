@@ -273,4 +273,4 @@ stress tests (1° pie slices, high-contrast neighbors, missing data).
 
 ## License
 
-MIT © [Hansol Lee](https://github.com/oksktank)
+MIT
