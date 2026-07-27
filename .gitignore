@@ -1,5 +1,7 @@
 node_modules
 .expo
+lib/
+*.log
+.DS_Store
 yarn.lock
 package-lock.json
-examples/package-lock.json

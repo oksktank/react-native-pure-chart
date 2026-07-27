@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "react-native-pure-chart": ["../src/index.ts"],
+      "react-native-pure-chart/*": ["../src/*"]
+    }
+  }
+}
