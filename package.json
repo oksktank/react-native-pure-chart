@@ -1,6 +1,6 @@
 {
   "name": "react-native-pure-chart",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Charts built from nothing but <View> and <Text>. Zero dependencies, no native modules, no SVG, no Skia.",
   "source": "./src/index.ts",
   "main": "./lib/commonjs/index.js",
