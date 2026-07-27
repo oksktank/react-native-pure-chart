@@ -9,7 +9,11 @@ export interface DataPoint {
   value: number | null;
   /** x-axis label. Omit to hide the axis label for this point. */
   label?: string;
-  /** Per-point color override (highlighting a single bar/point). */
+  /**
+   * Per-point color override — highlights a single bar. Applies to grouped
+   * and single-series bars only; stacked segments and line/dot colors come
+   * from the series.
+   */
   color?: string;
   /** Arbitrary payload, returned untouched in press events. */
   extra?: unknown;

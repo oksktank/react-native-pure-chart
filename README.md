@@ -331,6 +331,40 @@ interface Series {
 Numbers, `null`s and `DataPoint` objects can be mixed freely in one array.
 Pie charts take `PieSliceDatum[]` — `{ value, label?, color?, extra? }`.
 
+## Colors
+
+Nothing is hard-coded. Colors come from four levels, most specific first:
+
+```tsx
+// 1. the whole chart — replaces the auto-assigned palette
+<BarChart data={data} palette={['#FF6B6B', '#4ECDC4', '#FFD93D']} />
+
+// 2. one series / one pie slice
+<LineChart data={[{ name: 'Sales', data: [30, 90, 50], color: '#FF6B6B' }]} />
+<PieChart data={[{ value: 50, label: 'Marketing', color: '#FF6B6B' }]} />
+
+// 3. one bar — highlight a single value
+<BarChart data={[30, { value: 90, color: '#FF6B6B' }, 50]} />
+
+// 4. line dots, independently of the line
+<LineChart data={data} showDataPoints={{ color: '#111827', radius: 5 }} />
+```
+
+The palette cycles when there are more series than colors, so it never runs
+out. Extend the built-in one instead of retyping it:
+
+```tsx
+import { DEFAULT_PALETTE } from 'react-native-pure-chart';
+
+<BarChart data={data} palette={['#FF6B6B', ...DEFAULT_PALETTE]} />;
+```
+
+Two limits worth knowing: a per-point `color` applies to **grouped and
+single-series bars only** — stacked segments take the series color — and line
+segments always use the series color, so a single point can't recolor the line
+it sits on. Axis, grid, label and tooltip colors are not part of the palette;
+they come from [`theme`](#theme-legend-tooltip-events).
+
 ## LineChart
 
 | Prop | Type | Default | Description |
