@@ -595,11 +595,15 @@ npm test             # unit tests for the core + component tests
 npm run typecheck
 
 cd example && npm install
-npx expo start       # gallery app (iOS/Android/web)
+npm start            # gallery app against the local ../src (live editing)
+npm run start:npm    # gallery app against the published npm package
 ```
 
 The `example/` app is a gallery of every chart variant, including artifact
-stress tests (1° pie slices, high-contrast neighbors, missing data).
+stress tests (1° pie slices, high-contrast neighbors, missing data). It runs
+in two modes: `npm start` resolves the library from `../src` for live
+development, while `npm run start:npm` resolves the version installed from
+npm — use it to smoke-test a release exactly as consumers get it.
 `example/screens/ShotScreen.tsx` is the reproducible source of every image in
 `docs/` — flip `SHOT_MODE` in `example/App.tsx`, pick a group, screenshot.
 

@@ -15,6 +15,7 @@
   },
   "scripts": {
     "start": "expo start",
+    "start:npm": "USE_NPM_PKG=1 expo start --clear",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
