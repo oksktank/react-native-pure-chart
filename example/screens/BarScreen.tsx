@@ -25,8 +25,31 @@ const withNegatives = [12, -8, 25, -15, 30, 5].map((value, i) => ({
 export function BarScreen() {
   return (
     <View style={styles.container}>
+      <Text style={styles.caseTitle}>stacked</Text>
+      <BarChart data={multi} stacked />
+      <Text style={styles.caseTitle}>stacked + horizontal (with negatives)</Text>
+      <BarChart
+        data={[
+          { name: 'Income', data: [40, 55, 32, 70] },
+          { name: 'Refunds', data: [-12, -8, -15, -5] },
+          { name: 'Bonus', data: [10, 6, 12, 9] },
+        ]}
+        stacked
+        horizontal
+        height={200}
+      />
       <Text style={styles.caseTitle}>horizontal bars</Text>
       <BarChart data={single} horizontal height={200} />
+      <Text style={styles.caseTitle}>
+        24 categories — grows &amp; scrolls automatically (drag)
+      </Text>
+      <BarChart
+        data={Array.from({ length: 24 }, (_, i) => ({
+          value: Math.round(50 + 40 * Math.sin(i / 2)),
+          label: `M${i + 1}`,
+        }))}
+        height={160}
+      />
       <Text style={styles.caseTitle}>
         scrollable (barWidth 36, 20 categories, starts at end)
       </Text>

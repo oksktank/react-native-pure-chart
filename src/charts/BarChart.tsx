@@ -8,7 +8,7 @@ import {
   normalizeData,
 } from '../core/normalize';
 import { computeYDomain } from '../core/scale';
-import { barExtent, computeBarLayout } from '../core/bars';
+import { barExtent, computeBarLayout, computeStacks } from '../core/bars';
 import {
   colorAt,
   resolveAnimation,
@@ -33,6 +33,8 @@ import {
   DEFAULT_BAR_RADIUS,
   DEFAULT_HEIGHT,
   DEFAULT_PALETTE,
+  MIN_BAR_BAND_WIDTH,
+  MIN_BAR_WIDTH,
 } from '../constants';
 
 export function BarChart(props: BarChartProps) {
@@ -48,6 +50,7 @@ export function BarChart(props: BarChartProps) {
     style,
     testID,
   } = props;
+  const stacked = props.stacked === true;
 
   const { series, warnings } = useMemo(() => normalizeData(data), [data]);
   useEffect(() => {
@@ -84,22 +87,36 @@ export function BarChart(props: BarChartProps) {
   const legendVisible =
     props.legend !== false && series.length > 1 && series.some((s) => s.name);
   const renderValueLabel = props.renderValueLabel;
+  const stacks = useMemo(
+    () =>
+      stacked
+        ? computeStacks(
+            series.map((s) => s.points.map((p) => p.value)),
+            categoryCount
+          )
+        : null,
+    [stacked, series, categoryCount]
+  );
   const yDomain = useMemo(
     () =>
-      computeYDomain(collectValues(series), {
-        min: yAxis.min,
-        max: yAxis.max,
-        tickCount: yAxis.tickCount,
-      }),
-    [series, yAxis.min, yAxis.max, yAxis.tickCount]
+      computeYDomain(
+        stacks ? [stacks.min, stacks.max] : collectValues(series),
+        {
+          min: yAxis.min,
+          max: yAxis.max,
+          tickCount: yAxis.tickCount,
+        }
+      ),
+    [series, stacks, yAxis.min, yAxis.max, yAxis.tickCount]
   );
   const xLabels = useMemo(() => collectLabels(series), [series]);
+  const slotSeriesCount = stacked ? 1 : series.length;
 
   const layoutFor = (plot: PlotRect) =>
     computeBarLayout({
       plotWidth: plot.width - padding.left - padding.right,
       categoryCount,
-      seriesCount: series.length,
+      seriesCount: slotSeriesCount,
       barWidth,
       barGap,
       groupGap,
@@ -132,7 +149,7 @@ export function BarChart(props: BarChartProps) {
           computeBarLayout({
             plotWidth: plot.height - padding.top - padding.bottom,
             categoryCount,
-            seriesCount: series.length,
+            seriesCount: slotSeriesCount,
             barWidth,
             barGap,
             groupGap,
@@ -150,7 +167,7 @@ export function BarChart(props: BarChartProps) {
           const layout = computeBarLayout({
             plotWidth: plot.height - padding.top - padding.bottom,
             categoryCount,
-            seriesCount: series.length,
+            seriesCount: slotSeriesCount,
             barWidth,
             barGap,
             groupGap,
@@ -163,7 +180,96 @@ export function BarChart(props: BarChartProps) {
             tooltipOptions.formatValue ?? ((v: number) => formatCompact(v));
           return (
             <>
-              {series.map((s, seriesIndex) =>
+              {stacks
+                ? Array.from({ length: categoryCount }, (_, categoryIndex) => {
+                    const slot = layout.slots[categoryIndex]?.[0];
+                    if (!slot) {
+                      return null;
+                    }
+                    const dimmed =
+                      selectedIndex !== null &&
+                      categoryIndex !== selectedIndex;
+                    const animatedStyle = !animation.enabled
+                      ? null
+                      : animation.type === 'fade' && selectedIndex === null
+                        ? { opacity: progress }
+                        : {
+                            // Whole stack scales from the zero baseline.
+                            transformOrigin: [zeroPx, '50%', 0] as (
+                              | number
+                              | string
+                            )[],
+                            transform: [
+                              {
+                                scaleX: windowOf(
+                                  progress,
+                                  windows[categoryIndex] ?? {
+                                    start: 0,
+                                    end: 1,
+                                  }
+                                ),
+                              },
+                            ],
+                          };
+                    const radius = Math.min(barRadius, slot.width / 2);
+                    return (
+                      <Animated.View
+                        key={`st${categoryIndex}`}
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          width: plot.width,
+                          top: padding.top + slot.x,
+                          height: slot.width,
+                          ...animatedStyle,
+                          ...(dimmed ? { opacity: 0.35 } : null),
+                        }}
+                      >
+                        {series.map((s, si) => {
+                          const segment =
+                            stacks.segments[si]?.[categoryIndex];
+                          if (!segment) {
+                            return null;
+                          }
+                          const startPx = valueScale(segment.start);
+                          const endPx = valueScale(segment.end);
+                          return (
+                            <View
+                              key={si}
+                              style={{
+                                position: 'absolute',
+                                top: 0,
+                                bottom: 0,
+                                left: Math.min(startPx, endPx),
+                                width: Math.max(
+                                  Math.abs(endPx - startPx),
+                                  1
+                                ),
+                                backgroundColor: colorAt(
+                                  palette,
+                                  si,
+                                  s.color
+                                ),
+                                ...(stacks.outerPositive[categoryIndex] === si
+                                  ? {
+                                      borderTopRightRadius: radius,
+                                      borderBottomRightRadius: radius,
+                                    }
+                                  : null),
+                                ...(stacks.outerNegative[categoryIndex] === si
+                                  ? {
+                                      borderTopLeftRadius: radius,
+                                      borderBottomLeftRadius: radius,
+                                    }
+                                  : null),
+                              }}
+                            />
+                          );
+                        })}
+                      </Animated.View>
+                    );
+                  })
+                : series.map((s, seriesIndex) =>
                 s.points.map((point, categoryIndex) => {
                   if (point.value === null) {
                     return null;
@@ -332,14 +438,27 @@ export function BarChart(props: BarChartProps) {
       getXCenters={(plot) =>
         layoutFor(plot).centers.map((c) => c + padding.left)
       }
-      getContentWidth={() => {
-        if (barWidth === undefined) {
+      getContentWidth={(viewport) => {
+        if (categoryCount === 0) {
           return null;
         }
-        const groupWidth =
-          barWidth * series.length + barGap * (series.length - 1);
-        const band = groupWidth + (groupGap ?? 20);
-        return padding.left + padding.right + band * categoryCount;
+        if (barWidth !== undefined) {
+          const groupWidth =
+            barWidth * slotSeriesCount + barGap * (slotSeriesCount - 1);
+          const band = groupWidth + (groupGap ?? 20);
+          return padding.left + padding.right + band * categoryCount;
+        }
+        // Auto mode: fill the width, but grow and scroll instead of
+        // rendering sliver bars when there are many categories.
+        const gapTotal = barGap * (slotSeriesCount - 1);
+        const minBand = Math.max(
+          MIN_BAR_BAND_WIDTH,
+          (MIN_BAR_WIDTH * slotSeriesCount + gapTotal) / 0.7
+        );
+        const inner = viewport - padding.left - padding.right;
+        return inner / categoryCount < minBand
+          ? padding.left + padding.right + minBand * categoryCount
+          : null;
       }}
       scrollable={props.scrollable ?? true}
       initialScroll={props.initialScroll ?? 'start'}
@@ -358,7 +477,84 @@ export function BarChart(props: BarChartProps) {
         );
         return (
           <>
-            {series.map((s, seriesIndex) =>
+            {stacks
+              ? Array.from({ length: categoryCount }, (_, categoryIndex) => {
+                  const slot = layout.slots[categoryIndex]?.[0];
+                  if (!slot) {
+                    return null;
+                  }
+                  const dimmed =
+                    selectedIndex !== null && categoryIndex !== selectedIndex;
+                  const animatedStyle = !animation.enabled
+                    ? null
+                    : animation.type === 'fade' && selectedIndex === null
+                      ? { opacity: progress }
+                      : {
+                          // Whole stack scales from the zero baseline.
+                          transformOrigin: ['50%', zeroPx, 0] as (
+                            | number
+                            | string
+                          )[],
+                          transform: [
+                            {
+                              scaleY: windowOf(
+                                progress,
+                                windows[categoryIndex] ?? { start: 0, end: 1 }
+                              ),
+                            },
+                          ],
+                        };
+                  const radius = Math.min(barRadius, slot.width / 2);
+                  return (
+                    <Animated.View
+                      key={`st${categoryIndex}`}
+                      style={{
+                        position: 'absolute',
+                        left: padding.left + slot.x,
+                        width: slot.width,
+                        top: 0,
+                        height: plot.height,
+                        ...animatedStyle,
+                        ...(dimmed ? { opacity: 0.35 } : null),
+                      }}
+                    >
+                      {series.map((s, si) => {
+                        const segment = stacks.segments[si]?.[categoryIndex];
+                        if (!segment) {
+                          return null;
+                        }
+                        const endPx = yScale(segment.end);
+                        const startPx = yScale(segment.start);
+                        return (
+                          <View
+                            key={si}
+                            style={{
+                              position: 'absolute',
+                              left: 0,
+                              right: 0,
+                              top: Math.min(endPx, startPx),
+                              height: Math.max(Math.abs(startPx - endPx), 1),
+                              backgroundColor: colorAt(palette, si, s.color),
+                              ...(stacks.outerPositive[categoryIndex] === si
+                                ? {
+                                    borderTopLeftRadius: radius,
+                                    borderTopRightRadius: radius,
+                                  }
+                                : null),
+                              ...(stacks.outerNegative[categoryIndex] === si
+                                ? {
+                                    borderBottomLeftRadius: radius,
+                                    borderBottomRightRadius: radius,
+                                  }
+                                : null),
+                            }}
+                          />
+                        );
+                      })}
+                    </Animated.View>
+                  );
+                })
+              : series.map((s, seriesIndex) =>
               s.points.map((point, categoryIndex) => {
                 if (point.value === null) {
                   return null;
@@ -421,7 +617,7 @@ export function BarChart(props: BarChartProps) {
                 );
               })
             )}
-            {renderValueLabel
+            {renderValueLabel && !stacks
               ? series.flatMap((s, seriesIndex) =>
                   s.points.map((point, categoryIndex) => {
                     if (point.value === null) {

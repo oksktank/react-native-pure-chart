@@ -16,6 +16,7 @@ import {
   stepSegments,
   type Point,
 } from '../core/geometry';
+import { sampleMonotone } from '../core/curve';
 import {
   colorAt,
   resolveAnimation,
@@ -35,11 +36,13 @@ import { Legend } from '../container/Legend';
 import { formatCompact } from '../core/scale';
 import { ChartContainer, type PlotRect } from '../container/ChartContainer';
 import { LineSegment } from '../primitives/LineSegment';
+import { AreaSegment } from '../primitives/AreaSegment';
 import { Dot } from '../primitives/Dot';
 import {
   DEFAULT_HEIGHT,
   DEFAULT_PALETTE,
   DEFAULT_STROKE_WIDTH,
+  MIN_POINT_SPACING,
 } from '../constants';
 
 interface PlacedPoint extends Point {
@@ -128,6 +131,11 @@ export function LineChart(props: LineChartProps) {
       : Math.max(3, strokeWidth * 1.5);
   const pointsVisible = showDataPoints !== false;
   const renderValueLabel = props.renderValueLabel;
+  const areaOpacity = props.area
+    ? typeof props.area === 'object'
+      ? (props.area.opacity ?? 0.15)
+      : 0.15
+    : 0;
   const legendVisible =
     props.legend !== false && series.length > 1 && series.some((s) => s.name);
 
@@ -141,11 +149,23 @@ export function LineChart(props: LineChartProps) {
       xAxis={xAxis}
       xLabels={xLabels}
       getXCenters={xPositions}
-      getContentWidth={() =>
-        spacing !== undefined && categoryCount > 1
-          ? padding.left + padding.right + spacing * (categoryCount - 1)
-          : null
-      }
+      getContentWidth={(viewport) => {
+        if (categoryCount <= 1) {
+          return null;
+        }
+        if (spacing !== undefined) {
+          return padding.left + padding.right + spacing * (categoryCount - 1);
+        }
+        // Auto mode: distribute across the width, but never cram points
+        // closer than the minimum — grow and scroll instead (legacy `gap`
+        // behavior without the fixed default).
+        const inner = viewport - padding.left - padding.right;
+        return inner / (categoryCount - 1) < MIN_POINT_SPACING
+          ? padding.left +
+              padding.right +
+              MIN_POINT_SPACING * (categoryCount - 1)
+          : null;
+      }}
       scrollable={props.scrollable ?? true}
       initialScroll={props.initialScroll ?? 'start'}
       theme={theme}
@@ -159,6 +179,9 @@ export function LineChart(props: LineChartProps) {
       {(plot, yScale) => {
         const xs = xPositions(plot);
         const grow = animation.enabled && animation.type === 'grow';
+        const baselineY = yScale(
+          Math.max(yDomain.min, Math.min(yDomain.max, 0))
+        );
         const content = series.map((s, seriesIndex) => {
           const color = colorAt(palette, seriesIndex, s.color);
           const placed: (PlacedPoint | null)[] = s.points.map((point, i) =>
@@ -172,11 +195,30 @@ export function LineChart(props: LineChartProps) {
                 }
           );
           const runs = splitRuns(placed, (p) => p !== null) as PlacedPoint[][];
-          const segmentsPerRun = runs.map((run) =>
-            curve === 'step' ? stepSegments(run) : polylineSegments(run)
-          );
-          const totalSegments = segmentsPerRun.reduce(
-            (sum, segs) => sum + segs.length,
+          // Segments plus, per original interval, how many segments it became
+          // (1 for linear, 1-2 for step, n for monotone) — dots use this to
+          // time their entrance to the segment that reaches them.
+          const builtPerRun = runs.map((run) => {
+            if (curve === 'monotone') {
+              const { points: sampled, intervalCounts } = sampleMonotone(run);
+              return {
+                segments: polylineSegments(sampled),
+                counts: intervalCounts,
+              };
+            }
+            if (curve === 'step') {
+              return {
+                segments: stepSegments(run),
+                counts: run.slice(1).map((p, i) => (run[i]!.y === p.y ? 1 : 2)),
+              };
+            }
+            return {
+              segments: polylineSegments(run),
+              counts: run.slice(1).map(() => 1),
+            };
+          });
+          const totalSegments = builtPerRun.reduce(
+            (sum, b) => sum + b.segments.length,
             0
           );
           // The whole series shares one left-to-right timeline.
@@ -188,25 +230,54 @@ export function LineChart(props: LineChartProps) {
 
           let segmentCursor = 0;
           return runs.map((run, runIndex) => {
-            const segments = segmentsPerRun[runIndex] ?? [];
+            const { segments, counts } = builtPerRun[runIndex] ?? {
+              segments: [],
+              counts: [],
+            };
+            // cumBefore[j] = segments consumed before original point j.
+            const cumBefore: number[] = [0];
+            for (let j = 0; j < counts.length; j++) {
+              cumBefore.push(cumBefore[j]! + counts[j]!);
+            }
             const firstSegment = segmentCursor;
-            const rendered = segments
-              .map((segment, i) => (
-                <LineSegment
-                  key={`s${seriesIndex}-${runIndex}-${i}`}
-                  layout={segment}
-                  thickness={strokeWidth}
-                  color={color}
-                  grow={
-                    grow
-                      ? windowOf(
-                          progress,
-                          windows[segmentCursor + i] ?? { start: 0, end: 1 }
-                        )
-                      : undefined
-                  }
-                />
-              ))
+            const areaFills = areaOpacity
+              ? segments.map((segment, i) => (
+                  <AreaSegment
+                    key={`a${seriesIndex}-${runIndex}-${i}`}
+                    layout={segment}
+                    baselineY={baselineY}
+                    color={color}
+                    opacity={areaOpacity}
+                    grow={
+                      grow
+                        ? windowOf(
+                            progress,
+                            windows[segmentCursor + i] ?? { start: 0, end: 1 }
+                          )
+                        : undefined
+                    }
+                  />
+                ))
+              : [];
+            const rendered = areaFills
+              .concat(
+                segments.map((segment, i) => (
+                  <LineSegment
+                    key={`s${seriesIndex}-${runIndex}-${i}`}
+                    layout={segment}
+                    thickness={strokeWidth}
+                    color={color}
+                    grow={
+                      grow
+                        ? windowOf(
+                            progress,
+                            windows[segmentCursor + i] ?? { start: 0, end: 1 }
+                          )
+                        : undefined
+                    }
+                  />
+                ))
+              )
               .concat(
                 run
                   .map((p, j) => {
@@ -216,17 +287,13 @@ export function LineChart(props: LineChartProps) {
                     ) {
                       return null;
                     }
-                    // A dot pops in as the segment arriving at it completes
-                    // (j is the position within the run, so it maps onto the
-                    // run's segments even when synthetic dots are skipped).
+                    // A dot pops in as the segment arriving at it completes.
                     const owningSegment =
                       j === 0
                         ? windows[firstSegment]
                         : windows[
                             Math.min(
-                              firstSegment +
-                                (curve === 'step' ? j * 2 : j) -
-                                1,
+                              firstSegment + (cumBefore[j] ?? j) - 1,
                               windows.length - 1
                             )
                           ];

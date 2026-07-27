@@ -177,8 +177,13 @@ export interface LineChartProps extends BaseChartProps {
   data: ChartData;
   /** Line thickness in px. Default 2. */
   strokeWidth?: number;
-  /** Default 'linear'. Smooth curves are not supported — see README Limitations. */
-  curve?: 'linear' | 'step';
+  /**
+   * Default 'linear'. 'monotone' draws a smooth curve through the points
+   * (monotone cubic — never overshoots the data).
+   */
+  curve?: 'linear' | 'step' | 'monotone';
+  /** Fill the area between the line and the zero baseline. Default false. */
+  area?: boolean | { opacity?: number };
   /** Default true. Object form adjusts radius/color. */
   showDataPoints?: boolean | { radius?: number; color?: string };
   /** How to treat `null` values. Default 'break'. */
@@ -215,6 +220,8 @@ export interface BarChartProps extends BaseChartProps {
   barGap?: number;
   /** Gap between categories. Defaults to automatic sizing. */
   groupGap?: number;
+  /** Stack multi-series values (positives up, negatives down). Default false. */
+  stacked?: boolean;
   /** Horizontal bars. Default false. */
   horizontal?: boolean;
   xAxis?: XAxisOptions;

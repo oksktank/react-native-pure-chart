@@ -69,10 +69,11 @@ const revenue = [
 | --- | --- | --- | --- |
 | `data` | `ChartData` | — | Numbers, `{value, label}` objects, or an array of series |
 | `strokeWidth` | `number` | `2` | Line thickness (no upper limit) |
-| `curve` | `'linear' \| 'step'` | `'linear'` | Line interpolation |
+| `curve` | `'linear' \| 'step' \| 'monotone'` | `'linear'` | `'monotone'` draws a smooth curve that never overshoots the data |
+| `area` | `boolean \| {opacity}` | `false` | Fill between the line and the zero baseline (default opacity 0.15) |
 | `showDataPoints` | `boolean \| {radius, color}` | `true` | Point markers |
 | `missingValues` | `'break' \| 'interpolate' \| 'zero'` | `'break'` | How `null` values are treated |
-| `spacing` | `number` | auto | Fixed px between points (enables scrolling) |
+| `spacing` | `number` | auto | Px between points. Auto mode fills the width, but never squeezes below 40px — the chart grows and scrolls instead |
 | `scrollable` | `boolean` | `true` | Horizontal scroll when content overflows |
 | `initialScroll` | `'start' \| 'end'` | `'start'` | Initial scroll position |
 | `onPointPress` | `(e: PressEvent) => void` | — | Tap on the chart |
@@ -98,15 +99,19 @@ import { BarChart } from 'react-native-pure-chart';
 
 // Horizontal bars
 <BarChart data={[30, 200, 170]} horizontal />;
+
+// Stacked (positives stack up, negatives stack down; works with horizontal too)
+<BarChart data={multiSeries} stacked />;
 ```
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `data` | `ChartData` | — | Same shapes as LineChart |
-| `barWidth` | `number` | auto | Fixed bar width (enables scrolling) |
+| `barWidth` | `number` | auto | Bar width. Auto mode fills the width, but grows and scrolls instead of rendering sliver bars for many categories |
 | `barRadius` | `number` | `4` | Corner radius on the value end |
 | `barGap` | `number` | `2` | Gap between bars in a group |
 | `groupGap` | `number` | auto | Gap between categories |
+| `stacked` | `boolean` | `false` | Stack multi-series values (also combines with `horizontal`) |
 | `horizontal` | `boolean` | `false` | Horizontal bars (`yAxis` still configures the value axis) |
 | `onPointPress` / `selectedIndex` / `tooltip` |  |  | Same as LineChart; selection dims other categories |
 | `renderValueLabel` | `(e) => ReactNode` | — | Label above each bar |
@@ -219,13 +224,12 @@ yAxis={{ formatLabel: (v) => `${formatCompact(v)}%` }}
 
 Honesty section — the price of the zero-dependency concept:
 
-- **No smooth (bezier) curves.** Lines are made of rotated `View` segments;
-  smooth curves would need dozens of segments per pair of points. `'linear'`
-  and `'step'` only.
+- **Smooth curves cost Views.** `curve="monotone"` approximates the curve
+  with short line segments (budgeted at ~400 per series). For very dense
+  series prefer `'linear'`.
 - **Donut holes are opaque.** The hole is a colored circle overlay, so donuts
   don't work on top of images/gradients. Set `holeColor` to match your
   background.
-- **No stacked bars / area fill yet** — planned for a future minor release.
 - **Large datasets:** each point/segment is a `View`. A few hundred points are
   fine; for thousands of points use an SVG- or Skia-based library instead.
 

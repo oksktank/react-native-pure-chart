@@ -24,6 +24,24 @@ const gappy = [50, null, null, 90, 40, null, 70, 20];
 export function LineScreen() {
   return (
     <View style={styles.container}>
+      <Text style={styles.caseTitle}>monotone curve + area fill</Text>
+      <LineChart
+        data={[30, 200, 170, 250, 10, 130]}
+        curve="monotone"
+        area
+      />
+      <Text style={styles.caseTitle}>multi series, monotone + area</Text>
+      <LineChart data={multi} curve="monotone" area height={200} />
+      <Text style={styles.caseTitle}>
+        30 points — grows &amp; scrolls automatically (drag)
+      </Text>
+      <LineChart
+        data={Array.from({ length: 30 }, (_, i) => ({
+          value: Math.round(100 + 80 * Math.sin(i / 3) + i * 3),
+          label: `D${i + 1}`,
+        }))}
+        height={180}
+      />
       <Text style={styles.caseTitle}>quick start (3 lines of code)</Text>
       <LineChart data={[30, 200, 170, 250, 10]} />
       <Text style={styles.caseTitle}>multi series + null (break)</Text>

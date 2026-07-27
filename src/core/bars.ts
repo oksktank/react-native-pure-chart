@@ -69,3 +69,61 @@ export function barExtent(
   const top = Math.min(valuePx, zeroPx);
   return { top, height: Math.abs(valuePx - zeroPx) };
 }
+
+/** One stacked segment in value space. */
+export interface StackSegment {
+  start: number;
+  end: number;
+}
+
+export interface StackLayout {
+  /** segments[seriesIndex][categoryIndex]; null for missing values. */
+  segments: (StackSegment | null)[][];
+  /** Series index of the outermost positive/negative segment per category. */
+  outerPositive: (number | null)[];
+  outerNegative: (number | null)[];
+  /** Cumulative extremes — feed these into the domain computation. */
+  min: number;
+  max: number;
+}
+
+/**
+ * Stacks values per category: positives accumulate upward from zero,
+ * negatives downward. `values[seriesIndex][categoryIndex]`.
+ */
+export function computeStacks(
+  values: readonly (readonly (number | null)[])[],
+  categoryCount: number
+): StackLayout {
+  const segments: (StackSegment | null)[][] = values.map(() =>
+    new Array<StackSegment | null>(categoryCount).fill(null)
+  );
+  const outerPositive: (number | null)[] = new Array(categoryCount).fill(null);
+  const outerNegative: (number | null)[] = new Array(categoryCount).fill(null);
+  let min = 0;
+  let max = 0;
+
+  for (let c = 0; c < categoryCount; c++) {
+    let up = 0;
+    let down = 0;
+    values.forEach((seriesValues, s) => {
+      const value = seriesValues[c];
+      if (value === null || value === undefined || value === 0) {
+        return;
+      }
+      if (value > 0) {
+        segments[s]![c] = { start: up, end: up + value };
+        up += value;
+        outerPositive[c] = s;
+      } else {
+        segments[s]![c] = { start: down + value, end: down };
+        down += value;
+        outerNegative[c] = s;
+      }
+    });
+    max = Math.max(max, up);
+    min = Math.min(min, down);
+  }
+
+  return { segments, outerPositive, outerNegative, min, max };
+}

@@ -43,6 +43,11 @@ export const DEFAULT_ANIMATION_DURATION = 500;
 /** Sliver of overlap between pie slices that hides sub-pixel seams. */
 export const PIE_SEAM_EPSILON_RAD = (0.25 * Math.PI) / 180;
 
+/** Below these, charts grow horizontally and scroll instead of cramming. */
+export const MIN_POINT_SPACING = 40;
+export const MIN_BAR_BAND_WIDTH = 36;
+export const MIN_BAR_WIDTH = 12;
+
 export const AXIS_FONT_SIZE = 11;
 /** Fixed label line height so labels can be centered on ticks deterministically. */
 export const AXIS_LABEL_LINE_HEIGHT = 14;
