@@ -78,4 +78,53 @@ describe('sampleMonotone', () => {
     expect(two.points).toHaveLength(2);
     expect(two.intervalCounts).toEqual([1]);
   });
+
+  it('handles an empty input', () => {
+    expect(sampleMonotone([])).toEqual({ points: [], intervalCounts: [] });
+  });
+
+  it('duplicate x (vertical jump) passes through without NaN', () => {
+    const original = [
+      { x: 0, y: 0 },
+      { x: 50, y: 10 },
+      { x: 50, y: 40 },
+      { x: 100, y: 50 },
+    ];
+    const { points, intervalCounts } = sampleMonotone(original);
+    for (const p of points) {
+      expect(Number.isFinite(p.x)).toBe(true);
+      expect(Number.isFinite(p.y)).toBe(true);
+    }
+    // The h === 0 interval collapses to a single passthrough segment.
+    expect(intervalCounts[1]).toBe(1);
+    // Still passes through every original point in order.
+    let cursor = 0;
+    for (let i = 0; i < intervalCounts.length; i++) {
+      cursor += intervalCounts[i]!;
+      expect(points[cursor]).toEqual(original[i + 1]);
+    }
+  });
+
+  it('intervalCounts always sums to the emitted segment count', () => {
+    const original = [
+      { x: 0, y: 5 },
+      { x: 30, y: 50 },
+      { x: 90, y: 10 },
+      { x: 200, y: 80 },
+      { x: 260, y: 20 },
+    ];
+    const { points, intervalCounts } = sampleMonotone(original);
+    expect(intervalCounts.reduce((s, c) => s + c, 0)).toBe(points.length - 1);
+  });
+
+  it('a flat series stays exactly flat', () => {
+    const { points } = sampleMonotone([
+      { x: 0, y: 42 },
+      { x: 60, y: 42 },
+      { x: 120, y: 42 },
+    ]);
+    for (const p of points) {
+      expect(p.y).toBeCloseTo(42);
+    }
+  });
 });

@@ -457,6 +457,7 @@ export function LineChart(props: LineChartProps) {
             {interactive ? (
               <Pressable
                 collapsable={false}
+                testID={testID ? `${testID}-touch` : undefined}
                 style={{
                   position: 'absolute',
                   left: 0,

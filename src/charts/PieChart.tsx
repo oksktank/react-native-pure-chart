@@ -282,6 +282,7 @@ export function PieChart(props: PieChartProps) {
         {interactive ? (
           <Pressable
             collapsable={false}
+            testID={testID ? `${testID}-touch` : undefined}
             style={{
               position: 'absolute',
               top: 0,

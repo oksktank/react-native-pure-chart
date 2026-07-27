@@ -112,4 +112,42 @@ describe('hitTestPie', () => {
     expect(hitTestPie(99, 20, size, 0, wrapped.pieces)).toBe(0);
     expect(hitTestPie(99, 180, size, 0, wrapped.pieces)).toBe(1);
   });
+
+  it('returns null in a padAngle gap between slices', () => {
+    const padded = computeSlices([{ value: 1 }, { value: 1 }], { padAngle: 20 });
+    // Touch at `deg` clockwise from 12 o'clock, radius 80 of a size-200 pie.
+    const at = (deg: number) =>
+      [
+        100 + Math.sin((deg * Math.PI) / 180) * 80,
+        100 - Math.cos((deg * Math.PI) / 180) * 80,
+      ] as const;
+    // Gaps are centered at 12 and 6 o'clock for a 50/50 pie.
+    expect(hitTestPie(...at(0), size, 0, padded.pieces)).toBeNull();
+    expect(hitTestPie(...at(180), size, 0, padded.pieces)).toBeNull();
+    expect(hitTestPie(...at(90), size, 0, padded.pieces)).toBe(0);
+    expect(hitTestPie(...at(270), size, 0, padded.pieces)).toBe(1);
+  });
+
+  it('touch exactly on the outer radius counts as inside', () => {
+    expect(hitTestPie(200, 100, size, 0, pieces)).toBe(0);
+  });
+
+  it('slice ranges are half-open: a boundary touch hits the next slice', () => {
+    // Exactly 6 o'clock is the boundary between slice 0 and slice 1.
+    expect(hitTestPie(100, 200, size, 0, pieces)).toBe(1);
+  });
+});
+
+describe('computeSlices edge cases', () => {
+  it('normalizes a negative startAngle into [0, 2π)', () => {
+    const { pieces } = computeSlices([{ value: 1 }], { startAngle: -90 });
+    expect(pieces[0]!.startAngle).toBeCloseTo((3 * Math.PI) / 2);
+  });
+
+  it('handles an empty data array', () => {
+    const { pieces, total, fractions } = computeSlices([]);
+    expect(pieces).toEqual([]);
+    expect(total).toBe(0);
+    expect(fractions).toEqual([]);
+  });
 });

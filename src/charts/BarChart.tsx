@@ -331,6 +331,7 @@ export function BarChart(props: BarChartProps) {
               {interactive ? (
                 <Pressable
                   collapsable={false}
+                  testID={testID ? `${testID}-touch` : undefined}
                   style={{
                     position: 'absolute',
                     left: 0,
@@ -667,6 +668,7 @@ export function BarChart(props: BarChartProps) {
             {interactive ? (
               <Pressable
                 collapsable={false}
+                testID={testID ? `${testID}-touch` : undefined}
                 style={{
                   position: 'absolute',
                   left: 0,

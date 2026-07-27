@@ -241,6 +241,7 @@ export function ChartContainer({
         {yLabelColumn}
         <View
           style={{ flex: 1 }}
+          testID={testID ? `${testID}-viewport` : undefined}
           onLayout={(e) => {
             const w = e.nativeEvent.layout.width;
             if (viewport !== w) {
@@ -251,6 +252,7 @@ export function ChartContainer({
           {scrolls ? (
             <ScrollView
               ref={scrollRef}
+              testID={testID ? `${testID}-scroll` : undefined}
               horizontal
               showsHorizontalScrollIndicator={false}
               onContentSizeChange={() => {

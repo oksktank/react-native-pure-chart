@@ -123,4 +123,49 @@ describe('helpers', () => {
   it('collectLabels prefers the first series that defines a label', () => {
     expect(collectLabels(series)).toEqual(['Jan', 'Feb-b', undefined]);
   });
+
+  it('helpers handle empty series lists', () => {
+    expect(collectValues([])).toEqual([]);
+    expect(maxPointCount([])).toBe(0);
+    expect(collectLabels([])).toEqual([]);
+  });
+});
+
+describe('normalizeData edge cases', () => {
+  it('warns and returns no series when data is not an array', () => {
+    const { series, warnings } = normalizeData({} as never);
+    expect(series).toEqual([]);
+    expect(warnings).toEqual(['`data` must be an array.']);
+  });
+
+  it('ignores unrecognized point shapes with a warning', () => {
+    const { series, warnings } = normalizeData(['nope'] as never);
+    expect(series[0]!.points[0]!.value).toBeNull();
+    expect(warnings).toHaveLength(1);
+  });
+
+  it('accepts a null value inside a DataPoint object without warning', () => {
+    const { series, warnings } = normalizeData([{ value: null, label: 'gap' }]);
+    expect(series[0]!.points[0]).toMatchObject({ value: null, label: 'gap' });
+    expect(warnings).toEqual([]);
+  });
+});
+
+describe('applyMissingPolicy edge cases', () => {
+  it('interpolate leaves trailing nulls alone', () => {
+    const result = applyMissingPolicy(points([5, 10, null, null]), 'interpolate');
+    expect(result.map((p) => p.value)).toEqual([5, 10, null, null]);
+  });
+
+  it('break returns a copy, not the same array', () => {
+    const input = points([1, null]);
+    const result = applyMissingPolicy(input, 'break');
+    expect(result).not.toBe(input);
+    expect(result).toEqual(input);
+  });
+
+  it('interpolate around a single known value changes nothing', () => {
+    const result = applyMissingPolicy(points([null, 7, null]), 'interpolate');
+    expect(result.map((p) => p.value)).toEqual([null, 7, null]);
+  });
 });

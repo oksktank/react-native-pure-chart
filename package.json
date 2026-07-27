@@ -29,7 +29,9 @@
     "test": "jest",
     "typecheck": "tsc",
     "clean": "rm -rf lib",
-    "prepare": "bob build"
+    "prepare": "bob build",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [
     "react-native",
@@ -60,13 +62,17 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
-    "@babel/preset-typescript": "^7.26.0",
+    "@react-native/babel-preset": "0.86.0",
+    "@react-native/jest-preset": "0.86.0",
+    "@testing-library/react-native": "^14.0.1",
+    "@types/jest": "^30.0.0",
     "@types/react": "~19.2.2",
+    "babel-jest": "^30.4.1",
     "jest": "^30.4.2",
     "react": "19.2.3",
     "react-native": "0.86.0",
     "react-native-builder-bob": "^0.43.0",
+    "test-renderer": "^1.2.0",
     "typescript": "~6.0.3"
   },
   "react-native-builder-bob": {

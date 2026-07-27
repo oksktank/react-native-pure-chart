@@ -105,6 +105,7 @@ export function HorizontalFrame({
 
         <View
           style={{ flex: 1, height }}
+          testID={testID ? `${testID}-plot` : undefined}
           onLayout={(e) => {
             const { width: w, height: h } = e.nativeEvent.layout;
             if (!plot || plot.width !== w || plot.height !== h) {
