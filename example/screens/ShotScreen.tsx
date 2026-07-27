@@ -76,7 +76,7 @@ const GROUPS: Group[] = [
   // 0 — hero: one image with all three chart types.
   {
     tone: 'light',
-    cardHeight: 250,
+    cardHeight: 240,
     shots: [
       {
         name: 'hero-line',
@@ -303,8 +303,10 @@ export function ShotScreen() {
 
 const styles = StyleSheet.create({
   page: {
+    // Clears the Expo Go floating dev-menu button, which would otherwise
+    // land on top of the first card.
     flex: 1,
-    paddingTop: 64,
+    paddingTop: 130,
     paddingHorizontal: 16,
   },
   card: {
@@ -340,4 +342,3 @@ const styles = StyleSheet.create({
     color: '#6B7280',
   },
 });
-</content>
