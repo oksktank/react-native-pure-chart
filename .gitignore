@@ -4,5 +4,5 @@ lib/
 *.log
 .DS_Store
 yarn.lock
-package-lock.json
+example/package-lock.json
 coverage/

@@ -14,8 +14,11 @@ config.watchFolders = [root];
 // Resolve the library name straight to its TypeScript source, and make sure
 // react/react-native always come from the example app (a second React copy
 // in the root's devDependencies would break hooks).
+// USE_NPM_PKG=1 skips the source alias so the app runs against the published
+// package in example/node_modules instead (release smoke testing).
+const useNpmPkg = process.env.USE_NPM_PKG === '1';
 config.resolver.extraNodeModules = {
-  'react-native-pure-chart': path.join(root, 'src'),
+  ...(useNpmPkg ? {} : { 'react-native-pure-chart': path.join(root, 'src') }),
   react: path.join(__dirname, 'node_modules', 'react'),
   'react-native': path.join(__dirname, 'node_modules', 'react-native'),
 };
